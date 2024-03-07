@@ -2,7 +2,10 @@ package com.HealthcareManagement.Model;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDTO {
     private Long id;
@@ -30,11 +33,13 @@ public class UserDTO {
     private String morningTiming;
     private String eveningTiming;
     private String doctorImageName;
+    private String consultationCharge;
 
     private byte[] doctorImageData;
 
     private Long patientId;
     private Long doctorId;
+    private Long appointmentId;
     private String appointmentDate;
     private String appointmentTime;
 
@@ -42,9 +47,16 @@ public class UserDTO {
     private Long updatedBy;
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
+    private String visitingDays;
 
 
-
+    private String disease;
+    private List<Medication> prescriptions = new ArrayList<>();
+    private String notes;
+    private LocalDateTime examinationDateTime;
+    private String medicineName;
+    private String dosage;
+    private String timing;
 
     public Long getId() {
         return id;
@@ -155,6 +167,14 @@ public class UserDTO {
 
     public void setJoiningDate(String joiningDate) {
         this.joiningDate = joiningDate;
+    }
+
+    public Long getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(Long appointmentId) {
+        this.appointmentId = appointmentId;
     }
 
     public String getWeight() {
@@ -301,5 +321,77 @@ public class UserDTO {
 
     public void setAppointmentTime(String appointmentTime) {
         this.appointmentTime = appointmentTime;
+    }
+
+    public String getConsultationCharge() {
+        return consultationCharge;
+    }
+
+    public void setConsultationCharge(String consultationCharge) {
+        this.consultationCharge = consultationCharge;
+    }
+
+    public String getVisitingDays() {
+        return visitingDays;
+    }
+
+    public void setVisitingDays(String visitingDays) {
+        this.visitingDays = visitingDays;
+    }
+
+    public String getDisease() {
+        return disease;
+    }
+
+    public void setDisease(String disease) {
+        this.disease = disease;
+    }
+
+    public List<Medication> getPrescriptions() {
+        return prescriptions;
+    }
+
+    public void setPrescriptions(List<Medication> prescriptions) {
+        this.prescriptions = prescriptions;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public LocalDateTime getExaminationDate() {
+        return examinationDateTime;
+    }
+
+    public void setExaminationDate(LocalDateTime examinationDateTime) {
+        this.examinationDateTime = examinationDateTime;
+    }
+
+    public String getMedicineName() {
+        return medicineName;
+    }
+
+    public void setMedicineName(String medicineName) {
+        this.medicineName = medicineName;
+    }
+
+    public String getDosage() {
+        return dosage;
+    }
+
+    public void setDosage(String dosage) {
+        this.dosage = dosage;
+    }
+
+    public String getTiming() {
+        return timing;
+    }
+
+    public void setTiming(String timing) {
+        this.timing = timing;
     }
 }

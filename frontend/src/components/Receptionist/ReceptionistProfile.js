@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { getUsersApi } from "../Api";
 import { format } from 'date-fns'; // Import format function from date-fns
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faPencilAlt, faUser } from '@fortawesome/free-solid-svg-icons';
 import { updateReceptionistProfileApi } from '../Api';
 import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireGender, validateRequireAddress, validateRequireWorkingDays, validateRequireShiftTime, validateRequireJoiningDate } from '../Validations';
 
@@ -29,8 +29,6 @@ export default function ReceptionistProfile() {
   const [editMode, setEditMode] = useState(false); // State to track whether fields are in edit mode
 
   const [passwordFromDatabase, setPasswordFromDatabase] = useState("");
-
-
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -100,7 +98,9 @@ export default function ReceptionistProfile() {
       }
     }
     fetchData();
-  }, []);
+  }, []); 
+
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -163,41 +163,41 @@ export default function ReceptionistProfile() {
 
     try {
       await updateReceptionistProfileApi(receptionistId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age);
-    }catch(error){
+    } catch (error) {
       setCurrentPasswordError("Current password is incorrect");
     }
   };
 
   return (
-    <div className='banner_part'>
-      <div className="container updateProfileContainer" style={{ fontSize: '14px' }}>
+    <div className='background_part padding_top'>
+      <div className="container updateProfileContainer">
         <div className="row flex-lg-nowrap">
           <div className="col">
             <div className="row">
               <div className="col mb-3">
-                <div className="card">
+                <div className="card border-0 mb-3 shadow  bg-white rounded">
                   <div className="card-body">
                     <div className="e-profile">
                       <div className="row">
-                        <div className="col-12 col-sm-auto mb-3">
+                        {/* <div className="col-12 col-sm-auto mb-3">
                           <div className="mx-auto" style={{ width: '140px' }}>
                             <div className="d-flex justify-content-center align-items-center rounded" style={{ height: '140px', backgroundColor: 'rgb(233, 236, 239)' }}>
                               <span style={{ color: 'rgb(166, 168, 170)', font: 'bold 8pt Arial' }}>140x140</span>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                         <div className="col d-flex flex-column flex-sm-row justify-content-between mb-3">
                           <div className="text-center text-sm-left mb-2 mb-sm-0">
-                            <h4 className="pt-sm-2 pb-1 mb-0 mt-4 text-nowrap">{name}</h4>
+                            <h4 className="pt-sm-2 pb-1 mb-0 updateProfileHeading"><b className='contentHeadings' style={{ color: 'black' }}>Update profile</b></h4>
 
-                            <div className="mt-2">
+                            {/* <div className="mt-2">
                               <button className="btn btn-primary" style={{ width: '125px', fontSize: '12px' }} type="button">
                                 <i className="fa fa-fw fa-camera"></i> &nbsp;
                                 <span>Change Photo</span>
                               </button>
-                            </div>
+                            </div> */}
                           </div>
-                          <div className="text-center text-sm-right">
+                          <div className="text-center text-sm-right profileHead">
                             <span className="badge badge-secondary">{role}</span>
                             <div className="text-muted"><small>Joined on {joiningDate}</small></div>
 
@@ -208,17 +208,22 @@ export default function ReceptionistProfile() {
 
                       <div className="d-flex align-items-center justify-content-between">
                         <ul className="nav nav-tabs flex-grow-1">
-                          <li className="nav-item"><a className="active nav-link">Profile</a></li>
+                          <li className="nav-item">
+                            <a className="active nav-link profileTab">
+                              <i class="bi bi-person"></i> Profile
+                            </a>
+                          </li>
                         </ul>
+
                         <div className="">
-                          <button className="btn" style={{ width: '125px', fontSize: '16px' }} type="button" onClick={() => setEditMode(true)} >
+                          <button className="btn" style={{ width: '70px', fontSize: '13px' }} type="button" onClick={() => setEditMode(true)} >
                             <FontAwesomeIcon icon={faPencilAlt} /> Edit
                           </button>
                         </div>
                       </div>
 
 
-                    
+
 
                       <div className="tab-content pt-3">
                         {[...Array(totalSteps).keys()].map((index) => (
@@ -230,7 +235,7 @@ export default function ReceptionistProfile() {
                                   <br />
                                   <div className="row">
                                     <div className="col">
-                                      <div className="mb-2"><b>Personal details</b></div>
+                                      <div className="mb-2"><b className='contentHeadings'>Personal details</b></div>
                                       <div className="row g-3">
                                         <div className="col-md-6">
                                           <label htmlFor="name" className="form-label">Name</label>
@@ -238,7 +243,7 @@ export default function ReceptionistProfile() {
                                           <input
                                             id="name"
                                             type="text"
-                                            className={`form-control form-control-lg bg-light fs-6 ${nameError && 'is-invalid'} `}
+                                            className={`form-control input-field form-control-lg bg-light  ${nameError && 'is-invalid'} `}
                                             placeholder="Name"
                                             value={capitalizeName(name)}
                                             onChange={(event) => {
@@ -256,7 +261,7 @@ export default function ReceptionistProfile() {
                                           <input
                                             id="phone"
                                             type="number"
-                                            className={`form-control form-control-lg bg-light fs-6 ${contactError && 'is-invalid'} `}
+                                            className={`form-control input-field form-control-lg bg-light  ${contactError && 'is-invalid'} `}
                                             placeholder="Phone Number"
                                             value={contact}
                                             onChange={(event) => {
@@ -274,7 +279,7 @@ export default function ReceptionistProfile() {
                                             id="dateOfBirth"
                                             type="date"
                                             value={dateOfBirth}
-                                            className={`form-control form-control-lg bg-light fs-6 ${dobError && 'is-invalid'} `}
+                                            className={`form-control input-field form-control-lg bg-light  ${dobError && 'is-invalid'} `}
                                             onChange={(event) => {
                                               setDob(event.target.value);
                                               setAge(calculateAge(event.target.value)); // Calculate age
@@ -291,21 +296,21 @@ export default function ReceptionistProfile() {
                                           <input
                                             id="age"
                                             type="number"
-                                            className="form-control form-control-lg bg-light fs-6"
+                                            className="form-control input-field form-control-lg bg-light "
                                             placeholder="Age"
                                             value={age}
                                             readOnly // Prevent user input
                                           />
                                         </div>
 
-                                        <div className="col-12 d-flex align-items-center">
-                                          <label className="form-check-label me-3" htmlFor="gender">
-                                            Gender:
+                                        <div className="col-md-12 ">
+                                          <label className="form-label" htmlFor="gender">
+                                            Gender
                                           </label>
-                                          <span style={{ color: 'red' }}>*</span>
+                                          <span style={{ color: 'red', marginLeft: '3px' }}>*</span> &nbsp;
                                           <div className="form-check me-2">
                                             <input
-                                              className="form-check-input"
+                                              className="form-check-input "
                                               type="radio"
                                               name="gender"
                                               id="male"
@@ -354,7 +359,7 @@ export default function ReceptionistProfile() {
                                           <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                           <textarea
                                             id="address"
-                                            className={`form-control form-control-lg bg-light fs-6 ${addressError && 'is-invalid'} `}
+                                            className={`form-control input-field form-control-lg bg-light ${addressError && 'is-invalid'} `}
                                             placeholder="Address"
                                             value={address}
                                             onChange={(event) => {
@@ -373,17 +378,17 @@ export default function ReceptionistProfile() {
                                   <br />
                                   <div className="row">
                                     <div className="col">
-                                      <div className="mb-2"><b>Account details</b></div>
+                                      <div className="mb-2"><b className='contentHeadings'>Account details</b></div>
                                       <div className="row g-3">
                                         <div className="col-md-6">
 
-                                          <div className="form-group">
+                                          <div className="form-group ">
                                             <label htmlFor="email" className="form-label">Email</label>
                                             <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                             <input
                                               id="email"
                                               type="email"
-                                              className={`form-control form-control-lg bg-light fs-6 ${emailError && 'is-invalid'} `}
+                                              className={`form-control input-field form-control-lg bg-light  ${emailError && 'is-invalid'} `}
                                               placeholder="Email"
                                               value={email}
                                               onChange={(event) => {
@@ -396,11 +401,11 @@ export default function ReceptionistProfile() {
                                         </div>
                                         <div className="col">
                                           <div className="form-group">
-                                            <label>Current Password</label>
+                                            <label className='form-label'>Current Password</label>
                                             <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                             <input
                                               id="current-password"
-                                              className={`form-control form-control-lg bg-light fs-6 ${currentPasswordError && 'is-invalid'} `}
+                                              className={`form-control input-field form-control-lg bg-light  ${currentPasswordError && 'is-invalid'} `}
                                               type={currentPasswordVisibility ? 'password' : 'text'}
                                               value={currentPassword}
                                               placeholder="••••••"
@@ -427,7 +432,7 @@ export default function ReceptionistProfile() {
                                           <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                           <input
                                             id="new-password"
-                                            className={`form-control form-control-lg bg-light fs-6 ${passwordError && 'is-invalid'} `}
+                                            className={`form-control input-field form-control-lg bg-light  ${passwordError && 'is-invalid'} `}
                                             type={newPasswordVisibility ? 'password' : 'text'}
                                             placeholder="••••••"
                                             value={password}
@@ -449,11 +454,11 @@ export default function ReceptionistProfile() {
 
                                         <div className="col">
                                           <div className="form-group">
-                                            <label>Confirm <span className="d-none d-xl-inline">Password</span></label>
+                                            <label className='form-label'>Confirm <span className="d-none d-xl-inline ">Password</span></label>
                                             <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                             <input
                                               id="confirm-password"
-                                              className={`form-control form-control-lg bg-light fs-6 ${passwordMatchError && 'is-invalid'} `}
+                                              className={`form-control input-field form-control-lg bg-light  ${passwordMatchError && 'is-invalid'} `}
                                               type={confirmPasswordVisibility ? 'password' : 'text'}
                                               placeholder="••••••"
                                               value={confirmPassword}
@@ -479,15 +484,15 @@ export default function ReceptionistProfile() {
                                   <br />
                                 </>
                                 <>
-                                  <div className="mb-2"><b>Work details</b></div>
+                                  <div className="mb-2"><b className='contentHeadings'>Work details</b></div>
                                   <div className="row g-3">
                                     <div className="col-md-6">
-                                      <label htmlFor="dayOfWork" className="form-label">Day of Works</label>
+                                      <label htmlFor="dayOfWork" input-field className="form-label">Day of Works</label>
                                       <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                       <input
                                         id="dayOfWork"
                                         type="text"
-                                        className="form-control"
+                                        className="form-control input-field form-control-lg bg-light"
                                         placeholder="Days of works"
                                         value={dayOfWorking}
                                         readOnly
@@ -500,7 +505,7 @@ export default function ReceptionistProfile() {
                                       <input
                                         id="shiftTiming"
                                         type="text"
-                                        className="form-control"
+                                        className="form-control input-field form-control-lg bg-light"
                                         placeholder="Shift Timing"
                                         value={shiftTime}
                                         readOnly
@@ -511,7 +516,7 @@ export default function ReceptionistProfile() {
                                     <div className="row">
                                       <div className="col">
                                         <div className="col-12 mt-3">
-                                          <button type="submit" className="btn btn-primary float-end">Update</button>
+                                          <button type="submit" className="btn btn-primary float-end" style={{ backgroundColor: '#1977cc' }}>Update</button>
                                         </div>
                                       </div>
                                     </div>

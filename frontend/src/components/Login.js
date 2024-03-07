@@ -13,7 +13,7 @@ function Login() {
   const [loginError, setLoginError] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();  
-  const authToken=Cookies.get('authToken');
+  const authToken=Cookies.get('authToken'); 
   const userId=Cookies.get('userId');
 
   useEffect(() => {
@@ -44,7 +44,7 @@ function Login() {
         return;
     }
 
-    await handleAdminLogin(email, password, navigate, setLoginError);
+     await handleAdminLogin(email, password, navigate, setLoginError);
 
     if (rememberMe) {
       localStorage.setItem('rememberedEmail', email);
@@ -65,14 +65,14 @@ function Login() {
           {/* <!----------------------- Login Container --------------------------> */}
           <div className="row border rounded-5 p-3 bg-white shadow box-area">
               {/* <!--------------------------- Left Box -----------------------------> */}
-              <div className="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style={{background: '#103cbe'}}>
+              <div className="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style={{background: '#1977cc '}}>
                   <div className="featured-image mb-3">
-                  <img src="img/1.png" className="img-fluid" style={{width: '220px'}}/>
+                  <img src="img/ability_img.png" className="img-fluid" style={{width: '220px'}}/>
                   </div>
                   <p className="text-white fs-2" style={{fontFamily: 'Courier New, Courier, monospace', fontWeight: '600'}}>Be Verified</p>
-                  <small className="text-white text-wrap text-center" style={{width: '17rem', fontFamily: 'Courier New, Courier, monospace'}}>Join experienced Designers on this platform.</small>
+                  {/* <small className="text-white text-wrap text-center" style={{width: '17rem', fontFamily: 'Courier New, Courier, monospace'}}>Join experienced Designers on this platform.</small> */}
               </div> 
-              {/* <!-------------------- ------ Right Box ----------------------------> */}
+              {/* <!-------------------- ------ Right Box ----------------------------> */} 
       
                 <div className="col-md-6 right-box">
                     <div className="row align-items-center">
@@ -129,7 +129,7 @@ function Login() {
                           </div>
 
                           <div className="input-group mb-3">
-                              <button className="btn btn-lg btn-primary w-100 fs-6" onClick={login}> Login </button>
+                              <button style={{background: '#1977cc '}} className="btn btn-lg btn-primary w-100 fs-6" onClick={login}> Login </button>
                           </div>
                           <div className="input-group mb-3">
                               <button className="btn btn-lg btn-light w-100 fs-6"><img src="img/google.png" style={{width:'20px'}} className="me-2"/><small>Sign In with Google</small></button>

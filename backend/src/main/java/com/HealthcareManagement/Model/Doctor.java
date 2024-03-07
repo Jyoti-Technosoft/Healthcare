@@ -26,11 +26,15 @@ public class Doctor {
     private String department;
     private String morningTiming;
     private String eveningTiming;
+    private String visitingDays;
     private String doctorImageName;
 
     @Lob
     @Column(name = "imagedata",length = 1000)
     private byte[] doctorImageData;
+
+    private String consultationCharge;
+
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -41,7 +45,7 @@ public class Doctor {
 
     }
 
-    public Doctor(Long id, String name, String contact, String gender, String dateOfBirth, String age, String address, String joiningDate, String qualification, String designation, String specialities, String department, String morningTiming, String eveningTiming, String doctorImageName,  byte[] doctorImageData, User user) {
+    public Doctor(Long id, String name, String contact, String gender, String dateOfBirth, String age, String address, String joiningDate, String qualification, String designation, String specialities, String department, String morningTiming, String eveningTiming, String visitingDays ,String doctorImageName,  byte[] doctorImageData, String consultationCharge ,User user) {
         this.id = id;
         this.name = name;
         this.contact = contact;
@@ -56,8 +60,10 @@ public class Doctor {
         this.department = department;
         this.morningTiming = morningTiming;
         this.eveningTiming = eveningTiming;
+        this.visitingDays=visitingDays;
         this.doctorImageName = doctorImageName;
         this.doctorImageData = doctorImageData;
+        this.consultationCharge=consultationCharge;
         this.user = user;
     }
 
@@ -196,5 +202,21 @@ public class Doctor {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getConsultationCharge() {
+        return consultationCharge;
+    }
+
+    public void setConsultationCharge(String consultationCharge) {
+        this.consultationCharge = consultationCharge;
+    }
+
+    public String getVisitingDays() {
+        return visitingDays;
+    }
+
+    public void setVisitingDays(String visitingDays) {
+        this.visitingDays = visitingDays;
     }
 }

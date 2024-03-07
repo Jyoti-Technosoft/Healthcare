@@ -34,7 +34,7 @@ export async function UsersAuthHelper(email,password,roles,name,contact,dateOfBi
 
 }
 
-export async function DoctorAuthHelper(email, password, roles, name, contact, dateOfBirth, age, gender, address, joiningDate, qualification, designation, specialities, department, morningTiming, eveningTiming, doctorImageData, navigate) {
+export async function DoctorAuthHelper(email, password, roles, name, contact, dateOfBirth, age, gender, address, joiningDate, qualification, designation, specialities, department, morningTiming, eveningTiming, doctorImageData,consultationCharge, navigate) {
     try {
         const token = Cookies.get('authToken');
         if (!token) {
@@ -61,6 +61,7 @@ export async function DoctorAuthHelper(email, password, roles, name, contact, da
             department,
             morningTiming,
             eveningTiming,
+            consultationCharge,
         };
 
         // Call registerDoctorApi with user data and image data

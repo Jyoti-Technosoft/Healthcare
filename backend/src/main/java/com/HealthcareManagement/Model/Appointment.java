@@ -38,6 +38,11 @@ public class Appointment {
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
 
+    private String consultationCharge;
+    private String consultationChargeType;
+    private String paymentMode;
+
+
     @Transient
     private static Map<String, Integer> appointmentsPerHour = new HashMap<>();
 
@@ -120,5 +125,29 @@ public class Appointment {
 
     public static void setAppointmentsPerHour(Map<String, Integer> appointmentsPerHour) {
         Appointment.appointmentsPerHour = appointmentsPerHour;
+    }
+
+    public String getConsultationCharge() {
+        return consultationCharge;
+    }
+
+    public void setConsultationCharge(String consultationCharge) {
+        this.consultationCharge = consultationCharge;
+    }
+
+    public String getPaymentMode() {
+        return paymentMode;
+    }
+
+    public void setPaymentMode(String paymentMode) {
+        this.paymentMode = paymentMode;
+    }
+
+    public String getConsultationChargeType() {
+        return consultationChargeType;
+    }
+
+    public void setConsultationChargeType(String consultationChargeType) {
+        this.consultationChargeType = consultationChargeType;
     }
 }

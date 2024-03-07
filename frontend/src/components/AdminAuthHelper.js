@@ -1,13 +1,16 @@
 import Cookies from 'js-cookie';
 import { loginAdminApi, registerUserApi } from './Api';
+import { setActiveDashboard } from '../actions/submenuActions';
+// import { useDispatch } from 'react-redux';
+// const dispatch = useDispatch();
 
-export async function handleAdminLogin(email, password, navigate, setLoginError) {
+export async function handleAdminLogin(email, password, navigate, setLoginError) { 
     try {
         const userData = {
             email: email,
             password: password,
         };
-        
+
         const response = await loginAdminApi(userData);
 
         var now = new Date();
@@ -17,11 +20,11 @@ export async function handleAdminLogin(email, password, navigate, setLoginError)
         const authTokenFromResponse = response.token;
         const userEmail = response.email;
         const userId = response.userId;
-        const role=response.role;
+        const role = response.role;
 
         if (authTokenFromResponse) {
             Cookies.set('authToken', authTokenFromResponse, {
-                expires: now, 
+                expires: now,
                 sameSite: 'lax',
                 secure: true,
             });
@@ -29,42 +32,42 @@ export async function handleAdminLogin(email, password, navigate, setLoginError)
 
         if (userEmail) {
             Cookies.set('email', email, {
-                expires: now, 
+                expires: now,
                 sameSite: 'lax',
-                secure: true,
+                secure: true, 
             });
         }
 
-        if(role){
+        if (role) {
             Cookies.set('role', role, {
-                expires: now, 
+                expires: now,
                 sameSite: 'lax',
                 secure: true,
-            }); 
+            });
         }
 
         if (userId) {
             Cookies.set('userId', userId, {
-                expires: now, 
+                expires: now,
                 sameSite: 'lax',
                 secure: true,
             });
-
-            navigate('/adminDashboard', { state: { Email: email } });  
-            
+            navigate('/dashboard', { state: { Email: email } });
+            // dispatch(setActiveDashboard("dashboard"));
         } else {
-            setLoginError("Login failed. Please try again later.");        }
+            setLoginError("Login failed. Please try again later.");
+        }
     } catch (err) {
         setLoginError("Invalid username or password. Please try again.");
-        
+
     }
 }
 
 export async function handleAdminRegistration(email, password, navigate, setRegistrationError) {
     try {
-        const userData = {               
+        const userData = {
             email,
-            password,                
+            password,
         };
         await registerUserApi(userData);
         alert("User Registration Successfully");

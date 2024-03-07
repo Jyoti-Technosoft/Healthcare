@@ -1,0 +1,92 @@
+package com.HealthcareManagement.Controller;
+
+import com.HealthcareManagement.Model.Doctor;
+import com.HealthcareManagement.Model.UserDTO;
+import com.HealthcareManagement.Repository.AppointmentRepository;
+import com.HealthcareManagement.Repository.DoctorRepository;
+import com.HealthcareManagement.Service.DoctorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST}, allowCredentials = "true")
+@RequestMapping("/doctor")
+public class DoctorController {
+
+    @Autowired
+    DoctorService doctorService;
+    @Autowired
+    DoctorRepository doctorRepository;
+    @Autowired
+    AppointmentRepository appointmentRepository;
+
+    @GetMapping("/auth/getDoctor/{userId}")
+    @PreAuthorize("hasAuthority('Doctor')")
+    public ResponseEntity<?> getDoctor(@PathVariable Long userId) {
+        try {
+            Doctor doctor = doctorService.getDoctorByUserId(userId);
+            if (doctor != null) {
+                return new ResponseEntity<>(doctor, HttpStatus.OK);
+            } else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/auth/updateDoctorProfile/{userId}")
+    @PreAuthorize("hasAuthority('Doctor')")
+    public ResponseEntity<String> UpdateProfile(@PathVariable Long userId, @RequestBody UserDTO userDTO, @RequestHeader("Authorization") String authHeader){
+        try{
+            return doctorService.updateprofile(userId,userDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+
+    @GetMapping("/auth/allAppointments/{doctorId}")
+    @PreAuthorize("hasAuthority('Doctor')")
+    public ResponseEntity<List> getAppointmentsWithPatientName(@PathVariable Long doctorId, @RequestHeader("Authorization") String authHeader) {
+        // Check if the doctor with the specified ID exists
+        Optional<Doctor> doctor = doctorRepository.findById(doctorId);
+
+        if (doctor.isEmpty()) {
+            String errorMessage = "Doctor with ID " + doctorId + " not found.";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonList(new Object[]{errorMessage}));
+        }
+
+        List appointments = appointmentRepository.getAppointmentsWithPatientName(doctorId);
+
+        // Check if appointments are not found
+        if (appointments.isEmpty()) {
+            // Return a ResponseEntity with a 204 No Content status and a custom message
+            String errorMessage = "No appointments found for the doctor with ID " + doctorId + ".";
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.singletonList(new Object[]{errorMessage}));
+        }
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/auth/healthReport/{appointmentId}")
+    @PreAuthorize("hasAuthority('Doctor')")
+    public ResponseEntity<String> healthReport(@RequestBody UserDTO userDTO){
+        try {
+
+            return doctorService.healthReport(userDTO);
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception
+            throw e; // Rethrow the exception
+        }
+    }
+}

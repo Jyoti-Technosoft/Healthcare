@@ -114,19 +114,20 @@ public class AdminController {
     }
 
     @GetMapping("/getUser/{userId}")
-    public ResponseEntity<Receptionist> getUsers(@PathVariable Long userId){
-        try{
+    public ResponseEntity<?> getUsers(@PathVariable Long userId) {
+        try {
             Receptionist receptionist = receptionistService.getReceptionistByUserId(userId);
             if (receptionist != null) {
                 return new ResponseEntity<>(receptionist, HttpStatus.OK);
-            } else {
+            } else{
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            throw e;
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
 

@@ -113,8 +113,10 @@ public class AdminServiceImpl implements AdminService, UserDetailsService {
                     .department(userDTO.getDepartment())
                     .morningTiming(userDTO.getMorningTiming())
                     .eveningTiming(userDTO.getEveningTiming())
+                    .visitingDays(userDTO.getVisitingDays())
                     .doctorImageName(file.getOriginalFilename())
                     .doctorImageData(file.getBytes())
+                    .consultationCharge(userDTO.getConsultationCharge())
                     .user(user)
                     .build();
 

@@ -5,6 +5,7 @@ import com.HealthcareManagement.Repository.*;
 import com.HealthcareManagement.Service.ReceptionistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,12 +13,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+
+
 
 @Service
 public class ReceptionistServiceImpl implements ReceptionistService {
@@ -102,7 +108,6 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         if (timeRangeParts.length != 2) {
             return ResponseEntity.badRequest().body("Invalid appointment time format. Please enter in the format 'start time to end time', e.g., '10 AM to 11 AM'.");
         }
-
         // Validate doctor ID
         Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
         if (doctorOptional.isEmpty()) {
@@ -115,10 +120,72 @@ public class ReceptionistServiceImpl implements ReceptionistService {
             return ResponseEntity.badRequest().body("Patient with ID " + patientId + " does not exist.");
         }
 
-        // Book appointment for patient
-        Patient patient = patientOptional.get();
+        // Check if the patient has booked an appointment before
+        boolean isFirstAppointment = appointmentRepository.countAppointmentsByPatientId(patientId) == 0;
+
+        // Calculate the date six months from the first appointment
+        LocalDateTime sixMonthsAfterFirstAppointment = null;
+        if (isFirstAppointment) {
+            // Get the first appointment date
+            Optional<Appointment> firstAppointment = appointmentRepository.findFirstByPatientIdOrderByAppointmentDateAsc(patientId);
+            if (firstAppointment.isPresent()) {
+                LocalDateTime firstAppointmentDateTime = LocalDateTime.parse(firstAppointment.get().getAppointmentDate());
+                // Calculate six months after the first appointment
+                sixMonthsAfterFirstAppointment = firstAppointmentDateTime.plusMonths(6);
+            }
+        }
         Doctor doctor = doctorOptional.get();
-        Appointment appointment = convertToPatient(userDTO, patient, doctor, loggedInUserId);
+        String consultationCharge = "N/A";
+        String consultationChargeType="1";
+        if (isFirstAppointment) {
+            if (doctor.getConsultationCharge() != null) {
+                consultationCharge = doctor.getConsultationCharge();
+                System.out.println("Consultancy charge: " + consultationCharge);
+            } else {
+                consultationCharge = "N/A";
+            }
+        } else if (sixMonthsAfterFirstAppointment != null && LocalDateTime.now().isBefore(sixMonthsAfterFirstAppointment)) {
+            consultationCharge = "N/A"; // No charge within six months
+        } else {
+            Optional<Appointment> firstAppointment = appointmentRepository.findFirstByPatientIdOrderByAppointmentDateAsc(patientId);
+            if (firstAppointment.isPresent()) {
+                String appointmentDateString = firstAppointment.get().getAppointmentDate();
+                System.out.println("Appointment date string: " + appointmentDateString); // Add this line for debugging
+                LocalDate firstAppointmentDate = LocalDate.parse(appointmentDateString);
+                // Calculate six months after the first appointment
+                sixMonthsAfterFirstAppointment = firstAppointmentDate.plusMonths(6).atStartOfDay();
+            }
+
+            // Check if the appointment is after the six months of the last payable appointment
+            List<Appointment> lastPayableAppointmentDates = appointmentRepository.findAllPayableAppointmentsWithIntegerChargeByPatientId(patientId);
+            if (!lastPayableAppointmentDates.isEmpty()) {
+                Appointment lastPayableAppointment = lastPayableAppointmentDates.get(0);
+                LocalDate lastPayableAppointmentDate = LocalDate.parse(lastPayableAppointment.getAppointmentDate());
+                LocalDate sixMonthsAfterLastPayableAppointment = lastPayableAppointmentDate.plusMonths(6);
+                System.out.println("Last payable appointment date: " + lastPayableAppointmentDate);
+                System.out.println("Six months after last payable appointment: " + sixMonthsAfterLastPayableAppointment);
+                System.out.println("Current date time: " + LocalDate.now());
+                // Parse the appointment date string into a LocalDate
+                LocalDate appointmentDTODate = LocalDate.parse(userDTO.getAppointmentDate());
+                if (appointmentDTODate.isAfter(sixMonthsAfterLastPayableAppointment) || appointmentDTODate.isEqual(sixMonthsAfterLastPayableAppointment)) {
+                    // Full charge
+                    consultationCharge = doctor.getConsultationCharge();
+                    System.out.println("Consultancy charge: " + consultationCharge);
+                } else {
+                    // 50% charge
+                    double fullCharge = Double.parseDouble(doctor.getConsultationCharge());
+                    double halfCharge = fullCharge / 2;
+                    consultationCharge = String.valueOf(halfCharge);
+                    consultationChargeType = "0";
+                    System.out.println("Consultancy charge (50%): " + consultationCharge);
+                }
+            } else {
+                consultationCharge = doctor.getConsultationCharge(); // Assuming this is the default charge when no previous payable appointments are found
+            }
+        }
+
+        // Book appointment for patient
+        Appointment appointment = convertToAppointment(userDTO, patientOptional.get(), doctor, consultationCharge, consultationChargeType, loggedInUserId);
         appointmentRepository.save(appointment);
 
         // Count the number of appointments within the specified hour
@@ -133,10 +200,115 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         if (totalAppointmentsWithinHour == 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("All appointment slots are full for the selected doctor within the specified hour.");
         }
-
         return ResponseEntity.ok("Appointment booked successfully!");
     }
 
+    @Override
+    public List<Object[]> searchPatients(String query) {
+        return appointmentRepository.searchPatients(query);
+    }
+
+    @Override
+    public ResponseEntity<String> calculateConsultationCharge(Long patientId, Long doctorId, String appointDate) {
+        // Validate doctor ID
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("Doctor with ID " + doctorId + " does not exist.");
+        }
+
+        // Validate patient ID
+        Optional<Patient> patientOptional = patientRepository.findById(patientId);
+        if (patientOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("Patient with ID " + patientId + " does not exist.");
+        }
+
+        // Check if the patient has booked an appointment before
+        boolean isFirstAppointment = appointmentRepository.countAppointmentsByPatientId(patientId) == 0;
+
+        // Calculate the date six months from the first appointment
+        LocalDateTime sixMonthsAfterFirstAppointment = null;
+        if (isFirstAppointment) {
+            // Get the first appointment date
+            Optional<Appointment> firstAppointment = appointmentRepository.findFirstByPatientIdOrderByAppointmentDateAsc(patientId);
+            if (firstAppointment.isPresent()) {
+                LocalDateTime firstAppointmentDateTime = LocalDateTime.parse(firstAppointment.get().getAppointmentDate());
+                // Calculate six months after the first appointment
+                sixMonthsAfterFirstAppointment = firstAppointmentDateTime.plusMonths(6);
+            }
+        }
+
+        Doctor doctor = doctorOptional.get();
+        String consultationCharge = "N/A";
+        String consultationChargeType="1";
+        if (isFirstAppointment) {
+            if (doctor.getConsultationCharge() != null) {
+                consultationCharge = doctor.getConsultationCharge();
+                System.out.println("Consultancy charge: " + consultationCharge);
+            } else {
+                consultationCharge = "N/A";
+            }
+        } else if (sixMonthsAfterFirstAppointment != null && LocalDateTime.now().isBefore(sixMonthsAfterFirstAppointment)) {
+            consultationCharge = "N/A"; // No charge within six months
+        } else {
+            Optional<Appointment> firstAppointment = appointmentRepository.findFirstByPatientIdOrderByAppointmentDateAsc(patientId);
+            if (firstAppointment.isPresent()) {
+                String appointmentDateString = firstAppointment.get().getAppointmentDate();
+                System.out.println("Appointment date string: " + appointmentDateString); // Add this line for debugging
+                LocalDate firstAppointmentDate = LocalDate.parse(appointmentDateString);
+                // Calculate six months after the first appointment
+                sixMonthsAfterFirstAppointment = firstAppointmentDate.plusMonths(6).atStartOfDay();
+            }
+
+            // Check if the appointment is after the six months of the last payable appointment
+            List<Appointment> payableAppointments = appointmentRepository.findAllPayableAppointmentsWithIntegerChargeByPatientId(patientId);
+            if (!payableAppointments.isEmpty()) {
+                Appointment lastPayableAppointment = payableAppointments.get(0);
+                LocalDate lastPayableAppointmentDate = LocalDate.parse(lastPayableAppointment.getAppointmentDate());
+                LocalDate sixMonthsAfterLastPayableAppointment = lastPayableAppointmentDate.plusMonths(6);
+                System.out.println("Last payable appointment date: " + lastPayableAppointmentDate);
+                System.out.println("Six months after last payable appointment: " + sixMonthsAfterLastPayableAppointment);
+                System.out.println("Current date time: " + LocalDate.now());
+                // Parse the appointment date string into a LocalDate
+                LocalDate appointmentDTODate = LocalDate.parse(appointDate);
+                if (appointmentDTODate.isAfter(sixMonthsAfterLastPayableAppointment) || appointmentDTODate.isEqual(sixMonthsAfterLastPayableAppointment)) {
+                    // Full charge
+                    consultationCharge = doctor.getConsultationCharge();
+                    System.out.println("Consultancy charge: " + consultationCharge);
+                } else {
+                    // 50% charge
+                    double fullCharge = Double.parseDouble(doctor.getConsultationCharge());
+                    double halfCharge = fullCharge / 2;
+                    consultationCharge = String.valueOf(halfCharge);
+                    consultationChargeType = "0";
+                    System.out.println("Consultancy charge (50%): " + consultationCharge);
+                }
+            } else {
+                consultationCharge = doctor.getConsultationCharge(); // Assuming this is the default charge when no previous payable appointments are found
+            }
+        }
+        return ResponseEntity.ok(consultationCharge);
+    }
+
+    @Override
+    public List<Patient> getAllPatients() {
+        List<Patient> patients = patientRepository.findAll();
+        return patients;
+    }
+
+    @Override
+    public List<Appointment> getAllAppointments(Long userId) {
+        return receptionistRepository.findAllAppointmentsByUserId(userId);
+    }
+
+    @Override
+    public List<Appointment> getAllAppointments() {
+        return appointmentRepository.findAll();
+    }
+
+    @Override
+    public List<Doctor> getAllDoctors() {
+        return doctorRepository.findAll();
+    }
 
 
     private List<String> calculateTimeSlots(String startTime, String endTime, int intervalMinutes) {
@@ -172,14 +344,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     }
 
 
-
-
-
-
-
-
-
-    public Appointment convertToPatient(UserDTO userDTO, Patient patient, Doctor doctor, Long loggedInUserId) {
+    public Appointment convertToAppointment(UserDTO userDTO, Patient patient, Doctor doctor, String consultationCharge,String consultationChargeType,Long loggedInUserId) {
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(userDTO.getAppointmentDate());
         appointment.setAppointmentTime(userDTO.getAppointmentTime());
@@ -187,6 +352,9 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         appointment.setUpdatedBy(userRepository.getOne(loggedInUserId));
         appointment.setCreatedTime(LocalDateTime.now());
         appointment.setUpdatedTime(LocalDateTime.now());
+        appointment.setConsultationCharge(consultationCharge);
+        appointment.setConsultationChargeType(consultationChargeType);
+        appointment.setPaymentMode("Cash");
         appointment.setPatient(patient);
         appointment.setDoctor(doctor);
         return appointment;

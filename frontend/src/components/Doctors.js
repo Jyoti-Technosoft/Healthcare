@@ -1,15 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import Header from './Header'
-import Modal from './Modal';
 import { getDoctorsApi } from "./Api";
-import Cookies from 'js-cookie';
-
 
 export default function Doctors() {
     const [doctors, setDoctors] = useState([]);
-    const [showModal, setShowModal] = useState(false); // State to manage modal visibility
     const [selectedDoctor, setSelectedDoctor] = useState(null);
-    const userId = Cookies.get("userId");
     useEffect(() => {
         // Fetch doctors data from API
         const fetchDoctors = async () => {
@@ -68,8 +63,8 @@ export default function Doctors() {
                     {doctors && doctors.length > 0 ? (
                         <div className="row">
                             {doctors.map((doctor, index) => (
-                                <div className="col-lg-4 mt-4" key={index}>
-                                    <div className="member d-flex align-items-start" style={{ height: "40%" }}>
+                                <div className="col-lg-6 mt-4" key={index}>
+                                    <div className="member d-flex align-items-start" style={{ height: "200px" }}>
                                         <img
                                             src={decodeBase64Image(doctor.doctorImageData)}
                                             className="img-fluid"
@@ -81,12 +76,7 @@ export default function Doctors() {
                                             <span className="specialties-label">Specialties: {doctor.specialities}</span>
 
                                             <p className="specialties-label">Designation: {doctor.designation}</p>
-                                            {/* <div className="social">
-                                                <a href=""><i className="ri-twitter-fill"></i></a>
-                                                <a href=""><i className="ri-facebook-fill"></i></a>
-                                                <a href=""><i className="ri-instagram-fill"></i></a>
-                                                <a href=""><i className="ri-linkedin-box-fill"></i></a>
-                                            </div> */}
+                                           
                                             <div><button onClick={() => handleReadMoreClick(doctor)} className='text-center ReadMoreButton mt-2'>Read more</button></div>
                                         </div>
                                     </div>

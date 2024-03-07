@@ -1,6 +1,7 @@
 package com.HealthcareManagement.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -14,6 +15,8 @@ public class User {
     private Long id;
 
     private String email;
+
+    @JsonIgnore
     private String password;
     private String role;
 

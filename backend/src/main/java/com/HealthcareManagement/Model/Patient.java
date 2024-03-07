@@ -24,6 +24,7 @@ public class Patient {
     private String address;
 
 
+
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;

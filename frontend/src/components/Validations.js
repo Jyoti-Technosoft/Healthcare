@@ -3,6 +3,10 @@ export function validateRequireEmail(email) {
 }
 
 export function validatePatternEmail(email) {
+    // If email is empty, return an empty string indicating it meets the requirement
+    if (email.trim() === "") {
+        return "";
+    }
     const emailPattern = /^[a-zA-Z0-9_+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$/;
     return emailPattern.test(email) ? "" : "Enter valid email format";
 }
@@ -60,4 +64,25 @@ export function validateRequireJoiningDate(date){
     if(!date){
         return "Please select joining date"
     }
+}
+export function validateRequireConsultancyCharge(date){
+    if(!date){
+        return "Consultancy charge require"
+    }
+}
+export function validateRequireWeight(weight) {
+    return weight.trim() ? "" : "Weight is required";
+}
+export function validateRequireHeight(height) {
+    return height.trim() ? "" : "Height is required";
+}
+export function calculateAge(dateOfBirth){
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
 }
