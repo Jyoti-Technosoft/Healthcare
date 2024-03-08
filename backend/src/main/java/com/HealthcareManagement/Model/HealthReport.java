@@ -21,8 +21,8 @@ public class HealthReport {
     private Appointment appointment;
 
     private String disease;
-    @OneToMany(mappedBy = "healthReport", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
+    @OneToMany(mappedBy = "healthReport", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+
     private List<Medication> prescriptions = new ArrayList<>();
     private String notes;
     private LocalDateTime examinationDateTime;

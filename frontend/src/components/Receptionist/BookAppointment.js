@@ -196,7 +196,7 @@ export default function BookAppointment() {
     }
 
     return (
-        <div className='background_part'>
+        <div className='background_part'> 
             <div className="container bookAppointmentContainer" style={{ fontSize: '14px' }}>
                 <div className="row ">
                     <div className="col">

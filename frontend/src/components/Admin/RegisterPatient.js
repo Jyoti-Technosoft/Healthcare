@@ -28,7 +28,7 @@ export default function RegisterPatient() {
   const stepLabels = ["Register Patient"];
   const [passwordVisibility, setPasswordVisibility] = useState(true); // State to toggle password visibility
   const [confirmpasswordVisibility, setConfirmPasswordVisibility] = useState(true); // State to toggle password visibility
-  const roleCookie = Cookies.get('role');
+  const roleCookie = Cookies.get('role'); 
   const totalSteps = 1;
   const navigate = useNavigate();
   

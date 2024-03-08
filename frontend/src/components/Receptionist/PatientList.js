@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { getAllPatientsApi } from '../Api';
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux'; 
 import {
     setActivePatientMenu,
     setPatientListMenu,

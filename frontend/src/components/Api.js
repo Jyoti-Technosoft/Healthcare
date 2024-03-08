@@ -302,5 +302,18 @@ export async function getAllDoctors(token) {
         throw error;
     }
 }
+export async function getHealthreportsByAppointmentId(appointmentId,token) {
+    try {
+        
+        const response = await axios.get(`http://localhost:8080/doctor/auth/healthReport/${appointmentId}`,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
 
 

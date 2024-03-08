@@ -1,10 +1,7 @@
 package com.HealthcareManagement.Service.impl;
 
 import com.HealthcareManagement.Model.*;
-import com.HealthcareManagement.Repository.AppointmentRepository;
-import com.HealthcareManagement.Repository.DoctorRepository;
-import com.HealthcareManagement.Repository.HealthReportRepository;
-import com.HealthcareManagement.Repository.UserRepository;
+import com.HealthcareManagement.Repository.*;
 import com.HealthcareManagement.Service.DoctorService;
 import com.HealthcareManagement.Service.ImageUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -39,6 +36,8 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Autowired
     HealthReportRepository healthReportRepository;
+    @Autowired
+    MedicationRepository medicationRepository;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -116,6 +115,21 @@ public class DoctorServiceImpl implements DoctorService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Health report submission failed");
         }
     }
+
+    @Override
+    public List<HealthReport> getHealthreport(Long appointmentId) {
+        List<HealthReport> healthReports = healthReportRepository.findByAppointmentId(appointmentId);
+        if (!healthReports.isEmpty()) {
+            // Iterate through each health report and fetch prescriptions for each one
+            for (HealthReport healthReport : healthReports) {
+                List<Medication> prescriptions = medicationRepository.findByHealthReportId(healthReport.getId());
+                healthReport.setPrescriptions(prescriptions);
+            }
+        }
+        return healthReports;
+    }
+
+
 
     public HealthReport convertToHealthReport(UserDTO userDTO, Appointment appointment,Long loggedInUserId){
         HealthReport report = new HealthReport();

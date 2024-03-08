@@ -1,6 +1,7 @@
 package com.HealthcareManagement.Controller;
 
 import com.HealthcareManagement.Model.Doctor;
+import com.HealthcareManagement.Model.HealthReport;
 import com.HealthcareManagement.Model.UserDTO;
 import com.HealthcareManagement.Repository.AppointmentRepository;
 import com.HealthcareManagement.Repository.DoctorRepository;
@@ -89,4 +90,23 @@ public class DoctorController {
             throw e; // Rethrow the exception
         }
     }
+
+    @GetMapping("/auth/healthReport/{appointmentId}")
+    @PreAuthorize("hasAuthority('Doctor')")
+    public ResponseEntity<List<HealthReport>> fetchHealthReport(@PathVariable Long appointmentId){
+        try {
+            List<HealthReport> healthReport = doctorService.getHealthreport(appointmentId);
+            if (healthReport != null) {
+                // Return health report with prescriptions
+                return ResponseEntity.ok(healthReport);
+            } else {
+                // Health report not found
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception
+            throw e; // Rethrow the exception
+        }
+    }
+
 }

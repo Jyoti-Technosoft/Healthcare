@@ -2,17 +2,21 @@ import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { getAllAppointmentsApi, getAllPatientsApi, getDoctorsWithIdApi } from '../Api';
 import Cookies from 'js-cookie';
-import AppointmentModal from './AppointmentModal';
+import AppointmentModal from './ConsultancyModal';
 import {
     setActiveTab,
+    setMiddleCompo,
+    setPreviousTab,
 } from '../../actions/submenuActions';
 import { useSelector, useDispatch } from 'react-redux';
 import ConsultancyPage from './ConsultancyPage';
+
 export default function Appointments() {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [doctorId, setDoctorId] = useState('');
-    const [filteredAppointmets, setFilteredAppointments] = useState([]);
+    const [filteredAppointments, setFilteredAppointments] = useState([]);
+    const [selectedAppointment, setSelectedAppointment] = useState(null); // Added state to store selected appointment
     const userId = Cookies.get("userId");
     const authToken = Cookies.get("authToken");
 
@@ -21,15 +25,16 @@ export default function Appointments() {
     const [error, setError] = useState(null);
 
     const activeTab = useSelector((state) => state.submenu.activeTab);
+
+
+    const middleCompo = useSelector((state) => state.submenu.middleCompo);
     const dispatch = useDispatch();
 
     const setMenu = (submenu) => {
-        if (submenu === 'consultancyPage') {
-            dispatch(setActiveTab('consultancyPage')); 
+        if (activeTab === 'doctorAppointments') {
+            dispatch(setMiddleCompo(submenu));
         }
     };
-
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,7 +54,7 @@ export default function Appointments() {
         };
 
         fetchData();
-    }, [userId, authToken]);
+    }, [userId, authToken, middleCompo]);
 
     useEffect(() => {
         const fetchBrandNames = async () => {
@@ -75,7 +80,7 @@ export default function Appointments() {
     const handleSearch = (e) => {
         const keyword = e.target.value.toLowerCase();
         const filteredData = appointments.filter((appointment) =>
-            appointment[0].toString().includes(keyword) || // Assuming ID is the first element
+            appointment[1].toString().includes(keyword) || // Assuming ID is the first element
             appointment[2].toLowerCase().includes(keyword) || // Patient name
             appointment[3].toLowerCase().includes(keyword) || // Contact
             appointment[10].toLowerCase().includes(keyword) || // Appointment Date
@@ -84,72 +89,64 @@ export default function Appointments() {
         setFilteredAppointments(filteredData);
     };
 
+    const handleIconClick = (appointment) => {
+        setSelectedAppointment(appointment); // Set selected appointment
+        setMenu('consultancyPage'); // Update middleCompo state when icon is clicked
+    };
+
     const columns = [
         {
             name: '', selector: (row) => (
                 <div>
-                    <i className="bi bi-clipboard2-pulse reportIcon" onClick={() => setMenu('consultancyPage')}></i>
+                    <i
+                        className={`bi bi-clipboard2-pulse reportIcon ${middleCompo === 'consultancyPage' ? 'active' : ''}`}
+                        onClick={() => handleIconClick(row)}
+                    ></i>
                 </div>
             ), sortable: true
         },
-        { name: 'Patient ID', selector: (row) => row[0], sortable: true, minWidth: '110px' },
+        { name: 'Patient ID', selector: (row) => row[1], sortable: true, minWidth: '110px' },
         { name: 'Patient name', selector: (row) => row[2], sortable: true, minWidth: '150px' },
         { name: 'Contact', selector: (row) => row[3], sortable: true, minWidth: '150px' },
-        // { name: 'Gender', selector: (row) => row[4], sortable: true },
-        // { name: 'Date of Birth', selector: (row) => row[5], sortable: true },
-        // { name: 'Age', selector: (row) => row[6], sortable: true },
-        // { name: 'Address', selector: (row) => row[9], sortable: true, minWidth: '250px' },
-        // { name: 'Weight', selector: (row) => row[7], sortable: true },
-        // { name: 'Height', selector: (row) => row[8], sortable: true },
         { name: 'Appointment Date', selector: (row) => row[10], sortable: true, minWidth: '160px' },
         { name: 'Appointment time', selector: (row) => row[11], sortable: true, minWidth: '180px' },
         { name: 'Consultancy charge', selector: (row) => row[12], sortable: true, minWidth: '200px' },
     ];
+
     return (
         <>
-            <div className='background_part '>
-                <div className="container patintListContainer">
-                    <div className="row flex-lg-nowrap">
-                        <div className="col">
-                            <div className="row">
-                                <div className="col mb-3">
-                                    <div className="card border-0 rounded">
-                                        <div className="card-body">
-                                            <h6> {appointments.length} Appointments</h6>
-                                            <hr />
-                                            <div className="d-flex justify-content-between align-items-center mb-3">
-                                                <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Appointments</b></h3>
-                                                <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} />
-                                            </div>
-                                            <div>
-                                                {loading ? (
-                                                    <p>Loading...</p>
-                                                ) : (
-                                                    <>
-                                                        <DataTable
-
-                                                            columns={columns}
-                                                            data={filteredAppointmets} // Render filtered patients
-                                                            pagination
-                                                            highlightOnHover
-                                                            noDataComponent="No patients found"
-                                                        />
-
-
-
+            <div>
+                {middleCompo !== 'consultancyPage' ? (
+                    <div className='background_part '>
+                        <div className="container patintListContainer">
+                            <div className="row flex-lg-nowrap">
+                                <div className="col">
+                                    <div className="row">
+                                        <div className="col mb-3">
+                                            <div className="card border-0 rounded">
+                                                <div className="card-body">
+                                                    <h6> {appointments.length} Appointments</h6>
+                                                    <hr />
+                                                    <div className="d-flex justify-content-between align-items-center mb-3">
+                                                        <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Appointments</b></h3>
+                                                        <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} />
+                                                    </div>
+                                                    <div>
                                                         {loading ? (
                                                             <p>Loading...</p>
-                                                        ) : brandNames.length > 0 ? (
-                                                            <ul>
-                                                                {brandNames.map((brandName, index) => (
-                                                                    <li key={index}>{brandName}</li>
-                                                                ))}
-                                                            </ul>
                                                         ) : (
-                                                            <p>No brand names found</p>
+                                                            <>
+                                                                <DataTable
+                                                                    columns={columns}
+                                                                    data={appointments}
+                                                                    pagination
+                                                                    highlightOnHover
+                                                                    noDataComponent="No appointments found"
+                                                                />
+                                                            </>
                                                         )}
-                                                    </>
-                                                )}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -157,10 +154,10 @@ export default function Appointments() {
                             </div>
                         </div>
                     </div>
-                </div>
+                ) : (
+                    <ConsultancyPage appointment={selectedAppointment} />
+                )}
             </div>
-            {activeTab === 'consultancyPage' && <ConsultancyPage />}
-
         </>
     )
 }

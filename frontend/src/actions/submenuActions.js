@@ -12,9 +12,22 @@ export const SET_CONSULTANCY_PAGE = 'SET_CONSULTANCY_PAGE';
 
 
 export const ACTIVE_TAB = 'ACTIVE_TAB';
+export const PREVIOUS_TAB = 'PREVIOUS_TAB';
+
+export const MIDDLE_COMPO = 'MIDDLE_COMPO';
+
 
 export const setActiveTab = (submenu) => ({
   type: ACTIVE_TAB, 
+  payload: submenu,
+});
+export const setPreviousTab = (submenu) => ({
+  type: PREVIOUS_TAB, 
+  payload: submenu,
+});
+
+export const setMiddleCompo = (submenu) => ({
+  type: MIDDLE_COMPO, 
   payload: submenu,
 });
 
