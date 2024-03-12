@@ -1,12 +1,10 @@
 // reducers/submenuReducer.js
-import { ACTIVE_TAB, PREVIOUS_TAB, MIDDLE_COMPO, SET_ACTIVE_REGISTER_USERS, SET_ACTIVE_PROFILE_SUBMENU, SET_ACTIVE_PATIENT_MENU, SET_ACTIVE_BOOK_APPOINTMENT_MENU, SET_ACTIVE_PATIENT_LIST, SET_ACTIVER_DOCTOR_LIST, SET_ACTIVE_DOCTOR_PROFILE, SET_DOCTOR_APPOINTMENTS, SET_SHOW_APPOINTMENTS, SET_ACTIVE_DASHBOARD, SET_CONSULTANCY_PAGE } from '../actions/submenuActions';
+import { ACTIVE_TAB, MIDDLE_COMPO, SET_ACTIVE_REGISTER_USERS, SET_ACTIVE_PROFILE_SUBMENU, SET_ACTIVE_PATIENT_MENU, SET_ACTIVE_BOOK_APPOINTMENT_MENU, SET_ACTIVE_PATIENT_LIST, SET_ACTIVER_DOCTOR_LIST, SET_ACTIVE_DOCTOR_PROFILE, SET_DOCTOR_APPOINTMENTS, SET_SHOW_APPOINTMENTS, SET_ACTIVE_DASHBOARD, SET_CONSULTANCY_PAGE } from '../actions/submenuActions';
 
 const initialState = {
   activeTab: "dashboard",
-  previousTab: null,
+  // resetPreviousTab: null,
   middleCompo: null,
-
-
 
 
   activeDashboard: null,
@@ -28,19 +26,18 @@ const submenuReducer = (state = initialState, action) => {
       return {
         ...state,
         activeTab: action.payload,
-        
-      };
-    case PREVIOUS_TAB:
-      return {
-        ...state,
-        previousTab: action.payload,
+
       };
     case MIDDLE_COMPO:
       return {
         ...state,
         middleCompo: action.payload,
       };
-
+    // case RESET_PREVIOUS_TAB:
+    //   return {
+    //     ...state,
+    //     middleCompo: null,
+    //   };
 
 
 

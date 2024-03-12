@@ -13,6 +13,7 @@ export default function Header() {
         Cookies.remove('email');
         Cookies.remove('authToken');
         Cookies.remove('userId');
+        
         navigate('/login');
     };
     return (

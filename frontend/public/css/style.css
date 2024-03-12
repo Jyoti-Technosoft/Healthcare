@@ -29,7 +29,8 @@
     font-size: 16px;
 
   }
-  .dashboardCard{
+
+  .dashboardCard {
     margin-top: 130px;
   }
 
@@ -63,51 +64,62 @@
     /* Example border style */
     border-radius: 50%;
   }
-  .sidebarDoctorProfileImg{
-    
-    
+
+  .sidebarDoctorProfileImg {
+
+
     width: 80px !important;
-    
+
   }
 
   .headerProfileImg {
-    
+
     height: 40px !important;
     width: 40px !important;
     padding: 6px;
     border: 1px solid #ccc;
     border-radius: 50%;
-    
+
     /* Applied margin */
-    
+
     position: absolute;
     /* Add position:absolute */
     right: 0;
     /* Align to the right */
   }
+  .dashboardPatientImg{
+    height: 50px !important;
+    width: 40px !important;
+    padding: 6px;
+    
+   
+    position: absolute;
+  }
 
   .logoutCardContainer {
-    position: absolute;
-    bottom: -50px;
-    /* Adjust this value as needed */
-    right: 0;
-    margin-left: 100px !important;
-    z-index: 999;
+    
+    
+    margin-left: 900px !important;
+   
   }
 
-  .logoutCard {
-    width: 150px !important;
-    height: 50px !important;
-    /* Adjust card width as needed */
-  }
-
-  .logoutBtn button {
+  .logoutBtn Link {
     margin-top: -85px;
   }
+  .listHeader1{
+    margin-top: -15px !important;
+    
+    margin-right: 20px !important;
+  }
 
-  .bi.bi-box-arrow-right {
-    margin-top: -5px;
-
+  .listHeader2{   
+    margin-right: 10px !important;
+    font-size: 10px !important;
+  }
+  .headerIcon{
+    color: black !important;
+    padding-right: 10px;
+    font-size: 16px !important;
   }
 
 
@@ -121,7 +133,8 @@
   .sidebarHeading h5 {
     margin-top: 15px !important;
   }
-  .Active{
+
+  .Active {
     color: #1977cc !important;
     font-weight: bold !important;
   }
@@ -185,7 +198,7 @@
 
   .sidebarHeading {
     padding-top: 40px;
-    
+
   }
 
 
@@ -348,12 +361,36 @@
     /* background:#f8f8f8; */
 
   }
-  .consultancyContainer{
+
+  .suggestions-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    width: 160px !important;
+    z-index: 1;
+    font-size: 12px !important;
+  }
+
+  .suggestions-list li {
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .suggestions-list li:hover {
+    background-color: #f2f2f2;
+  }
+
+  .consultancyContainer {
     margin-top: 80px !important;
     margin-right: 0px !important;
     padding: 50px !important;
   }
-  .consultancyModal{
+
+  .consultancyModal {
     margin-top: -20px !important;
   }
 
@@ -537,7 +574,8 @@
     color: #fff;
     border-color: #1977cc;
   }
-  .reportIcon{
+
+  .reportIcon {
     font-size: 1.5rem;
     margin-left: 15px;
     color: #1977cc;
@@ -608,26 +646,31 @@
     font-weight: bold !important;
   }
 
-  .img-fluid{
+  .img-fluid {
     height: 50% !important;
   }
-  .member{
-    
+
+  .member {
+
     width: 270px !important;
   }
-  .member-info h4{
+
+  .member-info h4 {
     font-size: 18px !important;
   }
+
   .img-fluid-modal {
     height: 150px !important;
     border-radius: 10%;
   }
-  .memberModal{
+
+  .memberModal {
     padding: 50px !important;
   }
-  .memberModal h4{
+
+  .memberModal h4 {
     font-size: 18px !important;
-    
+
   }
 
   .row-Page {

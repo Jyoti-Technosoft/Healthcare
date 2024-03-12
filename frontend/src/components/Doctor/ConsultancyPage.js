@@ -5,24 +5,28 @@ import Cookies from 'js-cookie';
 
 import ConsultancyModal from './ConsultancyModal';
 const ConsultancyPage = ({ appointment }) => {
+  debugger
   const authToken = Cookies.get("authToken");
-  const appointmentId = appointment[0];
+  const appointmentId = appointment ? appointment.id : null; // Check if appointment is null
   const [healthReport, setHealthReport] = useState(null);
   const [showModal, setShowModal] = useState(false); // State to manage modal visibility
   const [prescriptions, setPrescriptions] = useState([]);
   const [showCloseButton, setShowCloseButton] = useState(false);
+  const [prescriptionFields, setPrescriptionFields] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getHealthreportsByAppointmentId(appointmentId, authToken);
-        console.log(data);
-        setHealthReport(data);
-      } catch (error) {
-        console.error('Error fetching health report:', error);
-      }
-    };
-    fetchData();
+    // Only fetch data if appointmentId exists
+    if (appointmentId) {
+      const fetchData = async () => {
+        try {
+          const data = await getHealthreportsByAppointmentId(appointmentId, authToken);
+          setHealthReport(data);
+        } catch (error) {
+          console.error('Error fetching health report:', error);
+        }
+      };
+      fetchData();
+    }
   }, [appointmentId, authToken]);
 
   const columns = [
@@ -70,17 +74,12 @@ const ConsultancyPage = ({ appointment }) => {
     modal.show();
   };
   const handleAddPrescription = () => {
-    const newPrescription = { medicineName: '', dosage: '', timing: '' };
-    setPrescriptions([...prescriptions, newPrescription]);
+    setPrescriptionFields([...prescriptionFields, { brandNameInput: '', medicineNameInput: '', medicineDosage: '', timing: '' }]);
   };
 
-  const handleRemovePrescription = (indexToRemove) => {
-    const updatedPrescriptions = prescriptions.filter((_, index) => index !== indexToRemove);
-    setPrescriptions(updatedPrescriptions);
-  };
   const handleCloseButtonClick = () => {
     setShowCloseButton(false);
-    setPrescriptions([]);
+    setPrescriptionFields([]);
   };
 
 
@@ -99,17 +98,17 @@ const ConsultancyPage = ({ appointment }) => {
                         <div className="row">
                           <div className="col-md-3">
                             <ul>
-                              <li><strong>Patient ID:</strong> <span style={{ fontSize: '14px' }}> {appointment[1]}</span></li>
-                              <li><strong>Patient Name:</strong> <span style={{ fontSize: '14px' }}> {appointment[2]}</span></li>
-                              <li><strong>Contact:</strong> <span style={{ fontSize: '14px' }}> {appointment[3]}</span></li>
+                              <li><strong>Patient ID:</strong> <span style={{ fontSize: '14px' }}> {appointment.patient.id}</span></li>
+                              <li><strong>Patient Name:</strong> <span style={{ fontSize: '14px' }}> {appointment.patient.name}</span></li>
+                              <li><strong>Contact:</strong> <span style={{ fontSize: '14px' }}> {appointment.patient.contact}</span></li>
 
                             </ul>
                           </div>
                           <div className="col-md-4">
                             <ul>
-                              <li><strong>Appointment Date:</strong> <span style={{ fontSize: '14px' }}> {appointment[10]}</span> </li>
-                              <li><strong>Appointment Time:</strong> <span style={{ fontSize: '14px' }}> {appointment[11]}</span> </li>
-                              <li><strong>Consultancy Charge:</strong><span style={{ fontSize: '14px' }}>  {appointment[12]}</span> </li>
+                              <li><strong>Appointment Date:</strong> <span style={{ fontSize: '14px' }}> {appointment.appointmentDate}</span> </li>
+                              <li><strong>Appointment Time:</strong> <span style={{ fontSize: '14px' }}> {appointment.appointmentTime}</span> </li>
+                              <li><strong>Consultancy Charge:</strong><span style={{ fontSize: '14px' }}>  {appointment.consultationCharge}</span> </li>
                             </ul>
                           </div>
                         </div>
@@ -136,171 +135,17 @@ const ConsultancyPage = ({ appointment }) => {
         </div>
       </div>
 
-      <div className="modal mx-auto" id="consultancyModal" tabIndex="-1">
-        <div className="modal-dialog modal-lg ">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Consultancy Form</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body d-flex justify-content-center" style={{ maxHeight: '550px', overflowY: 'auto' }}>
-              {appointment && (
-                <>
-                  <div className="container">
-                    <div className="col mb-3">
-                      <div className="row flex-lg-nowrap g-3">
-                        <div className="col-md-6">
-                          <label htmlFor="name" className="form-label">Patient Id</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <input
-                            id="name"
-                            type="text"
-                            className="form-control input-field form-control-lg bg-light"
-                            placeholder="Patient id"
-                            value={appointment[1]}
-                            disabled
-                          />
-                        </div>
-                        <div className="col-md-6">
-                          <label htmlFor="name" className="form-label">Patient Name</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <input
-                            id="name"
-                            type="text"
-                            className="form-control input-field form-control-lg bg-light"
-                            placeholder="Patient name"
-                            value={appointment[2]}
-                            disabled
-                          />
-                        </div>
-                      </div>
-                      <div className="row mt-1 flex-lg-nowrap g-3">
-                        <div className="col-md-6">
-                          <label htmlFor="name" className="form-label">Appointment Date</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <input
-                            id="name"
-                            type="text"
-                            className="form-control input-field form-control-lg bg-light"
-                            placeholder="Patient name"
-                            value={appointment[10]}
-                            disabled
+      <ConsultancyModal
+        appointment={appointment}
+        showCloseButton={showCloseButton}
+        setShowCloseButton={setShowCloseButton}
+        handleAddPrescription={handleAddPrescription}
+        //handleRemovePrescription={handleRemovePrescription}
+        handleCloseButtonClick={handleCloseButtonClick}
+        prescriptionFields={prescriptionFields} // Pass prescriptionFields instead of prescriptions
+        setPrescriptionFields={setPrescriptionFields} // Pass setPrescriptionFields instead of setPrescriptions
+      />
 
-                          />
-                        </div>
-                        <div className="col-md-6">
-                          <label htmlFor="name" className="form-label">Appointment Time</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <input
-                            id="name"
-                            type="text"
-                            className="form-control input-field form-control-lg bg-light"
-                            placeholder="Patient name"
-                            value={appointment[11]}
-                            disabled
-                          />
-                        </div>
-                      </div>
-                      <div className="row mt-1 flex-lg-nowrap g-3">
-                        <div className="col-12">
-                          <label htmlFor="name" className="form-label">Disease</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <input
-                            id="name"
-                            type="text"
-                            className="form-control input-field form-control-lg bg-light"
-                            placeholder="Disease "
-                            value=""
-                            
-
-                          />
-                        </div>
-                      </div>
-
-                      <div className="mx-auto mt-3">
-                        <label htmlFor="prescriptions" className="form-label">Prescriptions</label>
-                        <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                        {prescriptions.map((prescription, index) => (
-                          <div key={index} className="mb-3 mt-3">
-                            <label htmlFor="prescriptions" className="form-label">Prescription {index + 1}</label>
-                            <div className="row g-3">
-                              <div className="col">
-                                <input
-                                  type="text"
-                                  className="form-control input-field form-control-lg bg-light"
-                                  placeholder="Medicine Name"
-                                  value={prescription.medicineName}
-                                  onChange={(e) => {
-                                    const updatedPrescriptions = [...prescriptions];
-                                    updatedPrescriptions[index].medicineName = e.target.value;
-                                    setPrescriptions(updatedPrescriptions);
-                                  }}
-                                />
-                              </div>
-                              <div className="col">
-                                <input
-                                  type="text"
-                                  className="form-control input-field form-control-lg bg-light"
-                                  placeholder="Dosage"
-                                  value={prescription.dosage}
-                                  onChange={(e) => {
-                                    const updatedPrescriptions = [...prescriptions];
-                                    updatedPrescriptions[index].dosage = e.target.value;
-                                    setPrescriptions(updatedPrescriptions);
-                                  }}
-                                />
-                              </div>
-                              <div className="col">
-                                <input
-                                  type="text"
-                                  className="form-control input-field form-control-lg bg-light"
-                                  placeholder="Timing"
-                                  value={prescription.timing}
-                                  onChange={(e) => {
-                                    const updatedPrescriptions = [...prescriptions];
-                                    updatedPrescriptions[index].timing = e.target.value;
-                                    setPrescriptions(updatedPrescriptions);
-                                  }}
-                                />
-                              </div>
-                              <div className="col">
-                                <button type="button" className="btn btn-danger" onClick={() => handleRemovePrescription(index)}>
-                                  <i className="bi bi-x"></i>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                        <div className="d-flex justify-content-end">
-                          <button
-                            type="submit"
-                            className={`btn btn-primary`}
-                            style={{ backgroundColor: '#1977cc', borderColor: '#1977cc' }}
-                            onClick={() => {
-                              handleAddPrescription();
-                              setShowCloseButton(true); // Show the close button if prescriptions exist
-                            }}
-                          >
-                            <i className="bi bi-plus"></i>
-                            Add consultancy
-                          </button>
-                          {showCloseButton && (
-                            <button type="button" className={`btn btn-danger`} onClick={handleCloseButtonClick}>
-                              <i className="bi bi-x"></i>
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-
-          </div>
-        </div>
-      </div>
 
     </div>
   );

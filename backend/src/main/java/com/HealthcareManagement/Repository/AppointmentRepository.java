@@ -57,6 +57,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
 
     Optional<Appointment> findFirstByPatientIdOrderByAppointmentDateAsc(Long patientId);
 
+    Optional<Appointment> findFirstByPatientIdAndDoctorIdOrderByAppointmentDateAsc(Long patientId, Long doctorId);
+
+    @Query("SELECT a FROM Appointment a WHERE a.patient.id = :patientId AND a.doctor.id = :doctorId AND a.consultationChargeType = '1'")
+    List<Appointment> findAllPayableAppointmentsWithIntegerChargeByPatientIdAndDoctorId(Long patientId, Long doctorId);
+
 
 
     @Query("SELECT p.id, p.name, p.contact, p.gender, p.dateOfBirth, p.age, p.weight, p.height, p.address, " +
@@ -78,4 +83,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
             "FROM Appointment a LEFT JOIN a.patient p " +
             "WHERE a.doctor.id = :doctorId")
     List getAppointmentsWithPatientName(@Param("doctorId") Long doctorId);
+
+    @Query("SELECT a FROM Appointment a WHERE a.doctor.id = :doctorId")
+    List<Appointment> findByDoctorId(Long doctorId);
+
+    @Query("SELECT a FROM Appointment a WHERE a.doctor.id = :doctorId AND a NOT IN (SELECT hr.appointment FROM HealthReport hr) ORDER BY a.appointmentDate ASC")
+    List<Appointment> findAppointmentsWithoutHealthReport(Long doctorId);
+
+
 }

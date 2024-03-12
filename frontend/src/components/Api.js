@@ -182,7 +182,7 @@ export async function getAllPatientsApi(token) {
     }
 }
 
-export async function getAvailableSlots(doctorId, date) {
+export async function getAvailableSlots(doctorId, date,token) {
     try {
         
         
@@ -232,7 +232,7 @@ export async function bookAppointmentApi(doctorId,patientId,appointmentDate,appo
     }
 }
 
-export async function fetchConsultationChargeApi(patientId,doctorId,date){
+export async function fetchConsultationChargeApi(patientId,doctorId,date,token){
     try{
         const response = await axios.get(`http://localhost:8080/receptionist/auth/patientConsultationCharge`, {
             params: {
@@ -253,7 +253,20 @@ export async function fetchConsultationChargeApi(patientId,doctorId,date){
 export async function getAllAppointmentsApi(doctorId,token) {
     try {
         
-        const response = await axios.get(`http://localhost:8080/doctor/auth/allAppointments/${doctorId}`,{
+        const response = await axios.get(`http://localhost:8080/doctor/auth/new/allAppointments/${doctorId}`,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+export async function getAppointmentWithoutHealthReport(doctorId,token) {
+    try {
+        
+        const response = await axios.get(`http://localhost:8080/doctor/auth/AppointmentWithoutHealthReport/${doctorId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -306,6 +319,19 @@ export async function getHealthreportsByAppointmentId(appointmentId,token) {
     try {
         
         const response = await axios.get(`http://localhost:8080/doctor/auth/healthReport/${appointmentId}`,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+export async function submitConsultationReport(appointmentId,data,token) {
+    try {
+        
+        const response = await axios.post(`http://localhost:8080/doctor/auth/healthReport/${appointmentId}`,data,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },

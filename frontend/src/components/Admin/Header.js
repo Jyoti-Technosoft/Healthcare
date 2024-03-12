@@ -1,33 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import RegisterUsers from './RegisterUsers';
-import RegisterPatient from './RegisterPatient';
-import ReceptionistProfile from '../Receptionist/ReceptionistProfile'
-import BookAppointment from '../Receptionist/BookAppointment';
-import Cookies from 'js-cookie';
 import { getUsersApi } from '../Api';
 import { useSelector, useDispatch } from 'react-redux';
-import { setActiveRegisterUsers, setActiveProfileSubMenu, setActivePatientMenu, setBookAppointmentMenu, setDoctorListMenu, setActiveTab } from '../../actions/submenuActions';
+import { setActiveTab } from '../../actions/submenuActions';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 export default function Header() {
     const userRole = Cookies.get('role');
     const userId = Cookies.get('userId');
     const [name, setName] = useState('');
     const [gender, setGender] = useState('');
-    const activeRegisterUsers = useSelector((state) => state.submenu.activeRegisterUsers);
-    const activeProfileSubMenu = useSelector((state) => state.submenu.activeProfileSubMenu);
-    const activePatientMenu = useSelector((state) => state.submenu.activePatientMenu);
-    const activeBookAppointmentMenu = useSelector((state) => state.submenu.activeBookAppointmentMenu);
-    const doctorListMenu = useSelector((state) => state.submenu.doctorListMenu);
+    const activeTab = useSelector((state) => state.submenu.activeTab);
     const dispatch = useDispatch();
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [showLogoutCard, setShowLogoutCard] = useState(false);
     const navigate = useNavigate();
-    const activeTab = useSelector((state) => state.submenu.activeTab);
-    
+    const logoutRef = useRef(null);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth); // Define windowWidth state
+
     const setMenu = (menu) => {
-        debugger
         if (activeTab !== menu) {
             dispatch(setActiveTab(menu));
         }
@@ -46,6 +37,23 @@ export default function Header() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        // Function to close logout card when clicked outside
+        function handleClickOutside(event) {
+            if (logoutRef.current && !logoutRef.current.contains(event.target)) {
+                setShowLogoutCard(false);
+            }
+        }
+
+        // Adding event listener
+        document.addEventListener("mousedown", handleClickOutside);
+
+        // Cleanup function
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     const handleLogout = () => {
         // Remove the cookie
         Cookies.remove('email');
@@ -53,35 +61,23 @@ export default function Header() {
         Cookies.remove('userId');
         navigate('/login');
     };
+
     return (
         <>
-            <header className="main_menu home_menu shadow p-3 mb-5 bg-body rounded" >
+            <header className="main_menu home_menu shadow p-3 mb-5 bg-body rounded">
                 <div className="container">
                     <div className="row align-items-center">
                         <div className="col-lg-12">
                             <nav className="navbar navbar-expand-lg navbar-light adminNavbar">
-                                {/* Logo */}
                                 <Link className="navbar-brand mb-6 navbarLogo" to="/">
                                     <img src="img/logo.png" alt="logo" />
                                 </Link>
-
-                                {/* Hamburger button */}
                                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                                     <span className="navbar-toggler-icon"></span>
                                 </button>
-
                                 {windowWidth > 1023 && (
                                     <>
-                                        {/* <form className="d-flex mainSeachHeader">
-                                            <div className="input-group">
-                                                <input className="form-control me-2 searchInput" style={{ width: '550px' }} type="search" placeholder="Search" aria-label="Search" />
-                                                <div className="input-group-append">
-                                                    <span className="input-group-text"><i className="bi bi-search"></i></span>
-                                                </div>
-                                            </div>
-                                        </form> */}
-
-                                        <div className='headerProfileImg ' onClick={() => setShowLogoutCard(!showLogoutCard)} style={{ cursor: 'pointer' }}>
+                                        <div className='headerProfileImg' onClick={() => setShowLogoutCard(!showLogoutCard)} style={{ cursor: 'pointer' }}>
                                             {gender.toLowerCase() === 'female' && (
                                                 <img src="img/female2.png" alt="femaleProfile" />
                                             )}
@@ -89,24 +85,38 @@ export default function Header() {
                                                 <img src="img/maleRecep.png" alt="maleProfile" />
                                             )}
                                         </div>
+                                        <div className="row mt-3">
+                                            <div className="col">
+                                                <div ref={logoutRef} className='logoutCardContainer'>
+                                                    {showLogoutCard && (
+                                                        <div className="card mt-4 position-absolute translate-middle-x border-0" style={{ width: '130px', height: '80px' }}>
+                                                            <ul className="list-group list-group-flush">
+                                                                <li className='listHeader1'>
 
-                                        {showLogoutCard && (
-                                            <div className="logoutCardContainer">
-                                                <div className="card border-0 logoutCard">
-                                                    <i class="bi bi-box-arrow-right"></i>
-                                                    <div className="card-body logoutBtn">
-                                                        <button className="btn " onClick={handleLogout}>Logout</button>
-                                                    </div>
+                                                                    <Link
+                                                                        onClick={() => setMenu('doctorProfile')}
+                                                                        style={{ color: 'black' }}
+                                                                        className={`nav-link ${activeTab === 'doctorProfile' ? 'active' : ''}`}
+                                                                    >
+                                                                        <i className="bi bi-person headerIcon"  ></i>
+                                                                        Profile
+                                                                    </Link>
+                                                                </li>
+                                                                <li className='listHeader2 d-flex justify-content-between align-items-center'> {/* Added d-flex and justify-content-between classes */}
+                                                                    <button className="btn" onClick={handleLogout} style={{ width: '200px', fontSize: '14px', color: 'black' }}>
+                                                                        <i className="bi bi-box-arrow-left headerIcon"></i>Logout
+                                                                    </button>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
-                                        )}
+                                        </div>
                                     </>
                                 )}
                             </nav>
-
-
-                            <div class="collapse navbar-collapse main-menu-item justify-content-center"
-                                id="navbarSupportedContent">
+                            <div class="collapse navbar-collapse main-menu-item justify-content-center" id="navbarSupportedContent">
                                 <ul class="navbar-nav d-flex flex-column bd-highlight mb-3">
                                     <li class="nav-item ">
                                         <Link className="nav-link dashboardLink" to="/adminDashboard">Dashboard</Link>
@@ -131,8 +141,7 @@ export default function Header() {
                                             </li>
                                             <li className="nav-item sidebarNavLinks">
                                                 <Link
-
-                                                    className={`nav-link ${doctorListMenu === 'doctorList' ? 'active' : ''}`}
+                                                    className={`nav-link ${activeTab === 'doctorList' ? 'active' : ''}`}
                                                     onClick={() => setMenu('doctorList')}
                                                 >
                                                     Doctor
@@ -164,7 +173,6 @@ export default function Header() {
                     </div>
                 </div>
             </header>
-
         </>
     );
 }

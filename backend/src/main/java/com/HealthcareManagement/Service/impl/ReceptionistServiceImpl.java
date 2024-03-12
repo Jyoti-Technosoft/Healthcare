@@ -222,14 +222,18 @@ public class ReceptionistServiceImpl implements ReceptionistService {
             return ResponseEntity.badRequest().body("Patient with ID " + patientId + " does not exist.");
         }
 
+        Doctor doctor = doctorOptional.get();
+        // Fetch the doctor associated with the appointment
+        // Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+
         // Check if the patient has booked an appointment before
         boolean isFirstAppointment = appointmentRepository.countAppointmentsByPatientId(patientId) == 0;
 
-        // Calculate the date six months from the first appointment
+        // Calculate the date six months from the first appointment with the same doctor
         LocalDateTime sixMonthsAfterFirstAppointment = null;
         if (isFirstAppointment) {
-            // Get the first appointment date
-            Optional<Appointment> firstAppointment = appointmentRepository.findFirstByPatientIdOrderByAppointmentDateAsc(patientId);
+            // Get the first appointment date with the same doctor
+            Optional<Appointment> firstAppointment = appointmentRepository.findFirstByPatientIdAndDoctorIdOrderByAppointmentDateAsc(patientId, doctorId);
             if (firstAppointment.isPresent()) {
                 LocalDateTime firstAppointmentDateTime = LocalDateTime.parse(firstAppointment.get().getAppointmentDate());
                 // Calculate six months after the first appointment
@@ -237,57 +241,37 @@ public class ReceptionistServiceImpl implements ReceptionistService {
             }
         }
 
-        Doctor doctor = doctorOptional.get();
         String consultationCharge = "N/A";
-        String consultationChargeType="1";
-        if (isFirstAppointment) {
-            if (doctor.getConsultationCharge() != null) {
-                consultationCharge = doctor.getConsultationCharge();
-                System.out.println("Consultancy charge: " + consultationCharge);
-            } else {
-                consultationCharge = "N/A";
-            }
-        } else if (sixMonthsAfterFirstAppointment != null && LocalDateTime.now().isBefore(sixMonthsAfterFirstAppointment)) {
-            consultationCharge = "N/A"; // No charge within six months
-        } else {
-            Optional<Appointment> firstAppointment = appointmentRepository.findFirstByPatientIdOrderByAppointmentDateAsc(patientId);
-            if (firstAppointment.isPresent()) {
-                String appointmentDateString = firstAppointment.get().getAppointmentDate();
-                System.out.println("Appointment date string: " + appointmentDateString); // Add this line for debugging
-                LocalDate firstAppointmentDate = LocalDate.parse(appointmentDateString);
-                // Calculate six months after the first appointment
-                sixMonthsAfterFirstAppointment = firstAppointmentDate.plusMonths(6).atStartOfDay();
-            }
-
-            // Check if the appointment is after the six months of the last payable appointment
-            List<Appointment> payableAppointments = appointmentRepository.findAllPayableAppointmentsWithIntegerChargeByPatientId(patientId);
+        String consultationChargeType = "1";
+        if (isFirstAppointment || sixMonthsAfterFirstAppointment == null || LocalDateTime.now().isAfter(sixMonthsAfterFirstAppointment)) {
+            // Check if the appointment is after the six months of the last payable appointment with the same doctor
+            List<Appointment> payableAppointments = appointmentRepository.findAllPayableAppointmentsWithIntegerChargeByPatientIdAndDoctorId(patientId, doctorId);
             if (!payableAppointments.isEmpty()) {
                 Appointment lastPayableAppointment = payableAppointments.get(0);
                 LocalDate lastPayableAppointmentDate = LocalDate.parse(lastPayableAppointment.getAppointmentDate());
                 LocalDate sixMonthsAfterLastPayableAppointment = lastPayableAppointmentDate.plusMonths(6);
-                System.out.println("Last payable appointment date: " + lastPayableAppointmentDate);
-                System.out.println("Six months after last payable appointment: " + sixMonthsAfterLastPayableAppointment);
-                System.out.println("Current date time: " + LocalDate.now());
                 // Parse the appointment date string into a LocalDate
                 LocalDate appointmentDTODate = LocalDate.parse(appointDate);
                 if (appointmentDTODate.isAfter(sixMonthsAfterLastPayableAppointment) || appointmentDTODate.isEqual(sixMonthsAfterLastPayableAppointment)) {
                     // Full charge
                     consultationCharge = doctor.getConsultationCharge();
-                    System.out.println("Consultancy charge: " + consultationCharge);
                 } else {
                     // 50% charge
                     double fullCharge = Double.parseDouble(doctor.getConsultationCharge());
                     double halfCharge = fullCharge / 2;
                     consultationCharge = String.valueOf(halfCharge);
                     consultationChargeType = "0";
-                    System.out.println("Consultancy charge (50%): " + consultationCharge);
                 }
             } else {
                 consultationCharge = doctor.getConsultationCharge(); // Assuming this is the default charge when no previous payable appointments are found
             }
+        } else {
+            consultationCharge = "N/A"; // No charge within six months
         }
+
         return ResponseEntity.ok(consultationCharge);
     }
+
 
     @Override
     public List<Patient> getAllPatients() {

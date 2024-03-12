@@ -1,8 +1,6 @@
 package com.HealthcareManagement.Controller;
 
-import com.HealthcareManagement.Model.Doctor;
-import com.HealthcareManagement.Model.HealthReport;
-import com.HealthcareManagement.Model.UserDTO;
+import com.HealthcareManagement.Model.*;
 import com.HealthcareManagement.Repository.AppointmentRepository;
 import com.HealthcareManagement.Repository.DoctorRepository;
 import com.HealthcareManagement.Service.DoctorService;
@@ -12,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +76,41 @@ public class DoctorController {
         }
         return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
+
+    @GetMapping("/auth/new/allAppointments/{doctorId}")
+    @PreAuthorize("hasAuthority('Doctor')")
+    public ResponseEntity<List> getAllAppointments(@PathVariable Long doctorId) {
+        // Check if the doctor with the specified ID exists
+        Optional<Doctor> doctor = doctorRepository.findById(doctorId);
+
+        if (doctor.isEmpty()) {
+            String errorMessage = "Doctor with ID " + doctorId + " not found.";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonList(new Object[]{errorMessage}));
+        }
+
+        List appointments = appointmentRepository.findByDoctorId(doctorId);
+
+        // Check if appointments are not found
+        if (appointments.isEmpty()) {
+            // Return a ResponseEntity with a 204 No Content status and a custom message
+            String errorMessage = "No appointments found for the doctor with ID " + doctorId + ".";
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.singletonList(new Object[]{errorMessage}));
+        }
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+
+    @GetMapping("/auth/AppointmentWithoutHealthReport/{doctorId}")
+    @PreAuthorize("hasAuthority('Doctor')")
+    public ResponseEntity<List<Appointment>> getAppointmentsWithoutHealthReport(@PathVariable Long doctorId) {
+
+        List<Appointment> appointments = appointmentRepository.findAppointmentsWithoutHealthReport(doctorId);
+        if(appointments.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+
+
 
 
     @PostMapping("/auth/healthReport/{appointmentId}")

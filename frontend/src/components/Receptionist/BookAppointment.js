@@ -91,11 +91,12 @@ export default function BookAppointment() {
         setSelectedDoctor(doctorId);
         setDoctorSelected(true);
         // Find the selected doctor object
-        const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(doctorId)); // Parse doctorId to ensure it's a number
-        console.log(selectedDoc); // Log the selected doctor object for debugging
+        // console.log("Before: " +doctorId);
+        // const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(doctorId)); // Parse doctorId to ensure it's a number
+        // console.log("Selected"+ selectedDoc); // Log the selected doctor object for debugging
         // Set the consultation charge of the selected doctor
         try {
-            const response = await fetchConsultationChargeApi(clickedPatientId, selectedDoctor, selectedDate);
+            const response = await fetchConsultationChargeApi(clickedPatientId, doctorId, selectedDate,authToken);
             setConsultationCharge(response); // Update consultation charge state with the fetched value
         } catch (error) {
             console.error('Error fetching consultation charge:', error);
@@ -103,11 +104,11 @@ export default function BookAppointment() {
 
         try {
             // Fetch available slots for the selected doctor and selected date
-            const response = await getAvailableSlots(doctorId, selectedDate);
+            const response = await getAvailableSlots(doctorId, selectedDate, authToken);
             console.log('Available Slots Response:', response);
             setAvailableSlots(response); // Assuming the response is in the format { data: { timeSlot1: slotsCount1, timeSlot2: slotsCount2, ... } }
 
-            const response1 = await fetchConsultationChargeApi(clickedPatientId, selectedDoctor, selectedDate);
+            const response1 = await fetchConsultationChargeApi(clickedPatientId, doctorId, selectedDate,authToken);
             setConsultationCharge(response1); // Update consultation charge state with the fetched value
         } catch (error) {
             console.error('Error fetching:', error);
@@ -149,11 +150,11 @@ export default function BookAppointment() {
 
         try {
             // Fetch available slots for the selected doctor and newly selected date
-            const response = await getAvailableSlots(selectedDoctor, selectedDateUTC);
+            const response = await getAvailableSlots(selectedDoctor, selectedDateUTC, authToken);
             console.log('Available Slots Response:', response);
             setAvailableSlots(response); // Assuming the response is in the format { data: { timeSlot1: slotsCount1, timeSlot2: slotsCount2, ... } }
 
-            const response1 = await fetchConsultationChargeApi(clickedPatientId, selectedDoctor, selectedDateUTC);
+            const response1 = await fetchConsultationChargeApi(clickedPatientId, selectedDoctor, selectedDateUTC,authToken);
             setConsultationCharge(response1); // Update consultation charge state with the fetched value
         } catch (error) {
             console.error('Error fetching:', error);
@@ -186,6 +187,7 @@ export default function BookAppointment() {
             // Handle error
         }
     }
+    
     const convertTo12Hour = (time) => {
         const [hours, minutes] = time.split(':');
         let hour = parseInt(hours);
@@ -298,7 +300,7 @@ export default function BookAppointment() {
 
                                                         <label className='mt-4'><b className='contentHeadings ' style={{ fontWeight: 'bold', color: '#1977cc' }} >Appointments </b></label>
 
-                                                        <div onClick={handleSubmit} className="php-email-form" >
+                                                        <div  className="php-email-form" >
                                                             <div className="row">
                                                                 <div className="col-md-6 form-group mt-1">
                                                                     <select
@@ -473,7 +475,7 @@ export default function BookAppointment() {
                                                                         </div>
 
                                                                     </div>
-                                                                    <button className='text-center appointmentButton mt-3' type="submit">Make an Appointment</button>
+                                                                    <button onClick={handleSubmit} className='text-center appointmentButton mt-3' type="submit">Make an Appointment</button>
                                                                 </>
                                                             )}
 

@@ -13,18 +13,8 @@ import Cookies from 'js-cookie';
 import { getDoctorsWithIdApi, getUsersApi } from '../Api';
 import { useSelector, useDispatch } from 'react-redux';
 import Appointments from '../Doctor/Appointments';
-
+import Patients from '../Doctor/Patients';
 import {
-  setActiveDashboard,
-  setActiveRegisterUsers,
-  setActiveProfileSubMenu,
-  setActivePatientMenu,
-  setBookAppointmentMenu,
-  setPatientListMenu,
-  setDoctorListMenu,
-  setDoctorProfileMenu,
-  setDoctorAppointments,
-  setShowAppointmentsMenu,
   setActiveTab,
 } from '../../actions/submenuActions';
 import { faClipboardQuestion, faDisplay } from '@fortawesome/free-solid-svg-icons';
@@ -261,7 +251,7 @@ export default function Sidebar() {
                             <i className="bi bi-speedometer2 sidebarIcon"></i>Dashboard
                           </Link>
                         </li> */}
-                        <li className="nav-item sidebarNavLinks">
+                        {/* <li className="nav-item sidebarNavLinks">
                           <Link
 
                             className={`nav-link ${activeTab === 'doctorProfile' ? 'Active' : ''}`}
@@ -269,7 +259,7 @@ export default function Sidebar() {
                           >
                             <i class="bi bi-person-badge sidebarIcon"></i>Profile
                           </Link>
-                        </li>
+                        </li> */}
                         <li className="nav-item sidebarNavLinks">
                           <Link
 
@@ -277,6 +267,15 @@ export default function Sidebar() {
                             onClick={() => setMenu('doctorAppointments')}
                           >
                             <i class="bi bi-calendar-week sidebarIcon"></i>Appointments
+                          </Link>
+                        </li>
+
+                        <li className="nav-item sidebarNavLinks">
+                          <Link
+                            className={`nav-link ${activeTab === 'patientsWithAppointment' ? 'Active' : ''}`}
+                            onClick={() => setMenu('patientsWithAppointment')}
+                          >
+                            <i class="bi bi-people sidebarIcon"></i>Patients
                           </Link>
                         </li>
 
@@ -291,16 +290,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Conditionally render Dashboard only if it's the active menu item */}
-      {/* {activeDashboard === 'dashboard' && <Dashboard />}
-      {activeRegisterUsers === 'registerUsers' && <RegisterUsers />}
-      {activePatientMenu === 'registerPatient' && <RegisterPatient />}
-      {activeProfileSubMenu === 'receptionistProfile' && <ReceptionistProfile />}
-      {activeBookAppointmentMenu === 'bookAppointment' && <BookAppointment />}
-      {patientListMenu === 'patientsList' && <PatientList />}
-      {doctorListMenu === 'doctorList' && <DoctorList />}
-      {doctorProfileMenu === 'doctorProfile' && <DoctorProfile />}
-      {doctorAppointments === 'doctorAppointments' && <Appointments />}
-      {showAppointmentsMenu === 'showAppointments' && <ShowAppointments />} */}
+      
       {activeTab === 'dashboard' && <MainDashboard />}
       {activeTab === 'registerUsers' && <RegisterUsers />}
       {activeTab === 'registerPatient' && <RegisterPatient />}
@@ -310,7 +300,9 @@ export default function Sidebar() {
       {activeTab === 'doctorList' && <DoctorList />}
       {activeTab === 'doctorProfile' && <DoctorProfile />}
       {activeTab === 'doctorAppointments' && <Appointments />}
-      {activeTab === 'showAppointments' && <ShowAppointments />}
+      {activeTab === 'showAppointments' && <ShowAppointments />} 
+      {activeTab === 'patientsWithAppointment' && <Patients />} 
+
     </>
   );
 }

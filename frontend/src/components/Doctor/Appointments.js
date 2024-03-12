@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { getAllAppointmentsApi, getAllPatientsApi, getDoctorsWithIdApi } from '../Api';
+import { getAllAppointmentsApi, getAllPatientsApi, getDoctorsWithIdApi, getAppointmentWithoutHealthReport } from '../Api';
 import Cookies from 'js-cookie';
-import AppointmentModal from './ConsultancyModal';
+import ConsultancyModal from './ConsultancyModal';
 import {
     setActiveTab,
     setMiddleCompo,
-    setPreviousTab,
+    setResetPreviousTab,
 } from '../../actions/submenuActions';
 import { useSelector, useDispatch } from 'react-redux';
 import ConsultancyPage from './ConsultancyPage';
@@ -19,22 +19,16 @@ export default function Appointments() {
     const [selectedAppointment, setSelectedAppointment] = useState(null); // Added state to store selected appointment
     const userId = Cookies.get("userId");
     const authToken = Cookies.get("authToken");
+    const [prescriptions, setPrescriptions] = useState([]);
+    const [showCloseButton, setShowCloseButton] = useState(false);
 
     const [brandNames, setBrandNames] = useState([]);
     const [medications, setMedications] = useState([]);
     const [error, setError] = useState(null);
 
-    const activeTab = useSelector((state) => state.submenu.activeTab);
 
 
-    const middleCompo = useSelector((state) => state.submenu.middleCompo);
-    const dispatch = useDispatch();
 
-    const setMenu = (submenu) => {
-        if (activeTab === 'doctorAppointments') {
-            dispatch(setMiddleCompo(submenu));
-        }
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,8 +37,11 @@ export default function Appointments() {
                 const fetchedDoctorId = doctorInfo.id; // Store doctorId in a local variable
                 console.log("Doctor id: " + fetchedDoctorId);
 
-                const data = await getAllAppointmentsApi(fetchedDoctorId, authToken); // Use fetchedDoctorId directly
+                const data = await getAppointmentWithoutHealthReport(fetchedDoctorId, authToken); // Use fetchedDoctorId directly
+                const appointmentId = data.appointmentId;
                 setAppointments(data);
+
+
                 setFilteredAppointments(data);
                 setLoading(false);
             } catch (error) {
@@ -54,7 +51,7 @@ export default function Appointments() {
         };
 
         fetchData();
-    }, [userId, authToken, middleCompo]);
+    }, [userId, authToken]);
 
     useEffect(() => {
         const fetchBrandNames = async () => {
@@ -78,20 +75,38 @@ export default function Appointments() {
     }, []);
 
     const handleSearch = (e) => {
+        console.log("Search keyword:", e.target.value); // Check if the function is triggered
         const keyword = e.target.value.toLowerCase();
         const filteredData = appointments.filter((appointment) =>
-            appointment[1].toString().includes(keyword) || // Assuming ID is the first element
-            appointment[2].toLowerCase().includes(keyword) || // Patient name
-            appointment[3].toLowerCase().includes(keyword) || // Contact
-            appointment[10].toLowerCase().includes(keyword) || // Appointment Date
-            appointment[11].toLowerCase().includes(keyword)  // Appointment time
+            appointment.patient.id.toString().includes(keyword) || // Assuming ID is the first element
+            appointment.patient.name.toLowerCase().includes(keyword) || // Patient name
+            appointment.patient.contact.toLowerCase().includes(keyword) || // Contact
+            appointment.appointmentDate.toLowerCase().includes(keyword) || // Appointment Date
+            appointment.appointmentTime.toLowerCase().includes(keyword)  // Appointment time
         );
+        console.log("Filtered Appointments:", filteredData); // Check if filtered data is set correctly
         setFilteredAppointments(filteredData);
+
     };
 
-    const handleIconClick = (appointment) => {
+    const handleToggleModal = (appointment) => {
         setSelectedAppointment(appointment); // Set selected appointment
-        setMenu('consultancyPage'); // Update middleCompo state when icon is clicked
+        // Show the modal using Bootstrap's modal API
+        const modal = new window.bootstrap.Modal(document.getElementById('consultancyModal'));
+        modal.show();
+    };
+    const handleAddPrescription = () => {
+        const newPrescription = { medicineName: '', dosage: '', timing: '' };
+        setPrescriptions([...prescriptions, newPrescription]);
+    };
+
+    const handleRemovePrescription = (indexToRemove) => {
+        const updatedPrescriptions = prescriptions.filter((_, index) => index !== indexToRemove);
+        setPrescriptions(updatedPrescriptions);
+    };
+    const handleCloseButtonClick = () => {
+        setShowCloseButton(false);
+        setPrescriptions([]);
     };
 
     const columns = [
@@ -99,53 +114,53 @@ export default function Appointments() {
             name: '', selector: (row) => (
                 <div>
                     <i
-                        className={`bi bi-clipboard2-pulse reportIcon ${middleCompo === 'consultancyPage' ? 'active' : ''}`}
-                        onClick={() => handleIconClick(row)}
+                        className="bi bi-clipboard2-pulse reportIcon"
+                        onClick={() => handleToggleModal(row)}
                     ></i>
                 </div>
             ), sortable: true
         },
-        { name: 'Patient ID', selector: (row) => row[1], sortable: true, minWidth: '110px' },
-        { name: 'Patient name', selector: (row) => row[2], sortable: true, minWidth: '150px' },
-        { name: 'Contact', selector: (row) => row[3], sortable: true, minWidth: '150px' },
-        { name: 'Appointment Date', selector: (row) => row[10], sortable: true, minWidth: '160px' },
-        { name: 'Appointment time', selector: (row) => row[11], sortable: true, minWidth: '180px' },
-        { name: 'Consultancy charge', selector: (row) => row[12], sortable: true, minWidth: '200px' },
+        { name: 'Appointment ID', selector: (row) => row.id, sortable: true, minWidth: '110px' },
+        { name: 'Patient ID', selector: (row) => row.patient.id, sortable: true, minWidth: '110px' },
+        { name: 'Patient name', selector: (row) => row.patient.name, sortable: true, minWidth: '150px' },
+        // { name: 'Contact', selector: (row) => row.patient.contact, sortable: true, minWidth: '150px' },
+        { name: 'Appointment Date', selector: (row) => row.appointmentDate, sortable: true, minWidth: '160px' },
+        { name: 'Appointment time', selector: (row) => row.appointmentTime, sortable: true, minWidth: '180px' },
+        { name: 'Consultancy charge', selector: (row) => row.consultationCharge, sortable: true, minWidth: '200px' },
     ];
 
     return (
         <>
             <div>
-                {middleCompo !== 'consultancyPage' ? (
-                    <div className='background_part '>
-                        <div className="container patintListContainer">
-                            <div className="row flex-lg-nowrap">
-                                <div className="col">
-                                    <div className="row">
-                                        <div className="col mb-3">
-                                            <div className="card border-0 rounded">
-                                                <div className="card-body">
-                                                    <h6> {appointments.length} Appointments</h6>
-                                                    <hr />
-                                                    <div className="d-flex justify-content-between align-items-center mb-3">
-                                                        <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Appointments</b></h3>
-                                                        <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} />
-                                                    </div>
-                                                    <div>
-                                                        {loading ? (
-                                                            <p>Loading...</p>
-                                                        ) : (
-                                                            <>
-                                                                <DataTable
-                                                                    columns={columns}
-                                                                    data={appointments}
-                                                                    pagination
-                                                                    highlightOnHover
-                                                                    noDataComponent="No appointments found"
-                                                                />
-                                                            </>
-                                                        )}
-                                                    </div>
+
+                <div className='background_part '>
+                    <div className="container patintListContainer">
+                        <div className="row flex-lg-nowrap">
+                            <div className="col">
+                                <div className="row">
+                                    <div className="col mb-3">
+                                        <div className="card border-0 rounded">
+                                            <div className="card-body">
+                                                <h6> {appointments.length} Appointments</h6>
+                                                <hr />
+                                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                                    <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Appointments</b></h3>
+                                                    <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} />
+                                                </div>
+                                                <div>
+                                                    {loading ? (
+                                                        <p>Loading...</p>
+                                                    ) : (
+                                                        <>
+                                                            <DataTable
+                                                                columns={columns}
+                                                                data={filteredAppointments}
+                                                                pagination
+                                                                highlightOnHover
+                                                                noDataComponent="No appointments found"
+                                                            />
+                                                        </>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -154,9 +169,17 @@ export default function Appointments() {
                             </div>
                         </div>
                     </div>
-                ) : (
-                    <ConsultancyPage appointment={selectedAppointment} />
-                )}
+                </div>
+                <ConsultancyModal
+                    appointment={selectedAppointment}
+                    prescriptions={prescriptions}
+                    setPrescriptions={setPrescriptions}
+                    showCloseButton={showCloseButton}
+                    setShowCloseButton={setShowCloseButton}
+                    handleAddPrescription={handleAddPrescription}
+                    handleRemovePrescription={handleRemovePrescription}
+                    handleCloseButtonClick={handleCloseButtonClick}
+                />
             </div>
         </>
     )
