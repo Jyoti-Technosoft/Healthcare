@@ -86,3 +86,10 @@ export function calculateAge(dateOfBirth){
     }
     return age;
 }
+
+export function dateFormatter(dateString){
+    const date = new Date(dateString);
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const formattedDate = date.toLocaleDateString('en-GB', options);
+    return formattedDate.replace(/\b(\d{1})\b/g, '0$1st').replace(/\b(\d{2})\b/g, '$1th');
+}

@@ -110,7 +110,7 @@ h6 {
 /*--------------------------------------------------------------
 # Top Bar
 --------------------------------------------------------------*/
-#topbar {
+/* #topbar {
   background: #fff;
   height: 40px;
   font-size: 14px;
@@ -157,12 +157,12 @@ h6 {
 
 #topbar .social-links a:first-child {
   border-left: 0;
-}
+} */
 
 /*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
-#header {
+/* #header {
   background: #fff;
   transition: all 0.5s;
   z-index: 997;
@@ -192,7 +192,7 @@ h6 {
 
 #header .logo img {
   max-height: 40px;
-}
+} */
 
 /**
 * Appointment Button *
@@ -227,7 +227,7 @@ h6 {
 /**
 * Desktop Navigation 
 */
-.navbar {
+/* .navbar {
   padding: 0;
 }
 
@@ -267,17 +267,17 @@ h6 {
   font-size: 12px;
   line-height: 0;
   margin-left: 5px;
-}
+} */
 
-.navbar a:hover,
+/* .navbar a:hover,
 .navbar .active,
 .navbar .active:focus,
 .navbar li:hover>a {
   /* color: #1977cc;
-  border-color: #1977cc; */
-}
+  border-color: #1977cc; 
+} */
 
-.navbar .dropdown ul {
+/* .navbar .dropdown ul {
   display: block;
   position: absolute;
   left: 20px;
@@ -343,12 +343,12 @@ h6 {
   .navbar .dropdown .dropdown:hover>ul {
     left: -100%;
   }
-}
+} */
 
 /**
 * Mobile Navigation 
 */
-.mobile-nav-toggle {
+/* .mobile-nav-toggle {
   color: #2c4964;
   font-size: 28px;
   cursor: pointer;
@@ -457,12 +457,12 @@ h6 {
 
 .navbar-mobile .dropdown>.dropdown-active {
   display: block;
-}
+} */
 
 /*--------------------------------------------------------------
 # Hero Section
 --------------------------------------------------------------*/
-#hero {
+/* #hero {
   width: 100%;
   height: 90vh;
   background: url("../img/hero-bg.jpg") top center;
@@ -540,7 +540,7 @@ h6 {
   #hero {
     height: 110vh;
   }
-}
+} */
 
 /*--------------------------------------------------------------
 # Sections General
@@ -551,7 +551,7 @@ section {
 }
 
 .section-bg {
-  /* background-color: #f1f7fd; */
+  background-color: #f1f7fd;
 }
 
 .section-title {
@@ -597,7 +597,7 @@ section {
 /*--------------------------------------------------------------
 # Breadcrumbs
 --------------------------------------------------------------*/
-.breadcrumbs {
+/* .breadcrumbs {
   padding: 20px 0;
   background-color: #f1f7fd;
   min-height: 40px;
@@ -654,12 +654,12 @@ section {
   .breadcrumbs ol li {
     display: inline-block;
   }
-}
+} */
 
 /*--------------------------------------------------------------
 # Why Us
 --------------------------------------------------------------*/
-.why-us .content {
+/* .why-us .content {
   padding: 30px;
   background: #1977cc;
   border-radius: 4px;
@@ -718,12 +718,12 @@ section {
 .why-us .icon-boxes .icon-box p {
   font-size: 15px;
   color: #848484;
-}
+} */
 
 /*--------------------------------------------------------------
 # About
 --------------------------------------------------------------*/
-.about .icon-boxes h4 {
+/* .about .icon-boxes h4 {
   font-size: 18px;
   color: #4b7dab;
   margin-bottom: 15px;
@@ -871,12 +871,12 @@ section {
     transform: scale(1, 1);
     opacity: 0;
   }
-}
+} */
 
 /*--------------------------------------------------------------
 # Counts
 --------------------------------------------------------------*/
-.counts {
+/* .counts {
   background: #f1f7fd;
   padding: 70px 0 60px;
 }
@@ -917,12 +917,12 @@ section {
   margin: 0;
   font-family: "Raleway", sans-serif;
   font-size: 14px;
-}
+} */
 
 /*--------------------------------------------------------------
 # Services
 --------------------------------------------------------------*/
-.services .icon-box {
+/* .services .icon-box {
   text-align: center;
   border: 1px solid #d5e1ed;
   padding: 80px 20px;
@@ -1001,7 +1001,7 @@ section {
 .services .icon-box:hover h4 a,
 .services .icon-box:hover p {
   color: #fff;
-}
+} */
 
 /*--------------------------------------------------------------
 # Appointments
@@ -1106,7 +1106,7 @@ section {
 /*--------------------------------------------------------------
 # Departments
 --------------------------------------------------------------*/
-.departments {
+/* .departments {
   overflow: hidden;
 }
 
@@ -1161,7 +1161,7 @@ section {
     color: #fff;
     background: #1977cc;
   }
-}
+} */
 
 /*--------------------------------------------------------------
 # Doctors
@@ -1261,7 +1261,7 @@ section {
 /*--------------------------------------------------------------
 # Frequently Asked Questions
 --------------------------------------------------------------*/
-.faq .faq-list {
+/* .faq .faq-list {
   padding: 0 100px;
 }
 
@@ -1338,12 +1338,12 @@ section {
   .faq .faq-list {
     padding: 0;
   }
-}
+} */
 
 /*--------------------------------------------------------------
 # Testimonials
 --------------------------------------------------------------*/
-.testimonials .testimonial-wrap {
+/* .testimonials .testimonial-wrap {
   padding-left: 50px;
 }
 
@@ -1460,12 +1460,12 @@ section {
 
 .gallery .gallery-item:hover img {
   transform: scale(1.1);
-}
+} */
 
 /*--------------------------------------------------------------
 # Contact
 --------------------------------------------------------------*/
-.contact .info {
+/* .contact .info {
   width: 100%;
   background: #fff;
 }
@@ -1597,7 +1597,7 @@ section {
   100% {
     transform: rotate(360deg);
   }
-}
+} */
 
 /*--------------------------------------------------------------
 # Footer

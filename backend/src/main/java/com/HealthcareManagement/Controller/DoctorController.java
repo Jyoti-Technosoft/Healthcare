@@ -110,7 +110,11 @@ public class DoctorController {
         return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
-
+    @GetMapping("/auth/patients/{doctorId}")
+    @PreAuthorize("hasAuthority('Doctor')")
+    public List<Patient> getPatientsForDoctor(@PathVariable Long doctorId) {
+        return appointmentRepository.getPatientsForDoctor(doctorId);
+    }
 
 
     @PostMapping("/auth/healthReport/{appointmentId}")

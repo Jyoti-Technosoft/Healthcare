@@ -9,8 +9,8 @@ import {
     setResetPreviousTab,
 } from '../../actions/submenuActions';
 import { useSelector, useDispatch } from 'react-redux';
-import ConsultancyPage from './ConsultancyPage';
-
+import ConsultancyPage from './PatientDetailPage';
+import { dateFormatter } from '../Validations';
 export default function Appointments() {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -26,7 +26,9 @@ export default function Appointments() {
     const [medications, setMedications] = useState([]);
     const [error, setError] = useState(null);
 
-
+    function formatAppointmentDate(dateString) {
+        return dateFormatter(dateString);
+     }
 
 
 
@@ -74,7 +76,7 @@ export default function Appointments() {
         fetchBrandNames();
     }, []);
 
-    const handleSearch = (e) => {
+    const handleSearch = (e) => { 
         console.log("Search keyword:", e.target.value); // Check if the function is triggered
         const keyword = e.target.value.toLowerCase();
         const filteredData = appointments.filter((appointment) =>
@@ -120,13 +122,13 @@ export default function Appointments() {
                 </div>
             ), sortable: true
         },
-        { name: 'Appointment ID', selector: (row) => row.id, sortable: true, minWidth: '110px' },
+        { name: 'Index', selector: (row, index) => index + 1, sortable: true, maxWidth: '70px' },
+        { name: 'Appointment ID', selector: (row) => row.id, sortable: true, minWidth: '150px' },
         { name: 'Patient ID', selector: (row) => row.patient.id, sortable: true, minWidth: '110px' },
         { name: 'Patient name', selector: (row) => row.patient.name, sortable: true, minWidth: '150px' },
-        // { name: 'Contact', selector: (row) => row.patient.contact, sortable: true, minWidth: '150px' },
-        { name: 'Appointment Date', selector: (row) => row.appointmentDate, sortable: true, minWidth: '160px' },
+        { name: 'Appointment Date', selector: (row) => formatAppointmentDate(row.appointmentDate), sortable: true, minWidth: '160px' },
         { name: 'Appointment time', selector: (row) => row.appointmentTime, sortable: true, minWidth: '180px' },
-        { name: 'Consultancy charge', selector: (row) => row.consultationCharge, sortable: true, minWidth: '200px' },
+        { name: 'Consultancy charge', selector: (row) => row.consultationCharge, sortable: true, minWidth: '150px' },
     ];
 
     return (
@@ -142,7 +144,7 @@ export default function Appointments() {
                                         <div className="card border-0 rounded">
                                             <div className="card-body">
                                                 <h6> {appointments.length} Appointments</h6>
-                                                <hr />
+                                                <hr style={{color:'grey'}}/>
                                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                                     <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Appointments</b></h3>
                                                     <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} />

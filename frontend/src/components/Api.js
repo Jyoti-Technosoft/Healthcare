@@ -234,7 +234,7 @@ export async function bookAppointmentApi(doctorId,patientId,appointmentDate,appo
 
 export async function fetchConsultationChargeApi(patientId,doctorId,date,token){
     try{
-        const response = await axios.get(`http://localhost:8080/receptionist/auth/patientConsultationCharge`, {
+        const response = await axios.get(`http://localhost:8080/receptionist/auth/patientConsultationCharge`, { 
             params: {
                 patientId,
                 doctorId,
@@ -332,6 +332,32 @@ export async function submitConsultationReport(appointmentId,data,token) {
     try {
         
         const response = await axios.post(`http://localhost:8080/doctor/auth/healthReport/${appointmentId}`,data,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+export async function getPatientsListForDoctor(doctorId,token) {
+    try {
+        
+        const response = await axios.get(`http://localhost:8080/doctor/auth/patients/${doctorId}`,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+export async function getAllAppointmentsForPatient(patientId,token) {
+    try {
+        
+        const response = await axios.get(`http://localhost:8080/patient/auth/new/allAppointments/${patientId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },

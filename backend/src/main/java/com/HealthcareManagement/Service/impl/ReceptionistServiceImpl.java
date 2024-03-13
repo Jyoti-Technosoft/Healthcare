@@ -127,7 +127,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         LocalDateTime sixMonthsAfterFirstAppointment = null;
         if (isFirstAppointment) {
             // Get the first appointment date
-            Optional<Appointment> firstAppointment = appointmentRepository.findFirstByPatientIdOrderByAppointmentDateAsc(patientId);
+            Optional<Appointment> firstAppointment = appointmentRepository.findFirstByPatientIdAndDoctorIdOrderByAppointmentDateAsc(patientId,doctorId);
             if (firstAppointment.isPresent()) {
                 LocalDateTime firstAppointmentDateTime = LocalDateTime.parse(firstAppointment.get().getAppointmentDate());
                 // Calculate six months after the first appointment
@@ -147,7 +147,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         } else if (sixMonthsAfterFirstAppointment != null && LocalDateTime.now().isBefore(sixMonthsAfterFirstAppointment)) {
             consultationCharge = "N/A"; // No charge within six months
         } else {
-            Optional<Appointment> firstAppointment = appointmentRepository.findFirstByPatientIdOrderByAppointmentDateAsc(patientId);
+            Optional<Appointment> firstAppointment = appointmentRepository.findFirstByPatientIdAndDoctorIdOrderByAppointmentDateAsc(patientId,doctorId);
             if (firstAppointment.isPresent()) {
                 String appointmentDateString = firstAppointment.get().getAppointmentDate();
                 System.out.println("Appointment date string: " + appointmentDateString); // Add this line for debugging
@@ -157,7 +157,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
             }
 
             // Check if the appointment is after the six months of the last payable appointment
-            List<Appointment> lastPayableAppointmentDates = appointmentRepository.findAllPayableAppointmentsWithIntegerChargeByPatientId(patientId);
+            List<Appointment> lastPayableAppointmentDates = appointmentRepository.findAllPayableAppointmentsWithIntegerChargeByPatientIdAndDoctorId(patientId,doctorId);
             if (!lastPayableAppointmentDates.isEmpty()) {
                 Appointment lastPayableAppointment = lastPayableAppointmentDates.get(0);
                 LocalDate lastPayableAppointmentDate = LocalDate.parse(lastPayableAppointment.getAppointmentDate());
