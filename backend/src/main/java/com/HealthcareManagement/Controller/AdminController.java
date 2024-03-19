@@ -11,6 +11,8 @@ import com.HealthcareManagement.Service.impl.DoctorServiceImpl;
 import com.HealthcareManagement.Service.impl.JwtService;
 import com.HealthcareManagement.Service.impl.ReceptionistServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import jakarta.annotation.security.PermitAll;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import java.util.*;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST}, allowCredentials = "true")
 @RequestMapping("/admin")
+@Api(value = "Admin Controller", tags = "Admin Controller", description = "APIs for admin-related operations")
 public class AdminController {
 
     @Autowired
@@ -56,6 +59,7 @@ public class AdminController {
 
     @PostMapping(value="/auth/registerUsers")
     @PreAuthorize("hasAnyAuthority('Admin', 'Receptionist')")
+    @ApiOperation(value = "Register a new user", notes = "Registers a new user with the provided details.")
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<String> register(@RequestBody UserDTO userDTO){
         try{

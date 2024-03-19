@@ -21,12 +21,13 @@ import java.util.List;
 
 @Configuration
 @ComponentScan
+
 public class SpringFoxConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.HealthcareWithAuth.Healthcare.Controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.HealthcareManagement.Controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .securitySchemes(Collections.singletonList(apiKey()))

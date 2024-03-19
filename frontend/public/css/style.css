@@ -18,9 +18,13 @@
 
 
 /* Custom css start */
+/* .sideBar{
+  width: calc(100% - 100px);
+} */
+
 
 /* For big screens */
-@media (min-width:1023px) {
+@media (min-width:768px) and (max-width:2560px) {
 
   /* Example CSS for sidebar enhancements */
   .sidebarIcon {
@@ -30,9 +34,14 @@
 
   }
 
-  .dashboardCard {
-    margin-top: 130px;
+  .dashboard {
+
+    width: calc(100% - 100px);
+    position: absolute;
+    left: 80px !important;
+    padding-left: 150px;
   }
+
 
 
   .vertical-line {
@@ -73,6 +82,10 @@
 
   }
 
+  .logoutCardContainer {
+
+  }
+
   .headerProfileImg {
 
     height: 40px !important;
@@ -98,25 +111,20 @@
     position: absolute;
   }
 
-  .logoutCardContainer {
 
-
-    margin-left: 900px !important;
-
-  }
 
   .logoutBtn Link {
     margin-top: -85px;
   }
 
   .listHeader1 {
-    margin-top: -15px !important;
+
 
     margin-right: 20px !important;
   }
 
   .listHeader2 {
-    margin-right: 10px !important;
+    margin-right: 30px !important;
     font-size: 10px !important;
   }
 
@@ -214,7 +222,7 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: 250px;
+    width: 220px;
     /* Adjust the width as needed */
     background-color: #fff;
     z-index: 1000;
@@ -272,10 +280,11 @@
     margin-top: 135px;
   }
 
-  .patintListContainer {
-    width: 1200px !important;
-    margin-top: 150px;
-    margin-left: 330px !important;
+  .centerContainer{
+    width: calc(110% - 100px);
+    position: absolute;
+    left: -70px !important;
+    padding-left: 400px;
   }
 
   .btn-password-toggle {
@@ -453,7 +462,7 @@
     /* Optional: Adds rounded corners */
     padding: 20px !important;
     /* Optional: Adds padding inside the container */
-
+    height: 190px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
   }
 
@@ -588,27 +597,103 @@
     color: #1977cc;
     cursor: pointer;
   }
-  .reportEyeIcon{
+
+  .reportEyeIcon {
     font-size: 20px;
     margin-left: 15px;
-    
+    color: #C0C0C0;
     cursor: pointer;
   }
+
+  .prescription-list {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .prescription-item {
+    margin-top: 10px !important;
+  }
+
 
   .hVPalX {
     justify-content: start !important;
   }
 
+  .rdt_TableHeadRow {
+    background-color: aliceblue !important;
+  }
+
+  /* Apply background color to even rows */
+  .rdt_TableRow:nth-child(even) {
+    background-color: #F5F5F5;
+  }
+
+
 }
 
+/* @media (min-width:1030px) and (max-width:1440px) {
+  .centerContainer {
+    margin-top: 150px;
+    margin-left: 225px !important;
+  }
+  
+}
+@media (min-width:1024px) and (max-width:1070px) {
+  .dashboardCountContainer{
+    margin-right: 50px !important;
+  }
+  .dashboardCounterCard{
+    height: 170px !important;
+  }
+  .adminSidebar{
+    width: 180px !important;
+  }
+  .dashboardAppointmentContainer{
+    margin-left: 180px !important;
+  }
+  .centerContainer {    
+    width: 920px !important;
+    margin-left: 180px !important;
+  }
+  
+} */
 
 /* For small screens */
-@media (max-width: 1023px) {
+@media (max-width: 768px) {
+  .card {
+    border: 1px solid #ccc !important;
+    /* Border style */
+    border-radius: 5px !important;
+    /* Optional: Adds rounded corners */
+    padding: 20px !important;
+    /* Optional: Adds padding inside the container */
+    /* height: 150px !important; */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  
+
+  .todayAppointmentCard {
+    margin-top: 150px !important;
+  }
+  .todayAppointmentCard{
+    height: 650px !important;
+  }
+
+  .upcoming-appointments {
+    
+    height: 650px !important;
+  }
+
   .registrationBox {
     margin-top: 30px;
     border-radius: 15px;
     margin-bottom: 50px;
   }
+
+  /* .centerContainer {
+    margin-top: 100px !important;
+  } */
 
   .loginBox {
     margin-top: 30px;
@@ -644,7 +729,6 @@
   }
 
   .adminSidebar {
-    position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
@@ -844,9 +928,11 @@
     font-size: 14px !important;
   }
 
-  .upcoming-appointments {
-    margin-top: -190px !important;
+  .todayAppointmentCard {
+    margin-top: 30px !important;
   }
+
+  
 
 }
 
@@ -856,8 +942,8 @@
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
   /* Change the width of the scrollbar */
   border-radius: 20px !important;
 }

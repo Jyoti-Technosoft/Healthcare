@@ -207,7 +207,7 @@ export default function BookAppointment() {
                                 <div className="card border-0 mb-3 shadow  bg-white rounded">
                                     <div className="card-body">
                                         {/* <!-- ======= Appointment Section ======= --> */}
-                                        <section id="appointment" className="appointment "> 
+                                        <section id="appointment" className="appointment ">  
                                             <div className="container">
                                                 <i className="bi bi-arrow-left"
                                                     style={{ fontSize: '25px', cursor: 'pointer', color: 'silver', fontWeight:'bold', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s' }}

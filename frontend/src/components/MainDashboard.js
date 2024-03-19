@@ -6,7 +6,7 @@ export default function MainDashboard() {
     const userRole = Cookies.get('role');
     return ( 
         <div>
-            {userRole === 'Receptionist' && (
+            {userRole === 'Receptionist' && ( 
                 <ReceptionistDashboard/>
             )}
             {userRole === 'Doctor' && (

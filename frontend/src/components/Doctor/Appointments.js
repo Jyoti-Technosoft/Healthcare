@@ -28,9 +28,7 @@ export default function Appointments() {
 
     function formatAppointmentDate(dateString) {
         return dateFormatter(dateString);
-     }
-
-
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -132,13 +130,13 @@ export default function Appointments() {
     ];
 
     return (
-        <>
+        <> 
             <div>
 
-                <div className='background_part '>
-                    <div className="container patintListContainer">
+                <div className='centerContainer'>
+                    <div className="container">
                         <div className="row flex-lg-nowrap">
-                            <div className="col">
+                            <div className="col-md-11">
                                 <div className="row">
                                     <div className="col mb-3">
                                         <div className="card border-0 rounded">

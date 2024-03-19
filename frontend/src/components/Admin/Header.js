@@ -37,7 +37,19 @@ export default function Header() {
         fetchData();
     }, []);
 
+    // Inside your Header component
     useEffect(() => {
+        // Define a function to update window width
+        const updateWindowWidth = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        // Call the function once when the component mounts to set the initial window width
+        updateWindowWidth();
+
+        // Add event listener to update window width whenever the window is resized
+        window.addEventListener('resize', updateWindowWidth);
+
         // Function to close logout card when clicked outside
         function handleClickOutside(event) {
             if (logoutRef.current && !logoutRef.current.contains(event.target)) {
@@ -45,14 +57,16 @@ export default function Header() {
             }
         }
 
-        // Adding event listener
+        // Adding event listener to the document
         document.addEventListener("mousedown", handleClickOutside);
 
-        // Cleanup function
+        // Cleanup function to remove event listener when the component unmounts
         return () => {
+            window.removeEventListener('resize', updateWindowWidth);
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, []);
+    }, []); // Empty dependency array so it only runs on mount and unmount
+
 
     const handleLogout = () => {
         // Remove the cookie
@@ -77,42 +91,42 @@ export default function Header() {
                                 </button>
                                 {windowWidth > 1023 && (
                                     <>
-                                        <div className='headerProfileImg' onClick={() => setShowLogoutCard(!showLogoutCard)} style={{ cursor: 'pointer' }}>
+                                        <div className='headerProfileImg ' onClick={() => setShowLogoutCard(!showLogoutCard)} style={{ cursor: 'pointer' }}>
                                             {gender.toLowerCase() === 'female' && (
                                                 <img src="img/female2.png" alt="femaleProfile" />
                                             )}
                                             {gender.toLowerCase() !== 'female' && (
                                                 <img src="img/maleRecep.png" alt="maleProfile" />
                                             )}
-                                        </div>
-                                        <div className="row mt-3">
-                                            <div className="col">
-                                                <div ref={logoutRef} className='logoutCardContainer'>
-                                                    {showLogoutCard && (
-                                                        <div className="card mt-4 position-absolute translate-middle-x border-0" style={{ width: '130px', height: '80px' }}>
-                                                            <ul className="list-group list-group-flush">
-                                                                <li className='listHeader1'>
+                                            <div className="row translate-middle-x ">
+                                                <div className="col">
+                                                    <div ref={logoutRef} className='logoutCardContainer '>
+                                                        {showLogoutCard && (
+                                                            <div className="card mt-3 border-0" style={{ width: '140px', height: '80px', marginLeft: '-90px' }}>
 
-                                                                    <Link
-                                                                        onClick={() => setMenu('doctorProfile')}
-                                                                        style={{ color: 'black' }}
-                                                                        className={`nav-link ${activeTab === 'doctorProfile' ? 'active' : ''}`}
-                                                                    >
-                                                                        <i className="bi bi-person headerIcon"  ></i>
-                                                                        Profile
-                                                                    </Link>
-                                                                </li>
-                                                                <li className='listHeader2 d-flex justify-content-between align-items-center'> {/* Added d-flex and justify-content-between classes */}
-                                                                    <button className="btn" onClick={handleLogout} style={{ width: '200px', fontSize: '14px', color: 'black' }}>
-                                                                        <i className="bi bi-box-arrow-left headerIcon"></i>Logout
-                                                                    </button>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    )}
+                                                                <ul className="list-group list-group-flush" style={{marginTop:'-12px'}}>
+                                                                    <li className='listHeader1 d-flex justify-content-between align-items-center'>
+                                                                        <i className="bi bi-person "></i>
+                                                                        <button className={`btn ${activeTab === 'doctorProfile' ? 'active' : ''}`} onClick={() => setMenu('doctorProfile')} style={{ width: '100px', fontSize: '14px', color: 'black' }}>
+                                                                            Profile
+                                                                        </button>
+                                                                    </li>
+                                                                    <li className='listHeader1 d-flex justify-content-between align-items-center'>
+                                                                        <i className="bi bi-box-arrow-left "></i>
+                                                                        <button className="btn" onClick={handleLogout} style={{ width: '100px', fontSize: '14px', color: 'black' }}>
+                                                                            Logout
+                                                                        </button>
+                                                                    </li>
+                                                                </ul>
+
+
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                     </>
                                 )}
                             </nav>

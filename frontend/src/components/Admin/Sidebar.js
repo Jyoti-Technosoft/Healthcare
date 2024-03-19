@@ -9,6 +9,7 @@ import DoctorList from '../Receptionist/DoctorList';
 import DoctorProfile from '../Doctor/DoctorProfile';
 import ShowAppointments from '../Receptionist/ShowAppointments';
 import MainDashboard from '../MainDashboard';
+import Dashboard from '../Dashboard';
 import Cookies from 'js-cookie';
 import { getDoctorsWithIdApi, getUsersApi } from '../Api';
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,6 +20,35 @@ import {
 } from '../../actions/submenuActions';
 import { faClipboardQuestion, faDisplay } from '@fortawesome/free-solid-svg-icons';
 
+export function renderSidebarComponent(activeTab) {
+  switch (activeTab) {
+    case 'dashboard':
+      return <MainDashboard />;
+    case 'registerUsers':
+      return <RegisterUsers />;
+    case 'registerPatient':
+      return <RegisterPatient />;
+    case 'receptionistProfile':
+      return <ReceptionistProfile />;
+    case 'bookAppointment':
+      return <BookAppointment />;
+    case 'patientsList':
+      return <PatientList />;
+    case 'doctorList':
+      return <DoctorList />;
+    case 'doctorProfile':
+      return <DoctorProfile />;
+    case 'doctorAppointments':
+      return <Appointments />;
+    case 'showAppointments':
+      return <ShowAppointments />;
+    case 'patientsWithAppointment':
+      return <Patients />;
+    default:
+      return <MainDashboard />;
+  }
+}
+
 export default function Sidebar() {
   const userId = Cookies.get('userId');
   const userRole = Cookies.get('role');
@@ -26,34 +56,10 @@ export default function Sidebar() {
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const [doctorImage, setDoctorImage] = useState([]);
-  const activeDashboard = useSelector((state) => state.submenu.activeDashboard);
-  const activeRegisterUsers = useSelector((state) => state.submenu.activeRegisterUsers);
-  const activeProfileSubMenu = useSelector((state) => state.submenu.activeProfileSubMenu);
-  const activePatientMenu = useSelector((state) => state.submenu.activePatientMenu);
-  const activeBookAppointmentMenu = useSelector((state) => state.submenu.activeBookAppointmentMenu);
-  const patientListMenu = useSelector((state) => state.submenu.patientListMenu);
-  const doctorListMenu = useSelector((state) => state.submenu.doctorListMenu);
-  const doctorProfileMenu = useSelector((state) => state.submenu.doctorProfileMenu);
-  const doctorAppointments = useSelector((state) => state.submenu.doctorAppointments);
-  const showAppointmentsMenu = useSelector((state) => state.submenu.showAppointments);
-
-  // const toggleSubMenu = (submenu) => {
-  //   dispatch(setActiveDashboard(''));
-  //   dispatch(setActiveRegisterUsers(submenu));
-  //   dispatch(setActiveProfileSubMenu(submenu));
-  //   dispatch(setActivePatientMenu(submenu));
-  //   dispatch(setBookAppointmentMenu(submenu));
-  //   dispatch(setPatientListMenu(submenu));
-  //   dispatch(setDoctorListMenu(submenu));
-  //   dispatch(setDoctorProfileMenu(submenu));
-  //   dispatch(setDoctorAppointments(submenu));
-  //   dispatch(setShowAppointmentsMenu(submenu));
-  // };
-
+  const [designation, setDesignation] = useState([]);
   const activeTab = useSelector((state) => state.submenu.activeTab);
   const dispatch = useDispatch();
   const setMenu = (menu) => {
-    debugger
     if (activeTab !== menu) {
       dispatch(setActiveTab(menu));
     }
@@ -78,7 +84,7 @@ export default function Sidebar() {
         const userData = await getDoctorsWithIdApi(userId, authToken);
         setName(userData.name);
         setDoctorImage(userData.doctorImageData);
-
+        setDesignation(userData.designation);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -89,14 +95,15 @@ export default function Sidebar() {
     return `data:image/png;base64,${base64String}`;
   };
 
+  
+
   return (
     <>
-      <nav className="adminSidebar shadow-lg d-none d-md-block"> {/* Hide for screens smaller than 1023px */}
+      <nav className="adminSidebar shadow-lg d-none d-md-block">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
               <div className="d-flex sidebarHeading flex-column align-items-center">
-                {/* Render different image based on gender */}
                 {userRole === 'Receptionist' || userRole === 'admin' ? (
                   <div className='sidebarProfileImg'>
                     {gender.toLowerCase() === 'female' ? (
@@ -120,11 +127,15 @@ export default function Sidebar() {
 
                 <h5><b className='contentHeadings'>{name}</b></h5>
                 <h6 style={{ fontFamily: 'Poppins', fontWeight: 'normal', fontSize: '13px' }}>{userRole}</h6>
+                {userRole === 'Doctor' && (
+                  <>
+                    <h6 style={{ fontFamily: 'Poppins', fontWeight: 'normal', fontSize: '10px' }}>{designation}</h6>
+                  </>
+                )}
                 <hr className="w-100" style={{ color: 'grey' }} />
               </div>
 
-
-              <nav >
+              
                 <div>
                   <ul className="flex-column sidebarNav bd-highlight mb-3">
                     <li className="nav-item sidebarNavLinks">
@@ -165,11 +176,6 @@ export default function Sidebar() {
                             </Link>
                           </div>
                         </li>
-
-
-                        <li className="nav-item sidebarNavLinks">
-
-                        </li>
                       </>
                     )}
                     {userRole === 'Receptionist' && (
@@ -200,20 +206,6 @@ export default function Sidebar() {
                           >
                             <i className="bi bi-person-plus sidebarIcon"></i>Patient
                           </Link>
-                          {/* <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <Link
-                              className={`dropdown-item ${patientListMenu === 'patientsList' ? '' : ''}`}
-                              onClick={() => toggleSubMenu('patientsList')}
-                            >
-                              Patient List
-                            </Link>
-                            <Link
-                              className={`dropdown-item ${activePatientMenu === 'registerPatient' ? '' : ''}`}
-                              onClick={() => toggleSubMenu('registerPatient')}
-                            >
-                              Add Patient
-                            </Link>
-                          </div> */}
                         </li>
 
                         <li className="nav-item sidebarNavLinks">
@@ -223,46 +215,13 @@ export default function Sidebar() {
                           >
                             <i class="bi bi-calendar-week sidebarIcon"></i>Appointments
                           </Link>
-                          {/* <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <Link
-                              className={`dropdown-item ${activeBookAppointmentMenu === 'bookAppointment' ? '' : ''
-                                }`}
-                              onClick={() => toggleSubMenu('bookAppointment')}
-                            >
-                              Receptionist List
-                            </Link>
-                            <Link
-                              className={`dropdown-item ${activeBookAppointmentMenu === 'bookAppointment' ? '' : ''
-                                }`}
-                              onClick={() => toggleSubMenu('bookAppointment')}
-                            >
-                              Book Appointments
-                            </Link>
-                          </div> */}
                         </li>
                       </>
                     )}
                     {userRole === 'Doctor' && (
                       <>
-                        {/* <li className="nav-item sidebarNavLinks">
-                          <Link
-                            className={`nav-link ${activeDashboard === 'dashboard' ? 'Active' : ''}`}
-                            to="/dashboard">
-                            <i className="bi bi-speedometer2 sidebarIcon"></i>Dashboard
-                          </Link>
-                        </li> */}
-                        {/* <li className="nav-item sidebarNavLinks">
-                          <Link
-
-                            className={`nav-link ${activeTab === 'doctorProfile' ? 'Active' : ''}`}
-                            onClick={() => setMenu('doctorProfile')}
-                          >
-                            <i class="bi bi-person-badge sidebarIcon"></i>Profile
-                          </Link>
-                        </li> */}
                         <li className="nav-item sidebarNavLinks">
                           <Link
-
                             className={`nav-link ${activeTab === 'doctorAppointments' ? 'Active' : ''}`}
                             onClick={() => setMenu('doctorAppointments')}
                           >
@@ -278,31 +237,17 @@ export default function Sidebar() {
                             <i class="bi bi-people sidebarIcon"></i>Patients
                           </Link>
                         </li>
-
                       </>
                     )}
                   </ul>
                 </div>
-              </nav>
+              
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Conditionally render Dashboard only if it's the active menu item */}
       
-      {activeTab === 'dashboard' && <MainDashboard />}
-      {activeTab === 'registerUsers' && <RegisterUsers />}
-      {activeTab === 'registerPatient' && <RegisterPatient />}
-      {activeTab === 'receptionistProfile' && <ReceptionistProfile />}
-      {activeTab === 'bookAppointment' && <BookAppointment />}
-      {activeTab === 'patientsList' && <PatientList />}
-      {activeTab === 'doctorList' && <DoctorList />}
-      {activeTab === 'doctorProfile' && <DoctorProfile />}
-      {activeTab === 'doctorAppointments' && <Appointments />}
-      {activeTab === 'showAppointments' && <ShowAppointments />} 
-      {activeTab === 'patientsWithAppointment' && <Patients />} 
-
     </>
   );
 }

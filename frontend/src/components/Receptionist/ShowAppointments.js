@@ -76,7 +76,7 @@ export default function ShowAppointments() {
     return (
         <>
             <div className='background_part '> 
-                <div className="container patintListContainer">
+                <div className="container patintListContainer"> 
                     <div className="row flex-lg-nowrap">
                         <div className="col">
                             <div className="row">

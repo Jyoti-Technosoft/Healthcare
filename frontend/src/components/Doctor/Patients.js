@@ -6,18 +6,13 @@ import {
     setActiveTab,
 } from '../../actions/submenuActions';
 import Cookies from 'js-cookie';
-import ConsultancyPage from './PatientDetailPage';
+import PatientDetailPage from './PatientDetailPage';
 export default function Patients() {
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filteredPatients, setFilteredPatients] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState(null);
-
-    // const activeTab = useSelector((state) => state.submenu.activeTab);
     const [activeTab, setActiveTab] = useState(true);
-
-    const activePatientMenu = useSelector((state) => state.submenu.activePatientMenu);
-    const dispatch = useDispatch();
     const token = Cookies.get('authToken');
     const userId = Cookies.get('userId');
 
@@ -44,10 +39,8 @@ export default function Patients() {
     }, []);
 
     const handleSearch = (e) => {
-        console.log("Searching...");
         const keyword = e.target.value.toLowerCase();
         const filteredData = patients.filter((patient) =>
-            patient.id == keyword ||
             patient.id == keyword ||
             patient.name.toLowerCase().includes(keyword) ||
             patient.user.email.toLowerCase().includes(keyword) ||
@@ -69,12 +62,12 @@ export default function Patients() {
         <>
             {activeTab ? (
 
-                <div className='background_part '>
-                    <div className="container patintListContainer">
+                <div className='centerContainer '>
+                    <div className="container">
                         <div className="row flex-lg-nowrap">
                             <div className="col">
                                 <div className="row">
-                                    <div className="col mb-5">
+                                    <div className="col-md-11 mb-5">
                                         <div className="card border-0 rounded">
                                             <div className="card-body">
                                                 <>
@@ -101,7 +94,11 @@ export default function Patients() {
                                                                         cursor: 'pointer'
                                                                     }
                                                                 }
-                                                            }} />
+                                                            }}
+                                                                
+                                                            
+                                                        />
+                                                            
                                                     )}
                                                 </>
                                             </div>
@@ -113,7 +110,7 @@ export default function Patients() {
                     </div>
                 </div>
             ) : (
-                <ConsultancyPage patinet={selectedPatient} />
+                <PatientDetailPage patient={selectedPatient} />
             )}
         </>
     )

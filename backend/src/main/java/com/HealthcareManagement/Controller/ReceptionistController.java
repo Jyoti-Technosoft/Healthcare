@@ -3,6 +3,7 @@ package com.HealthcareManagement.Controller;
 import com.HealthcareManagement.Model.*;
 import com.HealthcareManagement.Repository.AppointmentRepository;
 import com.HealthcareManagement.Service.ReceptionistService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.*;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST}, allowCredentials = "true")
 @RequestMapping("/receptionist")
+@Api(value = "Receptionist Controller", tags = "Receptionist Controller", description = "APIs for Receptionist-related operations")
 public class ReceptionistController {
 
     @Autowired

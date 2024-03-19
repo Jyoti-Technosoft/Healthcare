@@ -4,6 +4,7 @@ import com.HealthcareManagement.Model.Doctor;
 import com.HealthcareManagement.Model.Patient;
 import com.HealthcareManagement.Repository.AppointmentRepository;
 import com.HealthcareManagement.Repository.PatientRepository;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.OPTIONS, RequestMethod.GET, RequestMethod.POST}, allowCredentials = "true")
 @RequestMapping("/patient")
+@Api(value = "Patient Controller", tags = "Patient Controller", description = "APIs for patient-related operations")
+
 public class PatientController {
 
     @Autowired
