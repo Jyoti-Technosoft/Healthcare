@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-public interface AdminService {
+public interface SuperAdminService {
     public ResponseEntity<String> registration(UserDTO userDTO);
 
     public ResponseEntity<?> registrationDoctor(UserDTO userDTO,MultipartFile file) throws IOException;
