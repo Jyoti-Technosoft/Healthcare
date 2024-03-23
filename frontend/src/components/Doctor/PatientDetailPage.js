@@ -70,61 +70,63 @@ const PatientDetailPage = ({ patient }) => {
   return (
     <>
       {activeTab === 1 ? (
-        <div className='background_part'>
-          <div className="container centerContainer">
+        <div className='background_part mt-3'>
+          <div className="container ">
             <div className="row flex-lg-nowrap">
               <div className="col">
                 <div className="row">
-                  <div className="col-md-11 mb-3">
-                    <div className="card border-0 rounded">
+                  <div className="col mb-3">
+                    <div className="card border-0 mb-3 shadow  bg-white rounded">
                       <div className="card-body">
-                        <i className="bi bi-arrow-left"
-                          style={{ fontSize: '25px', cursor: 'pointer', color: 'silver', fontWeight: 'bold', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s' }}
-                          onClick={setBackMenu}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = '#E5E4E2'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                        > </i>
-                        {patient && (
-                          <div className='mt-4'>
-                            <h5><b className='contentHeadings' style={{ color: 'black' }}>Patient Details</b></h5>
-                            <br />
-                            <div className="row">
-                              <div className="col-md-3">
-                                <ul>
-                                  <li><strong>Patient ID:</strong> <span style={{ fontSize: '14px' }}> {patient.id}</span></li>
-                                  <li><strong>Patient Name:</strong> <span style={{ fontSize: '14px' }}> {patient.name}</span></li>
-                                  <li><strong>Contact:</strong> <span style={{ fontSize: '14px' }}> {patient.contact}</span></li>
+                        <div className="">
+                          <i className="bi bi-arrow-left"
+                            style={{ fontSize: '25px', cursor: 'pointer', color: 'silver', fontWeight: 'bold', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s' }}
+                            onClick={setBackMenu}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = '#E5E4E2'}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                          > </i>
+                          {patient && (
+                            <div className='mt-4'>
+                              <h5><b className='contentHeadings' style={{ color: 'black' }}>Patient Details</b></h5>
+                              <br />
+                              <div className="row">
+                                <div className="col-md-3">
+                                  <ul>
+                                    <li><strong>Patient ID:</strong> <span style={{ fontSize: '14px' }}> {patient.id}</span></li>
+                                    <li><strong>Patient Name:</strong> <span style={{ fontSize: '14px' }}> {patient.name}</span></li>
+                                    <li><strong>Contact:</strong> <span style={{ fontSize: '14px' }}> {patient.contact}</span></li>
 
-                                </ul>
-                              </div>
-                              <div className="col-md-3">
-                                <ul>
-                                  <li><strong>Gender:</strong> <span style={{ fontSize: '14px' }}> {patient.gender}</span></li>
-                                  <li><strong>Date of Birth:</strong> <span style={{ fontSize: '14px' }}> {patient.dateOfBirth}</span></li>
-                                  <li><strong>Age:</strong> <span style={{ fontSize: '14px' }}> {patient.age}</span></li>
+                                  </ul>
+                                </div>
+                                <div className="col-md-3">
+                                  <ul>
+                                    <li><strong>Gender:</strong> <span style={{ fontSize: '14px' }}> {patient.gender}</span></li>
+                                    <li><strong>Date of Birth:</strong> <span style={{ fontSize: '14px' }}> {patient.dateOfBirth}</span></li>
+                                    <li><strong>Age:</strong> <span style={{ fontSize: '14px' }}> {patient.age}</span></li>
 
-                                </ul>
+                                  </ul>
+                                </div>
                               </div>
+
                             </div>
-
+                          )}
+                          <hr style={{ color: 'grey' }} />
+                          <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Appointments</b></h3>
+                            <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} />
                           </div>
-                        )}
-                        <hr style={{ color: 'grey' }} />
-                        <div className="d-flex justify-content-between align-items-center mb-3">
-                          <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Appointments</b></h3>
-                          <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} />
+                          {loading ? (
+                            <p>Loading...</p>
+                          ) : (
+                            <DataTable
+                              columns={columns}
+                              data={filteredAppointments}
+                              pagination
+                              highlightOnHover
+                              noDataComponent="No appointments found"
+                            />
+                          )}
                         </div>
-                        {loading ? (
-                          <p>Loading...</p>
-                        ) : (
-                          <DataTable
-                            columns={columns}
-                            data={filteredAppointments}
-                            pagination
-                            highlightOnHover
-                            noDataComponent="No appointments found"
-                          />
-                        )}
                       </div>
                     </div>
                   </div>

@@ -46,7 +46,7 @@ export default function Patients() {
             patient.user.email.toLowerCase().includes(keyword) ||
             patient.address.toLowerCase().includes(keyword)
         );
-        setFilteredPatients(filteredData);
+        setFilteredPatients(filteredData); 
     };
 
     const columns = [
@@ -62,45 +62,47 @@ export default function Patients() {
         <>
             {activeTab ? (
 
-                <div className='centerContainer '>
-                    <div className="container">
+                <div className='background_part mt-3'>
+                    <div className="container ">
                         <div className="row flex-lg-nowrap">
                             <div className="col">
                                 <div className="row">
-                                    <div className="col-md-11 mb-5">
-                                        <div className="card border-0 rounded">
+                                    <div className="col mb-3">
+                                        <div className="card border-0 mb-3 shadow  bg-white rounded"> 
                                             <div className="card-body">
-                                                <>
-                                                    <h6> {patients.length} Patients</h6>
-                                                    <hr style={{color:'grey'}}/>
-                                                    <div className="d-flex justify-content-between align-items-center mb-3">
-                                                        <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Patient List</b></h3>
-                                                        <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} />
-                                                    </div>
-                                                    {loading ? (
-                                                        <p>Loading...</p>
-                                                    ) : (
-                                                        <DataTable
-                                                            className="patients-table"
-                                                            columns={columns}
-                                                            data={filteredPatients}
-                                                            pagination
-                                                            highlightOnHover
-                                                            noDataComponent="No patients found"
-                                                            onRowClicked={handleRowClick}
-                                                            customStyles={{
-                                                                rows: {
-                                                                    style: {
-                                                                        cursor: 'pointer'
+                                                <div className="row">
+                                                    <>
+                                                        <h6> {patients.length} Patients</h6>
+                                                        <hr style={{ color: 'grey' }} />
+                                                        <div className="d-flex justify-content-between align-items-center mb-3">
+                                                            <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Patient List</b></h3>
+                                                            <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} />
+                                                        </div>
+                                                        {loading ? (
+                                                            <p>Loading...</p>
+                                                        ) : (
+                                                            <DataTable
+                                                                className="patients-table"
+                                                                columns={columns}
+                                                                data={filteredPatients}
+                                                                pagination
+                                                                highlightOnHover
+                                                                noDataComponent="No patients found"
+                                                                onRowClicked={handleRowClick}
+                                                                customStyles={{
+                                                                    rows: {
+                                                                        style: {
+                                                                            cursor: 'pointer'
+                                                                        }
                                                                     }
-                                                                }
-                                                            }}
-                                                                
-                                                            
-                                                        />
-                                                            
-                                                    )}
-                                                </>
+                                                                }}
+
+
+                                                            />
+
+                                                        )}
+                                                    </>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -109,6 +111,7 @@ export default function Patients() {
                         </div>
                     </div>
                 </div>
+
             ) : (
                 <PatientDetailPage patient={selectedPatient} />
             )}

@@ -38,13 +38,13 @@ const PatientHealthReport = ({ appointment, patient }) => {
             selector: (row) => (
                 <ul className="prescription-list">
                     {row.prescriptions.map(prescription => (
-                        <li key={prescription.id}  className="prescription-item">
+                        <li key={prescription.id} className="prescription-item">
                             <strong>{prescription.medicineName}</strong> - Dosage: {prescription.dosage}, Timing: {prescription.timing}
                         </li>
                     ))}
                 </ul>
             ),
-            
+
             minWidth: '400px'
         },
         { name: 'Note', selector: (row) => row.notes, sortable: true, minWidth: '200px' },
@@ -52,61 +52,63 @@ const PatientHealthReport = ({ appointment, patient }) => {
     return (
         <>
             {activeTab ? (
-                <div className='background_part'>
-                    <div className="container centerContainer">
+                <div className='background_part mt-3'>
+                    <div className="container ">
                         <div className="row flex-lg-nowrap">
                             <div className="col">
                                 <div className="row">
-                                    <div className="col-md-11 mb-3">
-                                        <div className="card border-0 rounded">
+                                    <div className="col mb-3">
+                                        <div className="card border-0 mb-3 shadow  bg-white rounded">
                                             <div className="card-body">
-                                                <i className="bi bi-arrow-left"
-                                                    style={{ fontSize: '25px', cursor: 'pointer', color: 'silver', fontWeight: 'bold', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s' }}
-                                                    onClick={setBackMenu}
-                                                    onMouseEnter={(e) => e.target.style.backgroundColor = '#E5E4E2'}
-                                                    onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                                                > </i>
-                                                {patient && (
-                                                    <div className='mt-4'>
-                                                        <h5><b className='contentHeadings' style={{ color: 'black' }}>Appointment Details</b></h5>
-                                                        <br />
-                                                        <div className="row">
-                                                            <div className="col-md-3">
-                                                                <ul>
-                                                                    <li><strong>Patient ID:</strong> <span style={{ fontSize: '14px' }}> {patient.id}</span></li>
-                                                                    <li><strong>Patient Name:</strong> <span style={{ fontSize: '14px' }}> {patient.name}</span></li>
-                                                                    <li><strong>Contact:</strong> <span style={{ fontSize: '14px' }}> {patient.contact}</span></li>
+                                                <div className="">
+                                                    <i className="bi bi-arrow-left"
+                                                        style={{ fontSize: '25px', cursor: 'pointer', color: 'silver', fontWeight: 'bold', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s' }}
+                                                        onClick={setBackMenu}
+                                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#E5E4E2'}
+                                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                                                    > </i>
+                                                    {patient && (
+                                                        <div className='mt-4'>
+                                                            <h5><b className='contentHeadings' style={{ color: 'black' }}>Appointment Details</b></h5>
+                                                            <br />
+                                                            <div className="row">
+                                                                <div className="col-md-3">
+                                                                    <ul>
+                                                                        <li><strong>Patient ID:</strong> <span style={{ fontSize: '14px' }}> {patient.id}</span></li>
+                                                                        <li><strong>Patient Name:</strong> <span style={{ fontSize: '14px' }}> {patient.name}</span></li>
+                                                                        <li><strong>Contact:</strong> <span style={{ fontSize: '14px' }}> {patient.contact}</span></li>
 
-                                                                </ul>
-                                                            </div>
-                                                            <div className="col-md-4">
-                                                                <ul>
-                                                                    <li><strong>Appointment date:</strong> <span style={{ fontSize: '14px' }}> {formatAppointmentDate(appointment.appointmentDate)}</span></li>
-                                                                    <li><strong>Appointment time:</strong> <span style={{ fontSize: '14px' }}> {appointment.appointmentTime}</span></li>
-                                                                    <li><strong>Consultancy charge:</strong> <span style={{ fontSize: '14px' }}> &nbsp;  ₹{appointment.consultationCharge}</span></li>
+                                                                    </ul>
+                                                                </div>
+                                                                <div className="col-md-4">
+                                                                    <ul>
+                                                                        <li><strong>Appointment date:</strong> <span style={{ fontSize: '14px' }}> {formatAppointmentDate(appointment.appointmentDate)}</span></li>
+                                                                        <li><strong>Appointment time:</strong> <span style={{ fontSize: '14px' }}> {appointment.appointmentTime}</span></li>
+                                                                        <li><strong>Consultancy charge:</strong> <span style={{ fontSize: '14px' }}> &nbsp;  ₹{appointment.consultationCharge}</span></li>
 
-                                                                </ul>
+                                                                    </ul>
+                                                                </div>
                                                             </div>
+
                                                         </div>
-
+                                                    )}
+                                                    <hr style={{ color: 'grey' }} />
+                                                    <div className="d-flex justify-content-between align-items-center mb-3">
+                                                        <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>HealthReport</b></h3>
+                                                        {/* <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} /> */}
                                                     </div>
-                                                )}
-                                                <hr style={{ color: 'grey' }} />
-                                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                                    <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>HealthReport</b></h3>
-                                                    {/* <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} /> */}
+                                                    {loading ? (
+                                                        <p>Loading...</p>
+                                                    ) : (
+                                                        <DataTable
+                                                            columns={columns}
+                                                            data={healthReport}
+                                                            pagination
+                                                            highlightOnHover
+                                                            noDataComponent="No health report found"
+                                                        />
+                                                    )}
                                                 </div>
-                                                {loading ? (
-                                                    <p>Loading...</p>
-                                                ) : (
-                                                    <DataTable
-                                                        columns={columns}
-                                                        data={healthReport}
-                                                        pagination
-                                                        highlightOnHover
-                                                        noDataComponent="No health report found"
-                                                    />
-                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -116,8 +118,8 @@ const PatientHealthReport = ({ appointment, patient }) => {
                     </div>
                 </div>
             ) : (
-                <PatientDetailPage 
-                    
+                <PatientDetailPage
+
                 />
             )}
         </>

@@ -17,7 +17,7 @@ function Login() {
   const userId=Cookies.get('userId');
 
   useEffect(() => {
-    const rememberedEmail = localStorage.getItem('rememberedEmail');
+    const rememberedEmail = localStorage.getItem('rememberedEmail'); 
     const rememberedPassword = localStorage.getItem('rememberedPassword');
     if (rememberedEmail && rememberedPassword) {
       setEmail(rememberedEmail);

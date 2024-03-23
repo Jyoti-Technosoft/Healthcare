@@ -1,3 +1,7 @@
+export function validateRequireId(id) { 
+    return id.trim() ? "" : "Id required";
+}
+
 export function validateRequireEmail(email) {
     return email.trim() ? "" : "Email is required";
 }
@@ -12,7 +16,7 @@ export function validatePatternEmail(email) {
 }
 
 export function validateRequirePassword(password) {
-    return password.trim() ? "" : "Password is required";
+    return password.trim() ? "" : "Password is required"; 
 }
 
 export function validatePatternPassword(password) {
@@ -42,9 +46,29 @@ export function validateRequireGender(gender) {
     }
     return "";
 }
+export function validateRequireTimeSlot(slot) {
+    if (!slot) {
+        return "Please select a time slot";
+    }
+    return "";
+}
 
 export function validateRequireAddress(address){
     return address.trim() ? "" : "Address is required";
+}
+
+export function validateRequireDepartment(department){
+    if(!department){
+        return "Please select department";
+    }
+    return "";
+}
+
+export function validateRequireDoctor(doctor){
+    if(!doctor){
+        return "Please select doctor";
+    }
+    return "";
 }
 
 export function validateRequireWorkingDays(days){
@@ -75,6 +99,26 @@ export function validateRequireWeight(weight) {
 }
 export function validateRequireHeight(height) {
     return height.trim() ? "" : "Height is required";
+}
+export function validateRequireQualification(qualification) {
+    return qualification.trim() ? "" : "Qualification is required";
+}
+export function validateRequireDesignation(designation) {
+    return designation.trim() ? "" : "Designation is required";
+}
+export function validateRequireSpeciality(speciality) {
+    return speciality.trim() ? "" : "Specialities is required";
+}
+
+
+export function validateRequireMorningTime(morningTime) {
+    return morningTime.trim() ? "" : "Morning Time is required";
+}
+export function validateRequireEveningTime(eveningTime) {
+    return eveningTime.trim() ? "" : "Evening Time is required";
+}
+export function validateRequireVisitingDays(visitingDays) {
+    return visitingDays.trim() ? "" : "Visiting Days is required";
 }
 export function calculateAge(dateOfBirth){
     const today = new Date();

@@ -72,7 +72,7 @@ export default function PatientList() {
 
 
     return (
-        <div className='background_part '>
+        <div className='background_part mt-3'> 
             <div className="container patintListContainer">
                 <div className="row flex-lg-nowrap">
                     <div className="col">
@@ -82,8 +82,8 @@ export default function PatientList() {
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col">
-                                                <div className="col-12 ">
-                                                    
+                                                <div className="col-12 d-flex justify-content-between align-items-center mb-3">
+                                                    <h6> {patients.length} Patients</h6>
                                                     <button type="submit" className={`btn btn-primary float-end ${activeTab === 'registerPatient' ? '' : ''}`} style={{ backgroundColor: '#1977cc' }} onClick={() => setMenu('registerPatient')}><i class="bi bi-plus" style={{ color: 'white' }}></i>Add</button>
                                                 </div>
                                             </div>

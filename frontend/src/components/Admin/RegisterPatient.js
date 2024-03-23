@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  
+
   setActiveTab,
 } from '../../actions/submenuActions';
 
@@ -28,18 +28,18 @@ export default function RegisterPatient() {
   const stepLabels = ["Register Patient"];
   const [passwordVisibility, setPasswordVisibility] = useState(true); // State to toggle password visibility
   const [confirmpasswordVisibility, setConfirmPasswordVisibility] = useState(true); // State to toggle password visibility
-  const roleCookie = Cookies.get('role'); 
+  const roleCookie = Cookies.get('role');
   const totalSteps = 1;
   const navigate = useNavigate();
-  
+
   const dispatch = useDispatch();
 
   const setMenu = (submenu) => {
-  
+
     if (submenu === 'patientsList') {
       // If the submenu is registerPatient, dispatch actions to reset the previous state to null
       dispatch(setActiveTab('patientsList'));
-    } 
+    }
   };
 
   const [emailError, setEmailError] = useState("");
@@ -55,7 +55,7 @@ export default function RegisterPatient() {
 
 
 
-  const handleGenderChange = (event) => { 
+  const handleGenderChange = (event) => {
     setGender(event.target.value);
   };
   const capitalizeName = (name) => {
@@ -168,17 +168,17 @@ export default function RegisterPatient() {
     setAddress("");
   }
   return (
-    <div className='background_part padding_top'>
-      <div className="container updateProfileContainer" style={{ fontSize: '14px' }}>
+    <div className='background_part mt-3'>
+      <div className="container ">
         <div className="row flex-lg-nowrap">
           <div className="col">
             <div className="row">
               <div className="col mb-3">
                 <div className="card border-0 mb-3 shadow  bg-white rounded">
                   <div className="card-body">
-                    <div className="col-12">
-                      <i className="bi bi-arrow-left" 
-                        style={{ fontSize: '25px', cursor: 'pointer', color: 'grey', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s' }}
+                    <div className="col ">
+                      <i className="bi bi-arrow-left"
+                        style={{ fontSize: '25px', cursor: 'pointer', color: 'grey', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s', marginLeft:'-22px' }}
                         onClick={() => setMenu('patientsList')}
                         onMouseEnter={(e) => e.target.style.backgroundColor = '#E5E4E2'}
                         onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
@@ -234,7 +234,7 @@ export default function RegisterPatient() {
                               }}
                             />
                             <button
-                              className="btn btn-password-toggle1"
+                              className="btn btn-password-toggle1 mt-2"
                               type="button"
                               onClick={togglePasswordVisibility}
                             >
@@ -258,7 +258,7 @@ export default function RegisterPatient() {
                               }}
                             />
                             <button
-                              className="btn btn-password-toggle1"
+                              className="btn btn-password-toggle1 mt-2"
                               type="button"
                               onClick={toggleConfirmPasswordVisibility}
                             >

@@ -13,7 +13,7 @@
 .regervation_part .btn_2 {
   background-image: -webkit-linear-gradient(to right, #fff, #fff, #fff);
   background-image: -o-linear-gradient(to right, #fff, #fff, #fff);
-  background-image: linear-gradient(to right, #fff, #fff, #fff);
+  background-image: linear-gradient(to right, #fff, #fff, #fff); 
 }
 
 
@@ -24,7 +24,7 @@
 
 
 /* For big screens */
-@media (min-width:768px) and (max-width:2560px) {
+@media (min-width:992px) and (max-width:2560px) {
 
   /* Example CSS for sidebar enhancements */
   .sidebarIcon {
@@ -42,6 +42,9 @@
     padding-left: 150px;
   }
 
+  .dashboardComponents {
+    margin-left: 220px;
+  }
 
 
   .vertical-line {
@@ -82,9 +85,7 @@
 
   }
 
-  .logoutCardContainer {
 
-  }
 
   .headerProfileImg {
 
@@ -122,6 +123,7 @@
 
     margin-right: 20px !important;
   }
+
 
   .listHeader2 {
     margin-right: 30px !important;
@@ -213,9 +215,20 @@
 
   }
 
-  /* Add this CSS to your stylesheet */
 
 
+  .card {
+    flex: 0 0 calc(24% - 20px);
+    /* Set the initial size of the cards */
+    box-sizing: border-box;
+    margin: 1rem 0;
+    padding: 20px !important;
+    /* Adjusted margin */
+
+    border: 1px solid #ccc !important;
+    border-radius: 5px !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+  }
 
   .adminSidebar {
     position: fixed;
@@ -280,7 +293,7 @@
     margin-top: 135px;
   }
 
-  .centerContainer{
+  .centerContainer {
     width: calc(110% - 100px);
     position: absolute;
     left: -70px !important;
@@ -352,6 +365,12 @@
   .paginationStyle {
     border: none !important;
     background-color: white !important;
+  }
+
+  .regervation_content {
+    border: 1px solid #ccc;
+    padding: 30px;
+    margin-bottom: 20px;
   }
 
 
@@ -455,20 +474,9 @@
     margin-right: 75px !important;
   }
 
-  .card {
-    border: 1px solid #ccc !important;
-    /* Border style */
-    border-radius: 5px !important;
-    /* Optional: Adds rounded corners */
-    padding: 20px !important;
-    /* Optional: Adds padding inside the container */
-    height: 190px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
-  }
 
-  .appointmentButton {
-    margin-top: -20px;
-  }
+
+  
 
   .suggestion-list {
     list-style-type: none;
@@ -558,9 +566,7 @@
   }
 
 
-  /* .banner_part{
-    overflow: hidden;
- } */
+
 
   /* Custom pagination styles */
   .custom-pagination {
@@ -589,6 +595,11 @@
     background-color: #1977cc;
     color: #fff;
     border-color: #1977cc;
+  }
+
+  .slotInput {
+    margin-left: -150px !important;
+    margin-top: -10px !important;
   }
 
   .reportIcon {
@@ -631,35 +642,8 @@
 
 }
 
-/* @media (min-width:1030px) and (max-width:1440px) {
-  .centerContainer {
-    margin-top: 150px;
-    margin-left: 225px !important;
-  }
-  
-}
-@media (min-width:1024px) and (max-width:1070px) {
-  .dashboardCountContainer{
-    margin-right: 50px !important;
-  }
-  .dashboardCounterCard{
-    height: 170px !important;
-  }
-  .adminSidebar{
-    width: 180px !important;
-  }
-  .dashboardAppointmentContainer{
-    margin-left: 180px !important;
-  }
-  .centerContainer {    
-    width: 920px !important;
-    margin-left: 180px !important;
-  }
-  
-} */
-
 /* For small screens */
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .card {
     border: 1px solid #ccc !important;
     /* Border style */
@@ -671,22 +655,20 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
   }
 
-  
+
+
 
   .todayAppointmentCard {
-    margin-top: 150px !important;
-  }
-  .todayAppointmentCard{
-    height: 650px !important;
+    height: 700px !important;
   }
 
   .upcoming-appointments {
-    
-    height: 650px !important;
+
+    height: 700px !important;
   }
 
   .registrationBox {
-    margin-top: 30px;
+    margin-top: 80px;
     border-radius: 15px;
     margin-bottom: 50px;
   }
@@ -696,7 +678,7 @@
   } */
 
   .loginBox {
-    margin-top: 30px;
+    margin-top: 50px;
     border-radius: 15px;
     margin-bottom: 50px;
   }
@@ -735,7 +717,11 @@
     height: 0px;
     /* Adjust the width as needed */
     background-color: #fff;
+    display: block !important;
+  }
 
+  .adminSidebarContainer {
+    display: none !important;
   }
 
   .sidebarDoctorProfileImg {
@@ -766,16 +752,26 @@
 
   .img-fluid {
     height: 50% !important;
+
   }
 
-  .member {
-
-    width: 270px !important;
+  .contact .read-more {
+    padding: 0;
+    width: 90px;
+    height: 35px;
+    font-size: 12px;
   }
 
   .member-info h4 {
-    font-size: 18px !important;
+    font-size: 13px !important;
   }
+
+  .doctors .member span {
+    font-size: 13px !important;
+  }
+
+  #footer .footer-newsletter form input[type=text] {}
+
 
   .img-fluid-modal {
     height: 150px !important;
@@ -792,7 +788,8 @@
   }
 
   .row-Page {
-    width: 108px !important;
+    font-size: 12px;
+    width: 120px !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -805,7 +802,7 @@
     justify-content: center !important;
     margin-top: 20px !important;
     /* Adjust margin top as needed */
-    margin-left: 5px !important;
+    margin-right: -35px !important;
   }
 
   .custom-pagination .page-item {
@@ -839,10 +836,89 @@
     max-height: 85vh !important;
   }
 
+  .appointment {
+    margin-top: -80px !important;
+    font-size: 12px !important;
+  }
+
+  .form-group>div {
+    /* Assuming the calendar component is a direct child of .form-group */
+    width: 100%;
+    /* Set the width to 100% for small screens */
+  }
+
+  .appointmentHeading {
+    font-size: 30px !important;
+    font-weight: bold;
+
+  }
+
+  .react-calendar {
+    border: none !important;
+    font-family: none;
+  }
+
+  .react-calendar__navigation button {
+    min-width: 0 !important;
+  }
+
   .bookAppointmentContainer {
     margin-top: 100px;
     overflow-y: auto;
     max-height: 85vh !important;
+  }
+
+  .suggestion-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 197px;
+    text-align: center;
+    border: none !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+
+  .suggestion-list li {
+    background-color: #fff;
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .suggestion-list li:hover {
+    background-color: #e9e9e9;
+  }
+
+  .suggestion-list li>div {
+    padding-left: 10px !important;
+    text-align: center !important;
+  }
+
+  .custom-tile-green {
+    color: green !important;
+    /* Apply green text color for available dates */
+  }
+
+  .custom-tile-red {
+    color: red !important;
+    /* Apply red text color for unavailable dates */
+  }
+
+
+
+  .custom-table th,
+  .custom-table td {
+    border: 1px solid #ddd;
+
   }
 
   .box-area {
@@ -928,11 +1004,9 @@
     font-size: 14px !important;
   }
 
-  .todayAppointmentCard {
-    margin-top: 30px !important;
-  }
 
-  
+
+
 
 }
 
@@ -984,6 +1058,65 @@
 
 
 
+.appointmentButton {
+  background: #1977cc;
+  border: 0;
+  padding: 10px 35px;
+  color: #fff;
+  transition: 0.4s;
+  border-radius: 50px;
+}
+.appointmentButton:hover{
+  background: #1c84e3;
+}
+#search {
+  color: #444444;
+  font-size: 14px;
+  /* background: #f1f7fd; */
+}
+
+#search .search-top {
+  padding: 0px 0 30px 0;
+  /* background: #fff; */
+  /* box-shadow: 0px 2px 15px rgba(25, 119, 204, 0.1); */
+}
+
+
+#search .search-section form {
+  margin-top: 30px;
+  background: #fff;
+  padding: 6px 10px;
+  position: relative;
+  border-radius: 50px;
+  text-align: left;
+  border: 1px solid #bfdcf7;
+  
+}
+
+#search .search-section form input[type=text] {
+  border: 0;
+  padding: 4px 8px;
+  width: 100%;
+}
+
+#search .search-section form input[type=submit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border: 0;
+  background: none;
+  font-size: 16px;
+  padding: 0 20px;
+  background: #1977cc;
+  color: #fff;
+  transition: 0.3s;
+  border-radius: 50px;
+}
+
+#search .search-section form input[type=submit]:hover {
+  background: #1c84e3;
+}
 
 
 /* Custom css end */
@@ -6677,7 +6810,7 @@ h6 {
 }
 
 /* line 19, ../../01 cl html template/03_jun 2019/182_medico_html/sass/_blog_part.scss */
-.blog_part .card1 {
+.blog_part {
   border: 0px solid transparent;
 }
 

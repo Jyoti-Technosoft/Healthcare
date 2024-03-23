@@ -7,11 +7,9 @@ import { FaTimes } from 'react-icons/fa'; // Import the close icon or any other 
 import Cookies from 'js-cookie';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-    setBookAppointmentMenu,
-    setShowAppointmentsMenu,
     setActiveTab,
 } from '../../actions/submenuActions';
-
+import { validateRequireName, validateRequireContact, validateRequireId, validateRequireDepartment, validateRequireDoctor, validateRequireTimeSlot } from '../Validations';
 export default function BookAppointment() {
     const [suggestions, setSuggestions] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -29,16 +27,23 @@ export default function BookAppointment() {
     const [doctorSelected, setDoctorSelected] = useState(false);
     const authToken = Cookies.get('authToken');
     const navigate = useNavigate();
-    const showAppointmentsMenu = useSelector((state) => state.submenu.showAppointments);
     const dispatch = useDispatch();
+    const [id, setId] = useState("");
+    const [name, setName] = useState("");
+    const [contact, setContact] = useState("");
 
+    const [idError, setIdError] = useState("");
+    const [nameError, setNameError] = useState("");
+    const [contactError, setContactError] = useState("");
+    const [departmentError, setDepartmentError] = useState("");
+    const [doctorError, setDoctorError] = useState("");
+    const [availableSlotsError, setAvailableSlotsError] = useState("");
+    
     const setMenu = (submenu) => {
-        
         if (submenu === 'showAppointments') {
             dispatch(setActiveTab('showAppointments'));
-        }
+        } 
     };
-
 
     const handleInputChange = async (event) => {
         const { value } = event.target;
@@ -85,18 +90,11 @@ export default function BookAppointment() {
         setCurrentStep(2); // Move to the next step after clicking on a suggestion
     };
 
-
-
     const handleDoctorSelect = async (doctorId) => {
         setSelectedDoctor(doctorId);
         setDoctorSelected(true);
-        // Find the selected doctor object
-        // console.log("Before: " +doctorId);
-        // const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(doctorId)); // Parse doctorId to ensure it's a number
-        // console.log("Selected"+ selectedDoc); // Log the selected doctor object for debugging
-        // Set the consultation charge of the selected doctor
         try {
-            const response = await fetchConsultationChargeApi(clickedPatientId, doctorId, selectedDate,authToken);
+            const response = await fetchConsultationChargeApi(clickedPatientId, doctorId, selectedDate, authToken);
             setConsultationCharge(response); // Update consultation charge state with the fetched value
         } catch (error) {
             console.error('Error fetching consultation charge:', error);
@@ -108,7 +106,7 @@ export default function BookAppointment() {
             console.log('Available Slots Response:', response);
             setAvailableSlots(response); // Assuming the response is in the format { data: { timeSlot1: slotsCount1, timeSlot2: slotsCount2, ... } }
 
-            const response1 = await fetchConsultationChargeApi(clickedPatientId, doctorId, selectedDate,authToken);
+            const response1 = await fetchConsultationChargeApi(clickedPatientId, doctorId, selectedDate, authToken);
             setConsultationCharge(response1); // Update consultation charge state with the fetched value
         } catch (error) {
             console.error('Error fetching:', error);
@@ -146,22 +144,58 @@ export default function BookAppointment() {
         const selectedDateUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())); // Convert to UTC
         setSelectedDate(selectedDateUTC);
 
-
-
         try {
             // Fetch available slots for the selected doctor and newly selected date
             const response = await getAvailableSlots(selectedDoctor, selectedDateUTC, authToken);
-            console.log('Available Slots Response:', response);
+            // console.log('Available Slots Response:', response);
             setAvailableSlots(response); // Assuming the response is in the format { data: { timeSlot1: slotsCount1, timeSlot2: slotsCount2, ... } }
 
-            const response1 = await fetchConsultationChargeApi(clickedPatientId, selectedDoctor, selectedDateUTC,authToken);
+            const response1 = await fetchConsultationChargeApi(clickedPatientId, selectedDoctor, selectedDateUTC, authToken);
             setConsultationCharge(response1); // Update consultation charge state with the fetched value
         } catch (error) {
             console.error('Error fetching:', error);
         }
     };
 
-    const handleSubmit = async () => {
+    const convertTo12Hour = (time) => {
+        const [hours, minutes] = time.split(':');
+        let hour = parseInt(hours);
+        const suffix = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12 || 12; // Convert 0 to 12
+        const formattedHour = hour.toString().padStart(2, '0'); // Add leading zero if single-digit hour
+        return `${formattedHour}:${minutes} ${suffix}`;
+    }
+
+    const handleSubmit = async (event) => {
+        setIdError("");
+        setNameError("");
+        setContactError("");
+        setDepartmentError("");
+        setDoctorError("");
+        setAvailableSlotsError("");       
+        event.preventDefault();
+
+        const idRequireValidation = validateRequireId(id);
+        const nameRequireValidation = validateRequireName(name);
+        const contactRequireValidation = validateRequireContact(contact);
+        const departmentRequireValidation = validateRequireDepartment(selectedDepartment);
+        const doctorRequireValidation = validateRequireDoctor(selectedDoctor);
+        const timeSlotsRequireValidation = validateRequireTimeSlot(availableSlots);        
+
+        // if (idRequireValidation && nameRequireValidation && contactRequireValidation) {
+        //     setIdError(idRequireValidation);
+        //     setNameError(nameRequireValidation);
+        //     setContactError(contactRequireValidation);
+        //     return;
+        // }
+        // if (departmentRequireValidation || doctorRequireValidation || timeSlotsRequireValidation ) {
+        //     setDepartmentError(departmentRequireValidation);
+        //     setDoctorError(doctorRequireValidation);
+        //     setAvailableSlotsError(timeSlotsRequireValidation);
+        //     console.log("Slot error: " +availableSlotsError)            
+        //     return;
+        // }
+
         try {
             // Ensure selectedTimeSlot is a string, not an event object
             const slot = selectedTimeSlot.target.value;
@@ -187,30 +221,20 @@ export default function BookAppointment() {
             // Handle error
         }
     }
-    
-    const convertTo12Hour = (time) => {
-        const [hours, minutes] = time.split(':');
-        let hour = parseInt(hours);
-        const suffix = hour >= 12 ? 'PM' : 'AM';
-        hour = hour % 12 || 12; // Convert 0 to 12
-        const formattedHour = hour.toString().padStart(2, '0'); // Add leading zero if single-digit hour
-        return `${formattedHour}:${minutes} ${suffix}`;
-    }
-
     return (
-        <div className='background_part'> 
-            <div className="container bookAppointmentContainer" style={{ fontSize: '14px' }}>
-                <div className="row ">
+        <div className='background_part mt-3'>
+            <div className="container ">
+                <div className="row flex-lg-nowrap">
                     <div className="col">
                         <div className="row">
                             <div className="col mb-3">
                                 <div className="card border-0 mb-3 shadow  bg-white rounded">
                                     <div className="card-body">
                                         {/* <!-- ======= Appointment Section ======= --> */}
-                                        <section id="appointment" className="appointment ">  
+                                        <section id="appointment" className="appointment">
                                             <div className="container">
                                                 <i className="bi bi-arrow-left"
-                                                    style={{ fontSize: '25px', cursor: 'pointer', color: 'silver', fontWeight:'bold', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s' }}
+                                                    style={{ fontSize: '25px', cursor: 'pointer', color: 'silver', fontWeight: 'bold', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s', marginLeft: '-10px' }}
                                                     onClick={() => setMenu('showAppointments')}
                                                     onMouseEnter={(e) => e.target.style.backgroundColor = '#E5E4E2'}
                                                     onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
@@ -220,10 +244,10 @@ export default function BookAppointment() {
                                                     <label className='contentHeadings appointmentHeading' style={{ color: 'black' }}>Make an Appointment</label>
                                                 </div>
 
-                                                <div id="footer" style={{ marginTop: '-105px' }}>
-                                                    <div class="footer-top">
+                                                <div id="search" style={{ marginTop: '-20px' }}>
+                                                    <div class="search-top">
                                                         <div>
-                                                            <div style={{ position: 'relative' }} className="col-lg-4 col-md-6 footer-newsletter">
+                                                            <div style={{ position: 'relative' }} className="col-lg-4 col-md-6 search-section">
                                                                 <form action="" method="post">
                                                                     <div style={{ position: 'relative' }}>
                                                                         <input
@@ -253,28 +277,23 @@ export default function BookAppointment() {
                                                     </div>
                                                 </div>
 
-
-
-                                                {/* Add more steps and conditions for rendering other sections */}
-                                                {/* For example: */}
-
                                                 <>
-                                                    <div className='regervation_content' style={{ border: '1px solid #ccc', padding: '30px', marginBottom: '20px' }}>
+                                                    <div className='regervation_content'>
                                                         {clickedPatient ? (
                                                             <fieldset className="regervation_content">
                                                                 <label className='mt-2'><b className='contentHeadings' style={{ fontWeight: 'bold', color: '#1977cc' }} > Patient Details </b></label>
                                                                 <div className="row">
                                                                     <div className="col-md-4 form-group mt-3">
                                                                         <label>Patient id:</label>
-                                                                        <input type="text" name="id" className="form-control input-field" value={clickedPatient.id} disabled id="name" placeholder="Patient id" />
+                                                                        <input type="text" name="id" className="form-control input-field" value={clickedPatient.id} disabled id="id" placeholder="Patient id" />
                                                                     </div>
                                                                     <div className="col-md-4 form-group mt-3">
                                                                         <label>Patient Name:</label>
-                                                                        <input type="text" name="id" className="form-control input-field" value={clickedPatient.name} disabled id="name" placeholder="Patient id" />
+                                                                        <input type="text" name="name" className="form-control input-field" value={clickedPatient.name} disabled id="name" placeholder="Patient id" />
                                                                     </div>
                                                                     <div className="col-md-4 form-group mt-3">
                                                                         <label>Patient contact:</label>
-                                                                        <input type="text" name="id" className="form-control input-field" value={clickedPatient.contact} disabled id="name" placeholder="Patient id" />
+                                                                        <input type="text" name="contact" className="form-control input-field" value={clickedPatient.contact} disabled id="contact" placeholder="Patient id" />
                                                                     </div>
                                                                 </div>
                                                             </fieldset>
@@ -284,15 +303,18 @@ export default function BookAppointment() {
                                                                 <div className="row">
                                                                     <div className="col-md-4 form-group mt-3">
                                                                         <label>Patient id:</label>
-                                                                        <input type="text" name="id" className="form-control input-field" value="" disabled id="name" placeholder="Patient id" />
+                                                                        <input type="text" name="id" className={`form-control input-field form-control-lg bg-light  ${idError && 'is-invalid'} `} value={id} disabled id="id" placeholder="Patient id" />
+                                                                        {idError && <div className="invalid-feedback">{idError}</div>}
                                                                     </div>
                                                                     <div className="col-md-4 form-group mt-3">
                                                                         <label>Patient Name:</label>
-                                                                        <input type="text" name="id" className="form-control input-field" value="" disabled id="name" placeholder="Patient name" />
+                                                                        <input type="text" name="name" className={`form-control input-field form-control-lg bg-light  ${nameError && 'is-invalid'} `} value={name} disabled id="name" placeholder="Patient name" />
+                                                                        {nameError && <div className="invalid-feedback">{nameError}</div>}
                                                                     </div>
                                                                     <div className="col-md-4 form-group mt-3">
                                                                         <label>Patient contact:</label>
-                                                                        <input type="text" name="id" className="form-control input-field" value="" disabled id="name" placeholder="Patient contact" />
+                                                                        <input type="text" name="contact" className={`form-control input-field form-control-lg bg-light  ${contactError && 'is-invalid'} `} value={contact} disabled id="contact" placeholder="Patient contact" />
+                                                                        {contactError && <div className="invalid-feedback">{contactError}</div>}
                                                                     </div>
                                                                 </div>
                                                             </fieldset>
@@ -300,12 +322,12 @@ export default function BookAppointment() {
 
                                                         <label className='mt-4'><b className='contentHeadings ' style={{ fontWeight: 'bold', color: '#1977cc' }} >Appointments </b></label>
 
-                                                        <div  className="php-email-form" >
+                                                        <div className="" >
                                                             <div className="row">
                                                                 <div className="col-md-6 form-group mt-1">
                                                                     <select
                                                                         value={selectedDepartment}
-                                                                        className="form-select input-field"
+                                                                        className={`form-select input-field form-control-lg bg-light  ${departmentError && 'is-invalid'} `}
                                                                         onChange={(e) => {
                                                                             setSelectedDepartment(e.target.value);
                                                                             // Clear the selected doctor when changing the department
@@ -322,18 +344,18 @@ export default function BookAppointment() {
                                                                             </option>
                                                                         ))}
                                                                     </select>
+                                                                    {departmentError && <div className="invalid-feedback">{departmentError}</div>}
                                                                 </div>
                                                                 <div className="col-md-6 form-group mt-1">
                                                                     <select
                                                                         value={selectedDoctor}
-                                                                        className="form-select input-field"
+                                                                        className={`form-select input-field form-control-lg bg-light  ${doctorError && 'is-invalid'} `}
                                                                         onChange={(e) => handleDoctorSelect(e.target.value)}
                                                                         required
                                                                     >
                                                                         <option value="" disabled>
                                                                             Select Doctor
                                                                         </option>
-                                                                        {/* Filter doctors based on the selected department */}
                                                                         {doctors
                                                                             .filter((doctor) => doctor.department === selectedDepartment)
                                                                             .map((doctor) => (
@@ -342,12 +364,13 @@ export default function BookAppointment() {
                                                                                 </option>
                                                                             ))}
                                                                     </select>
+                                                                    {doctorError && <div className="invalid-feedback">{doctorError}</div>}
                                                                 </div>
                                                             </div>
                                                             {doctorSelected && (
                                                                 <>
                                                                     <div className="row">
-                                                                        <div className="col-md-6 form-group mt-3">
+                                                                        <div className="col-md-6 form-group mt-3 ">
                                                                             <label className='form-label'>Appointment Date</label>
                                                                             <Calendar
                                                                                 onChange={handleDateSelect}
@@ -423,8 +446,6 @@ export default function BookAppointment() {
                                                                                 }}
 
                                                                             />
-
-
                                                                         </div>
 
                                                                         <div className="col-md-6 form-group mt-3">
@@ -441,14 +462,14 @@ export default function BookAppointment() {
                                                                                         <tr key={timeSlot}>
                                                                                             <td>{timeSlot}</td>
                                                                                             <td >
-                                                                                                <div className="form-check d-flex justify-content-center align-items-center">
+                                                                                                <div className="form-check d-flex  ml-3">
                                                                                                     <input
                                                                                                         type="radio"
                                                                                                         id={timeSlot}
                                                                                                         name="availableSlots"
                                                                                                         value={timeSlot}
-                                                                                                        className="form-check-input"
-                                                                                                        style={{ marginRight: '125px' }}
+
+                                                                                                        className={`form-check-input justify-content-start ${availableSlotsError && 'is-invalid'} `}
                                                                                                         onChange={handleTimeSlotSelect}
                                                                                                     />
                                                                                                     <label htmlFor={timeSlot} >{`${slotsCount} slots available`}</label>
@@ -458,6 +479,8 @@ export default function BookAppointment() {
                                                                                     ))}
                                                                                 </tbody>
                                                                             </table>
+                                                                            {availableSlotsError && <div className="invalid-feedback">{availableSlotsError}</div>}
+
                                                                         </div>
 
                                                                         <div className="col-md-6 form-group mt-3" style={{ display: 'inline-block' }}>
@@ -466,6 +489,7 @@ export default function BookAppointment() {
                                                                                 type="text"
                                                                                 name="charge"
                                                                                 className="form-control input-field"
+                                                                                
                                                                                 id="charge"
                                                                                 placeholder="Consultancy charge"
                                                                                 value={consultationCharge}
@@ -473,21 +497,19 @@ export default function BookAppointment() {
                                                                             />
                                                                             <div className="validate"></div>
                                                                         </div>
+                                                                        <div className="col-md-6 form-group mt-4 text-center" style={{ display: 'inline-block' }}>
+                                                                            <button onClick={handleSubmit} className='text-center appointmentButton mt-3' type="submit">Make an Appointment</button>
+                                                                        </div>
 
                                                                     </div>
-                                                                    <button onClick={handleSubmit} className='text-center appointmentButton mt-3' type="submit">Make an Appointment</button>
                                                                 </>
                                                             )}
 
                                                         </div>
                                                     </div>
-                                                    {/* <button className="btn btn-secondary mt-3 previousButton" onClick={handlePreviousButtonClick}>Previous</button> */}
                                                 </>
-
-                                                {/* Render the "Previous" button if not on the first step */}
                                             </div>
                                         </section>
-                                        {/* <!-- End Appointment Section --> */}
                                     </div>
                                 </div>
                             </div>

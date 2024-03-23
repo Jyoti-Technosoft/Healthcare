@@ -44,14 +44,14 @@ public class SecurityConfig implements WebMvcConfigurer {
         http.csrf().disable()
                 .cors().and()
                         .authorizeHttpRequests(requests -> requests
-                                .requestMatchers("/admin/loginAdmin").permitAll()
-                                .requestMatchers("/admin/getUser/**").permitAll()
-                                .requestMatchers("/admin/getDoctors").permitAll()
+                                .requestMatchers("/superAdmin/loginAdmin").permitAll()
+                                .requestMatchers("/superAdmin/getUser/**").permitAll()
+                                .requestMatchers("/superAdmin/getDoctors").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll() // Allow all access to /swagger-ui/**
                                 .requestMatchers("/v2/api-docs/**", "/swagger-ui.html", "/swagger-resources/**").permitAll() // Additional paths for Swagger
-                                .requestMatchers("/admin/getAllDoctorsWithImages").permitAll()
-                                .requestMatchers("/admin/auth/registerUsers").authenticated()
-                                .requestMatchers("/admin/auth/registerPatient").authenticated()
+                                .requestMatchers("/superAdmin/getAllDoctorsWithImages").permitAll()
+                                .requestMatchers("/superAdmin/auth/registerUsers").authenticated()
+                                .requestMatchers("/superAdmin/auth/registerPatient").authenticated()
                                 .requestMatchers("/doctor/auth/**").authenticated()
                                 .requestMatchers("/receptionist/auth/updateReceptionistProfile").authenticated()
 

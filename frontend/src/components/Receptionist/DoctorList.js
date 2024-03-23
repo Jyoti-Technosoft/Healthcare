@@ -93,117 +93,119 @@ export default function DoctorList() {
 
   return (
     <>
-      <section id="doctors" className="doctors">
-        <div className="container mt-5 bookAppointmentContainer" style={{ fontSize: '14px' }}>
-          <div className="row ">
+      <div className='background_part mt-3 doctors'>
+        <div className="container ">
+          <div className="row flex-lg-nowrap">
             <div className="col">
               <div className="row">
                 <div className="col mb-3">
-                  <div className="card mt-5 border-0 rounded">
+                  <div className="card border-0 mb-3 shadow  bg-white rounded">
                     <div className="card-body">
-                      <h6> {doctors.length} Doctors</h6>
-                      <hr />
-                      <div className="d-flex justify-content-between align-items-center mb-3">
-                        <input type="text" className='form-control input-field searchDoctor' placeholder="Search..." onChange={handleSearch} />
-                        <div className="btn-group border rounded " role="group">
-                          <button
-                            className={`btn btn-link border-0 ${activeIcon === false ? 'activeIcon' : ''}`}
-                            onClick={() => handleIconClick(false)}
-                          >
-                            <i className="bi bi-list-task"></i>
-                          </button>
-                          <div className="vertical-line "></div>
-                          <button
-                            className={`btn btn-link border-0 ${activeIcon === true ? 'activeIcon' : ''}`}
-                            onClick={() => handleIconClick(true)}
-                          >
-                            <i className="bi bi-grid-1x2"></i>
-                          </button>
+                      <div className="">
+                        <h6> {doctors.length} Doctors</h6>
+                        <hr />
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                          <input type="text" className='form-control input-field searchDoctor' placeholder="Search..." onChange={handleSearch} />
+                          <div className="btn-group border rounded " role="group">
+                            <button
+                              className={`btn btn-link border-0 ${activeIcon === false ? 'activeIcon' : ''}`}
+                              onClick={() => handleIconClick(false)}
+                            >
+                              <i className="bi bi-list-task"></i>
+                            </button>
+                            <div className="vertical-line "></div>
+                            <button
+                              className={`btn btn-link border-0 ${activeIcon === true ? 'activeIcon' : ''}`}
+                              onClick={() => handleIconClick(true)}
+                            >
+                              <i className="bi bi-grid-1x2"></i>
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                      {isGridView ? (
-                        <>
-                          <div className="row">
-                            {currentDoctors.map((doctor, index) => (
-                              <div className="col-lg-4 mt-4" key={index}>
-                                <div className="member d-flex align-items-start" style={{ height: "200px" }}>
-                                  <img
-                                    src={decodeBase64Image(doctor.doctorImageData)}
-                                    className="img-fluid"
-                                    alt={doctor.name}
-                                    style={{ objectFit: "cover", height: "80%" }}
-                                  />
-                                  <div className="member-info" style={{ flex: 1 }}>
-                                    <h4>{doctor.name}</h4>
-                                    <span className="specialties-label">Specialties: {doctor.specialities}</span>
-                                    {/* <p className="specialties-label">Designation: {doctor.designation}</p> */}
-                                    <div ><button onClick={() => handleReadMoreClick(doctor)} className='text-center ReadMoreButton mt-3'>Read more</button></div>
+                        {isGridView ? (
+                          <>
+                            <div className="row contact">
+                              {currentDoctors.map((doctor, index) => (
+                                <div className="col-lg-6 mt-4" key={index}>
+                                  <div className="member d-flex align-items-start" style={{ height: "200px" }}>
+                                    <img
+                                      src={decodeBase64Image(doctor.doctorImageData)}
+                                      className="img-fluid"
+                                      alt={doctor.name}
+                                      style={{ objectFit: "cover", height: "80%" }}
+                                    /> 
+                                    <div className="member-info" style={{ flex: 1 }}>
+                                      <h4>{doctor.name}</h4>
+                                      <span className="specialties-label">Specialties: {doctor.specialities}</span>
+                                      {/* <p className="specialties-label">Designation: {doctor.designation}</p> */}
+                                      <div className=''><button onClick={() => handleReadMoreClick(doctor)} className='read-more  mt-3'>Read more</button></div>
+
+                                    </div>
 
                                   </div>
-
-                                </div>
+                                </div> 
+                              ))}
+                            </div>
+                            <hr />
+                            <div className="mt-4 d-flex justify-content-between align-items-center">
+                              <div className="d-flex align-items-center">
+                                <span className="me-2">Rows per page: </span>
+                                <select className="form-select rowPerPage input-field" value={rowsPerPage} onChange={(e) => setRowsPerPage(parseInt(e.target.value))}>
+                                  <option value="10">10</option>
+                                  <option value="20">20</option>
+                                  <option value="30">30</option>
+                                </select>
                               </div>
-                            ))}
-                          </div>
-                          <hr/>
-                          <div className="mt-4 d-flex justify-content-between align-items-center">
-                            <div className="d-flex align-items-center">
-                              <span className="me-2">Rows per page: </span>
-                              <select className="form-select rowPerPage input-field" value={rowsPerPage} onChange={(e) => setRowsPerPage(parseInt(e.target.value))}>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="30">30</option>
-                              </select>
+                              <Pagination className="custom-pagination">
+                                <Pagination.First onClick={() => handlePageChange(1)} />
+                                <Pagination.Prev onClick={() => handlePageChange(page - 1)} disabled={page === 1} />
+                                {Array.from({ length: totalPages }, (_, i) => (
+                                  <Pagination.Item key={i + 1} active={i + 1 === page} onClick={() => handlePageChange(i + 1)}>
+                                    {i + 1}
+                                  </Pagination.Item>
+                                ))}
+                                <Pagination.Next onClick={() => handlePageChange(page + 1)} disabled={page === totalPages} />
+                                <Pagination.Last onClick={() => handlePageChange(totalPages)} />
+                              </Pagination>
                             </div>
-                            <Pagination className="custom-pagination">
-                              <Pagination.First onClick={() => handlePageChange(1)} />
-                              <Pagination.Prev onClick={() => handlePageChange(page - 1)} disabled={page === 1} />
-                              {Array.from({ length: totalPages }, (_, i) => (
-                                <Pagination.Item key={i + 1} active={i + 1 === page} onClick={() => handlePageChange(i + 1)}>
-                                  {i + 1}
-                                </Pagination.Item>
-                              ))}
-                              <Pagination.Next onClick={() => handlePageChange(page + 1)} disabled={page === totalPages} />
-                              <Pagination.Last onClick={() => handlePageChange(totalPages)} />
-                            </Pagination>
-                          </div>
 
-                        </>
-                      ) : (
-                        <>
-                          <DataTable
-                            columns={columns}
-                            data={filteredDoctors}
-                            keyField="id" // Assuming each doctor object has a unique "id" field
+                          </>
+                        ) : (
+                          <>
+                            <DataTable
+                              columns={columns}
+                              data={filteredDoctors}
+                              keyField="id" // Assuming each doctor object has a unique "id" field
 
-                            highlightOnHover
-                            noHeader // Hide table header
-                            className="border"
-                          />
-                          <hr/>
-                          <div className="mt-4 d-flex justify-content-between align-items-center">
-                            <div className="d-flex align-items-center row-Page">
-                              <span className="me-2">Rows per page: </span>
-                              <select className="form-select rowPerPage input-field" value={rowsPerPage} onChange={(e) => setRowsPerPage(parseInt(e.target.value))}>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="30">30</option>
-                              </select>
+                              highlightOnHover
+                              noHeader // Hide table header
+                              className="border"
+                            />
+                            <hr />
+                            <div className="mt-4 d-flex justify-content-between align-items-center">
+                              <div className="d-flex align-items-center row-Page">
+                                <span className="me-2">Rows per page: </span>
+                                <select className="form-select rowPerPage input-field" value={rowsPerPage} onChange={(e) => setRowsPerPage(parseInt(e.target.value))}>
+                                  <option value="10">10</option>
+                                  <option value="20">20</option>
+                                  <option value="30">30</option>
+                                </select>
+                              </div>
+                              <Pagination className="custom-pagination">
+                                <Pagination.First onClick={() => handlePageChange(1)} />
+                                <Pagination.Prev onClick={() => handlePageChange(page - 1)} disabled={page === 1} />
+                                {Array.from({ length: totalPages }, (_, i) => (
+                                  <Pagination.Item key={i + 1} active={i + 1 === page} onClick={() => handlePageChange(i + 1)}>
+                                    {i + 1}
+                                  </Pagination.Item>
+                                ))}
+                                <Pagination.Next onClick={() => handlePageChange(page + 1)} disabled={page === totalPages} />
+                                <Pagination.Last onClick={() => handlePageChange(totalPages)} />
+                              </Pagination>
                             </div>
-                            <Pagination className="custom-pagination">
-                              <Pagination.First onClick={() => handlePageChange(1)} />
-                              <Pagination.Prev onClick={() => handlePageChange(page - 1)} disabled={page === 1} />
-                              {Array.from({ length: totalPages }, (_, i) => (
-                                <Pagination.Item key={i + 1} active={i + 1 === page} onClick={() => handlePageChange(i + 1)}>
-                                  {i + 1}
-                                </Pagination.Item>
-                              ))}
-                              <Pagination.Next onClick={() => handlePageChange(page + 1)} disabled={page === totalPages} />
-                              <Pagination.Last onClick={() => handlePageChange(totalPages)} />
-                            </Pagination>
-                          </div>
-                        </>
-                      )}
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -211,8 +213,7 @@ export default function DoctorList() {
             </div>
           </div>
         </div>
-      </section>
-
+      </div>
       <div className="modal" id="doctorModal" tabIndex="-1">
         <div className="modal-dialog modal-lg">
           <div className="modal-content">

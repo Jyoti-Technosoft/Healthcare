@@ -43,7 +43,6 @@ export default function Header() {
         const updateWindowWidth = () => {
             setWindowWidth(window.innerWidth);
         };
-
         // Call the function once when the component mounts to set the initial window width
         updateWindowWidth();
 
@@ -56,7 +55,6 @@ export default function Header() {
                 setShowLogoutCard(false);
             }
         }
-
         // Adding event listener to the document
         document.addEventListener("mousedown", handleClickOutside);
 
@@ -65,11 +63,10 @@ export default function Header() {
             window.removeEventListener('resize', updateWindowWidth);
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, []); // Empty dependency array so it only runs on mount and unmount
+    }, []);
 
 
     const handleLogout = () => {
-        // Remove the cookie
         Cookies.remove('email');
         Cookies.remove('authToken');
         Cookies.remove('userId');
@@ -89,7 +86,7 @@ export default function Header() {
                                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                                     <span className="navbar-toggler-icon"></span>
                                 </button>
-                                {windowWidth > 1023 && (
+                                {windowWidth >= 992 && (
                                     <>
                                         <div className='headerProfileImg ' onClick={() => setShowLogoutCard(!showLogoutCard)} style={{ cursor: 'pointer' }}>
                                             {gender.toLowerCase() === 'female' && (
@@ -98,19 +95,29 @@ export default function Header() {
                                             {gender.toLowerCase() !== 'female' && (
                                                 <img src="img/maleRecep.png" alt="maleProfile" />
                                             )}
-                                            <div className="row translate-middle-x ">
+                                            <div className="row translate-middle-x">
                                                 <div className="col">
                                                     <div ref={logoutRef} className='logoutCardContainer '>
                                                         {showLogoutCard && (
                                                             <div className="card mt-3 border-0" style={{ width: '140px', height: '80px', marginLeft: '-90px' }}>
 
-                                                                <ul className="list-group list-group-flush" style={{marginTop:'-12px'}}>
-                                                                    <li className='listHeader1 d-flex justify-content-between align-items-center'>
-                                                                        <i className="bi bi-person "></i>
-                                                                        <button className={`btn ${activeTab === 'doctorProfile' ? 'active' : ''}`} onClick={() => setMenu('doctorProfile')} style={{ width: '100px', fontSize: '14px', color: 'black' }}>
-                                                                            Profile
-                                                                        </button>
-                                                                    </li>
+                                                                <ul className="list-group list-group-flush" style={{ marginTop: '-12px' }}>
+                                                                    {userRole === 'Doctor' && (
+                                                                        <li className='listHeader1 d-flex justify-content-between align-items-center'>
+                                                                            <i className="bi bi-person "></i>
+                                                                            <button className={`btn ${activeTab === 'doctorProfile' ? 'active' : ''}`} onClick={() => setMenu('doctorProfile')} style={{ width: '100px', fontSize: '14px', color: 'black' }}>
+                                                                                Profile
+                                                                            </button>
+                                                                        </li>
+                                                                    )}
+                                                                    {userRole === 'Receptionist' && (
+                                                                        <li className='listHeader1 d-flex justify-content-between align-items-center'>
+                                                                            <i className="bi bi-person "></i>
+                                                                            <button className={`btn ${activeTab === 'receptionistProfile' ? 'Active' : ''}`} onClick={() => setMenu('receptionistProfile')} style={{ width: '100px', fontSize: '14px', color: 'black' }}>
+                                                                                Profile
+                                                                            </button>
+                                                                        </li>
+                                                                    )}
                                                                     <li className='listHeader1 d-flex justify-content-between align-items-center'>
                                                                         <i className="bi bi-box-arrow-left "></i>
                                                                         <button className="btn" onClick={handleLogout} style={{ width: '100px', fontSize: '14px', color: 'black' }}>
@@ -135,7 +142,7 @@ export default function Header() {
                                     <li class="nav-item ">
                                         <Link className="nav-link dashboardLink" to="/adminDashboard">Dashboard</Link>
                                     </li>
-                                    {userRole === 'Admin' && (
+                                    {userRole === 'SuperAdmin' && (
                                         <>
                                             <li className="nav-item">
                                                 <button
@@ -149,38 +156,74 @@ export default function Header() {
                                     )}
                                     {userRole === 'Receptionist' && (
                                         <>
-                                            <li className="nav-item">
-                                                <Link className={`nav-link profileLink ${activeTab === 'receptionistProfile' ? 'active' : ''}`}
-                                                    onClick={() => setMenu('receptionistProfile')}>Profile</Link>
-                                            </li>
                                             <li className="nav-item sidebarNavLinks">
                                                 <Link
-                                                    className={`nav-link ${activeTab === 'doctorList' ? 'active' : ''}`}
+                                                    className={`nav-link ${activeTab === 'receptionistProfile' ? 'Active' : ''}`}
+                                                    onClick={() => setMenu('receptionistProfile')}
+                                                >
+                                                    Profile
+                                                </Link>
+                                            </li>
+
+                                            <li className="nav-item sidebarNavLinks">
+                                                <Link
+
+                                                    className={`nav-link ${activeTab === 'doctorList' ? 'Active' : ''}`}
                                                     onClick={() => setMenu('doctorList')}
                                                 >
                                                     Doctor
                                                 </Link>
                                             </li>
-                                            <li className="nav-item dropdown">
-                                                <Link className="nav-link dropdown-toggle" to="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                                            <li className="nav-item sidebarNavLinks">
+                                                <Link
+                                                    className={`nav-link ${activeTab === 'patientsList' ? 'Active' : ''}`}
+                                                    onClick={() => setMenu('patientsList')}
+                                                >
                                                     Patient
                                                 </Link>
-                                                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                    <Link className={`dropdown-item ${activeTab === 'patientsList' ? 'active' : ''}`} to="/patientsList">Receptionist List</Link>
-                                                    <Link className={`dropdown-item ${activeTab === 'registerPatient' ? 'active' : ''}`} onClick={() => setMenu('registerPatient')}>Add Patient</Link>
-                                                </div>
                                             </li>
-                                            <li className="nav-item dropdown">
-                                                <Link className="nav-link dropdown-toggle" to="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                                            <li className="nav-item sidebarNavLinks">
+                                                <Link
+                                                    className={`nav-link ${activeTab === 'showAppointments' ? 'Active' : ''}`}
+                                                    onClick={() => setMenu('showAppointments')}
+                                                >
                                                     Appointments
                                                 </Link>
-                                                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                    <Link className={`dropdown-item ${activeTab === 'patientsList' ? 'active' : ''}`} to="/patientsList">Receptionist List</Link>
-                                                    <Link className={`dropdown-item ${activeTab === 'bookAppointment' ? 'active' : ''}`} onClick={() => setMenu('bookAppointment')}>Book Appointments</Link>
-                                                </div>
                                             </li>
                                         </>
                                     )}
+                                    {userRole === 'Doctor' && (
+                                        <>
+                                            <li className="nav-item sidebarNavLinks">
+                                                <Link
+                                                    className={`nav-link ${activeTab === 'doctorAppointments' ? 'Active' : ''}`}
+                                                    onClick={() => setMenu('doctorAppointments')}
+                                                >
+                                                    Appointments
+                                                </Link>
+                                            </li>
+
+                                            <li className="nav-item sidebarNavLinks">
+                                                <Link
+                                                    className={`nav-link ${activeTab === 'patientsWithAppointment' ? 'Active' : ''}`}
+                                                    onClick={() => setMenu('patientsWithAppointment')}
+                                                >
+                                                    Patients
+                                                </Link>
+                                            </li>
+
+                                        </>
+                                    )}
+                                    <li className="nav-item sidebarNavLinks">
+                                        <Link
+                                            className="nav-link"
+                                            onClick={handleLogout}
+                                        >
+                                            Logout
+                                        </Link>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

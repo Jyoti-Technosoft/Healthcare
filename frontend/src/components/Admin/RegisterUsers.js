@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import { UsersAuthHelper, DoctorAuthHelper } from './UsersAuthHelper';
-import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireGender, validateRequireAddress, validateRequireWorkingDays, validateRequireShiftTime, validateRequireJoiningDate, validateRequireConsultancyCharge, calculateAge } from '../Validations';
+import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireGender, validateRequireAddress, validateRequireWorkingDays, validateRequireShiftTime, validateRequireJoiningDate, validateRequireConsultancyCharge, calculateAge, validateRequireQualification, validateRequireDesignation, validateRequireSpeciality, validateRequireDepartment, validateRequireMorningTime, validateRequireEveningTime, validateRequireVisitingDays } from '../Validations';
 import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-
+import Select from 'react-select';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  setActiveTab,
+} from '../../actions/submenuActions';
 export default function RegisterUsers() {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
@@ -31,10 +35,16 @@ export default function RegisterUsers() {
   const [doctorImageData, setDoctorImageData] = useState(null);
   const [passwordVisibility, setPasswordVisibility] = useState(true); // State to toggle password visibility
   const [confirmpasswordVisibility, setConfirmPasswordVisibility] = useState(true); // State to toggle password visibility
+  const [selectedDays, setSelectedDays] = useState([]);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const stepLabels = ["Account details", "Personal details", "Working details"];
   const roleCookie = Cookies.get('role');
   const totalSteps = 3; // Update with the total number of steps in your form
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('success');
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -44,17 +54,48 @@ export default function RegisterUsers() {
   const [dobError, setDobError] = useState("");
   const [genderError, setGenderError] = useState("");
   const [addressError, setAddressError] = useState("");
-  const [joiningDateError, setJoiningDateError] = useState("");
-  const [consultancyError, setConsultancyError] = useState("");
   const [dayOfWorkError, setDayOfWorkError] = useState("");
   const [shiftTimeError, setShiftTimeError] = useState("");
 
-  const handleNext = () => {
+  const [joiningDateError, setJoiningDateError] = useState("");
+  const [qualificationError, setQualificationError] = useState("");
+  const [designationError, setDesignationError] = useState("");
+  const [specialityError, setSpecialityError] = useState("");
+  const [departmentError, setDepartmentError] = useState("");
+  const [consultancyError, setConsultancyError] = useState("");
+  const [morningTimeError, setmorningTimeError] = useState("");
+  const [eveningTimeError, setEveningTimeError] = useState("");
+  const [visitingDaysError, setVisitingDaysError] = useState("");
+
+  const setMenu = (submenu) => {
+    if (submenu === 'usersList') {
+      dispatch(setActiveTab('usersList'));
+    }
+  };
+
+  const options = [
+    { value: 'Monday-Saturday', label: 'Monday-Saturday' },
+    { value: 'Monday-Friday', label: 'Monday-Friday' },
+    { value: 'Monday', label: 'Monday' },
+    { value: 'Tuesday', label: 'Tuesday' },
+    { value: 'Wednesday', label: 'Wednesday' },
+    { value: 'Thursday', label: 'Thursday' },
+    { value: 'Friday', label: 'Friday' },
+    { value: 'Saturday', label: 'Saturday' },
+  ];
+
+  const handleChange = (selectedOptions) => {
+    setSelectedDays(selectedOptions);
+  };
+
+  const handleNext = (event) => {
 
     if (step === 1) {
+      event.preventDefault();
       setEmailError("");
       setPasswordError("");
       setPasswordMatchError("");
+
       const emailRequireValidation = validateRequireEmail(email);
       const emailPatternValidation = validatePatternEmail(email);
       const passwordRequireValidation = validateRequirePassword(password);
@@ -77,13 +118,13 @@ export default function RegisterUsers() {
         setPasswordMatchError("Passwords does not match");
         return;
       }
-    } else if (step === 2 && role === 'Receptionist') {
+    } else if (step === 2 && (role === 'Receptionist' || role === 'Admin')) {
       setNameError("");
       setContactError("");
       setDobError("");
       setGenderError("");
       setAddressError("");
-
+      event.preventDefault();
       const nameRequireValidation = validateRequireName(name);
       const contactRequireValidation = validateRequireContact(contact);
       const dobRequireValidation = validateRequireDob(dateOfBirth);
@@ -110,14 +151,36 @@ export default function RegisterUsers() {
         return;
       }
     } else if (step === 3 && (role === 'Receptionist' || role === 'Doctor')) {
+
       setDayOfWorkError("");
       setShiftTimeError("");
+
       setJoiningDateError("");
+      setQualificationError("");
+      setDesignationError("");
+      setSpecialityError("");
+      setDepartmentError("");
       setConsultancyError("");
+
+      setmorningTimeError("");
+      setEveningTimeError("");
+      setVisitingDaysError("");
+      event.preventDefault();
+
       const daysOfWorkRequireValidation = validateRequireWorkingDays(dayOfWorking);
       const shiftTimingRequireValidation = validateRequireShiftTime(shiftTime);
+
       const joiningDateRequireValidation = validateRequireJoiningDate(joiningDate);
+      const qualificationRequireValidation = validateRequireQualification(qualification);
+      const designationRequireValidation = validateRequireDesignation(designation);
+      const specialitiesRequireValidation = validateRequireSpeciality(specialities);
+      const departmentRequireValidation = validateRequireDepartment(department);
       const consultancyRequireValidation = validateRequireConsultancyCharge(consultationCharge);
+
+      const morningTimeRequireValidation = validateRequireMorningTime(morningTiming);
+      const eveningTimeRequireValidation = validateRequireEveningTime(eveningTiming);
+      const selectedDaysRequireValidation = validateRequireVisitingDays(selectedDays);
+
       if (daysOfWorkRequireValidation) {
         setDayOfWorkError(daysOfWorkRequireValidation);
         return;
@@ -130,8 +193,37 @@ export default function RegisterUsers() {
         setJoiningDateError(joiningDateRequireValidation);
         return;
       }
+      if (qualificationRequireValidation) {
+        setQualificationError(qualificationRequireValidation);
+        return;
+      }
+      if (designationRequireValidation) {
+        setDesignationError(designationRequireValidation);
+        return;
+      }
+      if (specialitiesRequireValidation) {
+        setSpecialityError(specialitiesRequireValidation);
+        return;
+      }
+      if (departmentRequireValidation) {
+        setDepartmentError(departmentRequireValidation);
+        return;
+      }
       if (consultancyRequireValidation) {
         setConsultancyError(consultancyRequireValidation);
+        return;
+      }
+
+      if (morningTimeRequireValidation) {
+        setmorningTimeError(morningTimeRequireValidation);
+        return;
+      }
+      if (eveningTimeRequireValidation) {
+        setEveningTimeError(eveningTimeRequireValidation);
+        return;
+      }
+      if (selectedDaysRequireValidation) {
+        setVisitingDaysError(selectedDaysRequireValidation);
         return;
       }
     }
@@ -171,45 +263,77 @@ export default function RegisterUsers() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (role === 'Doctor') {
-      await DoctorAuthHelper(email, password, role, name, contact, dateOfBirth, age, gender, address, joiningDate, qualification, designation, specialities, department, morningTiming, eveningTiming, doctorImageData, consultationCharge, navigate);
-    } else {
-      await UsersAuthHelper(email, password, role, name, contact, dateOfBirth, age, gender, address, joiningDate, dayOfWorking, shiftTime, navigate);
+    try {
+      if (role === 'Doctor') {
+        let formattedSelectedDays = selectedDays.map(day => day.value).join(","); // Convert array to comma-separated string
+        await DoctorAuthHelper(email, password, role, name, contact, dateOfBirth, age, gender, address, joiningDate, qualification, designation, specialities, department, morningTiming, eveningTiming, formattedSelectedDays, doctorImageData, consultationCharge, navigate);
+      } else {
+        await UsersAuthHelper(email, password, role, name, contact, dateOfBirth, age, gender, address, joiningDate, dayOfWorking, shiftTime, navigate);
+      }
+      setToastType('success');
+      setToastMessage('User registration successful!');
+      setShowToast(true);
+      //window.location.reload();
+    } catch (error) {
+      setToastType('failure');
+      setToastMessage('User registration failed! Please try again.');
+      setShowToast(true);
     }
   };
 
   return (
     <>
-      <div className='background_part padding_top'>
-        <div className="container  updateProfileContainer" >
+
+      <div className='background_part mt-3'>
+        <div className="container">
+
           <div className="row flex-lg-nowrap">
             <div className="col">
               <div className="row">
                 <div className="col mb-3">
-                  <div className="card border-0 mb-5 mt-3 shadow  bg-white rounded">
+                  <div className="card border-0 mb-3 shadow  bg-white rounded">
+
+                    {showToast && (
+                      <div style={{ maxWidth: '250px' }} className={`toast show ${toastType === 'success' ? 'bg-success' : 'bg-danger'} mr-5 position-absolute end-0`} role="alert" aria-live="assertive" aria-atomic="true">
+                        <div className="toast-header">
+                          <strong className="me-auto">{toastMessage}</strong>
+                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+
+                      </div>
+                    )}
                     <div className="card-body">
-                      <div className="e-profile">
-                        <div className="row">
-                          <div className="col-12">
+                      <div className="">
+                        <div className="">
+                          <i className="bi bi-arrow-left"
+                            style={{ fontSize: '25px', cursor: 'pointer', color: 'silver', fontWeight: 'bold', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s', marginLeft: '-10px' }}
+                            onClick={() => setMenu('usersList')}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = '#E5E4E2'}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                          ></i>
+                          <div className="col-12 mt-3">
                             <h3 className="fw-normal text-secondary fs-4 text-uppercase mb-4"><b className='contentHeadings' style={{ color: 'black' }}>Register Users</b></h3>
                           </div>
-                          <ul className="nav nav-tabs mb-4">
-                            {[...Array(totalSteps).keys()].map((index) => (
-                              <li className="nav-item" key={index + 1}>
-                                <button
-                                  className={`nav-link btn ${step === index + 1 ? 'active' : ''}`}
-                                  onClick={() => {
-                                    if (role || index === 0) {
-                                      setStep(index + 1);
-                                    }
-                                  }}
-                                  disabled={!role && index !== 0}
-                                >
-                                  {stepLabels[index]}
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
+                          {(role !== "Admin" || (role === "Admin" && step !== 3)) && step > 1 && (
+                            <ul className="nav nav-tabs mb-4">
+                              {[...Array(totalSteps).keys()].map((index) => (
+                                (role === "Receptionist" || role === "Doctor") || index !== 2 ? (
+                                  <li className="nav-item" key={index + 1}>
+                                    <button
+                                      className={`nav-link btn ${step === index + 1 ? 'active' : ''}`}
+                                      onClick={() => {
+                                        setStep(index + 1);
+                                      }}
+                                    >
+                                      {stepLabels[index]}
+                                    </button>
+                                  </li>
+                                ) : null
+                              ))}
+                            </ul>
+                          )}
+
+
                           <form onSubmit={handleSubmit}>
                             {step === 1 && (
                               <>
@@ -296,14 +420,14 @@ export default function RegisterUsers() {
                                       <option style={{ fontSize: '14px' }} value="" disabled>Select role</option>
                                       <option style={{ fontSize: '14px' }} value="Doctor">Doctor</option>
                                       <option style={{ fontSize: '14px' }} value="Receptionist">Receptionist</option>
-                                      <option style={{ fontSize: '14px' }} value="Super Admin">Super Admin</option>
+                                      <option style={{ fontSize: '14px' }} value="Admin">Admin</option>
                                     </select>
                                   </div>
 
                                 </div>
                               </>
                             )}
-                            {step === 2 && (role === 'Receptionist' || role === 'Doctor') && (
+                            {step === 2 && (role === 'Receptionist' || role === 'Doctor' || role === 'Admin') && (
                               <>
                                 {/* Step 2 */}
                                 {/* Your Step 2 Form Fields for Receptionist */}
@@ -452,7 +576,7 @@ export default function RegisterUsers() {
                               </>
                             )}
 
-                            {step === 3 && role === 'Receptionist' && (
+                            {step === 3 && (role === 'Receptionist') && (
                               <>
                                 <div className="row g-3">
                                   <div className="col-md-6">
@@ -507,7 +631,7 @@ export default function RegisterUsers() {
                               </>
                             )}
 
-                            {step === 3 && role === 'Doctor' && (
+                            {step === 3 && (role === 'Doctor') && (
                               <>
                                 <div className="row g-3">
                                   <div className="col-md-6">
@@ -530,7 +654,8 @@ export default function RegisterUsers() {
                                     <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                     <select
                                       id="qualification"
-                                      className="form-select input-field"
+
+                                      className={`form-select input-field form-control-lg bg-light  ${qualificationError && 'is-invalid'} `}
                                       value={qualification}
                                       onChange={(event) => setQualification(event.target.value)}
                                       style={{ fontSize: '14px' }}
@@ -539,6 +664,8 @@ export default function RegisterUsers() {
                                       <option value="Bachelor of Medicine">Bachelor of Medicine</option>
                                       <option value="Bachelor of Surgery (MBBS)"> Bachelor of Surgery (MBBS)</option>
                                     </select>
+                                    {qualificationError && <div className="text-danger">{qualificationError}</div>}
+
                                   </div>
 
                                   <div className="col-md-6">
@@ -546,7 +673,7 @@ export default function RegisterUsers() {
                                     <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                     <select
                                       id="designation"
-                                      className="form-select input-field"
+                                      className={`form-select input-field form-control-lg bg-light  ${designationError && 'is-invalid'} `}
                                       value={designation}
                                       onChange={(event) => setDesignation(event.target.value)}
                                       style={{ fontSize: '14px' }}
@@ -555,6 +682,7 @@ export default function RegisterUsers() {
                                       <option value="Specialist/Specialty Physician">Specialist/Specialty Physician</option>
                                       <option value="Consultant"> Consultant</option>
                                     </select>
+                                    {designationError && <div className="text-danger">{designationError}</div>}
                                   </div>
 
                                   <div className="col-md-6">
@@ -562,7 +690,7 @@ export default function RegisterUsers() {
                                     <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                     <select
                                       id="speciality"
-                                      className="form-select input-field"
+                                      className={`form-select input-field form-control-lg bg-light  ${specialityError && 'is-invalid'} `}
                                       value={specialities}
                                       onChange={(event) => setSpecialities(event.target.value)}
                                       style={{ fontSize: '14px' }}
@@ -573,13 +701,15 @@ export default function RegisterUsers() {
                                       <option value="Radiology"> Radiology</option>
 
                                     </select>
+                                    {specialityError && <div className="text-danger">{specialityError}</div>}
+
                                   </div>
                                   <div className="col-md-6">
                                     <label htmlFor="department" className="form-label">Department</label>
                                     <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                     <select
                                       id="department"
-                                      className="form-select input-field"
+                                      className={`form-select input-field form-control-lg bg-light  ${departmentError && 'is-invalid'} `}
                                       value={department}
                                       onChange={(event) => setDepartment(event.target.value)}
                                       style={{ fontSize: '14px' }}
@@ -589,6 +719,8 @@ export default function RegisterUsers() {
                                       <option value="Medical/Surgical"> Medical/Surgical</option>
                                       <option value="Orthopedics"> Orthopedics</option>
                                     </select>
+                                    {departmentError && <div className="text-danger">{departmentError}</div>}
+
                                   </div>
 
                                   <div className="col-md-6">
@@ -597,14 +729,14 @@ export default function RegisterUsers() {
                                     <input
                                       id="consultancyFees"
                                       type="text"
-                                      className={`form-control input-field form-control-lg bg-light  ${emailError && 'is-invalid'} `}
+                                      className={`form-control input-field form-control-lg bg-light  ${consultancyError && 'is-invalid'} `}
                                       placeholder="Consultancy fees"
                                       value={consultationCharge}
                                       onChange={(event) => {
                                         setConsultationCharge(event.target.value);
                                       }}
                                     />
-                                    {emailError && <div className="invalid-feedback">{emailError}</div>}
+                                    {consultancyError && <div className="invalid-feedback">{consultancyError}</div>}
                                   </div>
                                 </div>
                                 <div className="row g-3 mt-1">
@@ -613,34 +745,63 @@ export default function RegisterUsers() {
                                     <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                     <select
                                       id="morningTiming"
-                                      className="form-select input-field"
+                                      className={`form-select input-field form-control-lg bg-light  ${morningTimeError && 'is-invalid'} `}
                                       value={morningTiming}
                                       style={{ fontSize: '14px' }}
                                       onChange={(event) => setMorningTiming(event.target.value)}
                                     >
                                       <option value="" disabled>Select morning time</option>
-                                      <option value="10:00 AM to 1:30 PM">10:00 AM to 1:00 PM</option>
-                                      <option value="9:00 AM to 1:00 PM">9:00 AM to 12:00 PM</option>
+                                      <option value="10:00 AM to 1:00 PM">10:00 AM to 1:00 PM</option>
+                                      <option value="9:00 AM to 12:00 PM">9:00 AM to 12:00 PM</option>
                                       <option value="N/A">N/A</option>
                                       {/* Add more options for shift timings */}
                                     </select>
+                                    {morningTimeError && <div className="invalid-feedback">{morningTimeError}</div>}
+
                                   </div>
                                   <div className="col-md-6">
                                     <label htmlFor="eveningTiming" className="form-label">Evening Timing</label>
                                     <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                     <select
                                       id="eveningTiming"
-                                      className="form-select input-field"
+                                      className={`form-select input-field form-control-lg bg-light  ${eveningTimeError && 'is-invalid'} `}
                                       value={eveningTiming}
                                       style={{ fontSize: '14px' }}
                                       onChange={(event) => setEveningTiming(event.target.value)}
                                     >
                                       <option value="" disabled>Select Evening time</option>
-                                      <option value="2:30 PM to 6:00 PM">2:00 PM to 6:00 PM</option>
-                                      <option value="9:00 AM to 1:00 PM">1:00 AM to 5:00 PM</option>
+                                      <option value="2:00 PM to 6:00 PM">2:00 PM to 6:00 PM</option>
+                                      <option value="1:00 AM to 5:00 PM">1:00 AM to 5:00 PM</option>
                                       <option value="N/A">N/A</option>
                                       {/* Add more options for shift timings */}
                                     </select>
+                                    {eveningTimeError && <div className="invalid-feedback">{eveningTimeError}</div>}
+
+                                  </div>
+                                </div>
+                                <div className="row g-3 mt-1">
+                                  <div className="col-md-6">
+                                    <label htmlFor="visitingDays" className="form-label">Visiting days</label>
+                                    <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
+                                    <Select
+                                      id="visitingDays"
+                                      className={`${visitingDaysError && 'is-invalid'} `}
+                                      value={selectedDays}
+                                      onChange={handleChange}
+                                      options={options}
+                                      isMulti
+                                      styles={{
+                                        control: (provided) => ({
+                                          ...provided,
+                                          border: 'none',
+                                          borderBottom: '1px solid #1977cc',
+                                          transition: 'border-bottom-color 0.3s ease-in-out',
+                                          fontSize: '14px',
+                                        }),
+                                      }}
+                                    />
+                                    {visitingDaysError && <div className="invalid-feedback">{visitingDaysError}</div>}
+
                                   </div>
                                 </div>
                               </>
@@ -651,13 +812,20 @@ export default function RegisterUsers() {
                               {step > 1 && (
                                 <button type="button" className="btn btn-outline-secondary float-start me-2" onClick={handlePrevious}>Previous</button>
                               )}
-                              {step < totalSteps && (
-                                <button type="button" className="btn btn-primary float-end" onClick={handleNext} style={{backgroundColor:'#1977cc'}}>Next</button>
+                              {step === 2 && role === 'Admin' && (
+                                <button type="submit" className="btn btn-primary float-end" style={{ backgroundColor: '#1977cc' }}>Register</button>
+                              )}
+                              {step === 2 && role !== 'Admin' && (
+                                <button type="button" className="btn btn-primary float-end" onClick={handleNext} style={{ backgroundColor: '#1977cc' }}>Next</button>
+                              )}
+                              {step !== 2 && step !== totalSteps && (
+                                <button type="button" className="btn btn-primary float-end" onClick={handleNext} style={{ backgroundColor: '#1977cc' }}>Next</button>
                               )}
                               {step === totalSteps && (
-                                <button type="submit" className="btn btn-primary float-end" style={{backgroundColor:'#1977cc'}}>Register</button>
+                                <button type="submit" className="btn btn-primary float-end" style={{ backgroundColor: '#1977cc' }}>Register</button>
                               )}
                             </div>
+
                           </form>
                         </div>
                       </div>
@@ -669,6 +837,8 @@ export default function RegisterUsers() {
           </div >
         </div>
       </div>
+
+
     </>
   );
 }

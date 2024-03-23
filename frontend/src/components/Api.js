@@ -4,7 +4,7 @@ const token = Cookies.get('authToken');
 
 export async function loginAdminApi(userData) {
     try {
-        const response = await axios.post("http://localhost:8080/admin/loginAdmin", userData);
+        const response = await axios.post("http://localhost:8080/superAdmin/loginAdmin", userData);
         return response.data;
     } catch (error) {
         throw error;
@@ -14,7 +14,7 @@ export async function loginAdminApi(userData) {
 export async function registerUserApi(userData) {
     try {
         
-        const response = await axios.post("http://localhost:8080/admin/auth/registerUsers", userData,{
+        const response = await axios.post("http://localhost:8080/superAdmin/auth/registerUsers", userData,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -28,7 +28,7 @@ export async function registerUserApi(userData) {
 export async function getUsersApi(userId) {
     try {
         
-        const response = await axios.get(`http://localhost:8080/admin/getUser/${userId}`);
+        const response = await axios.get(`http://localhost:8080/superAdmin/getUser/${userId}`);
         return response.data;
     } catch (error) {
         throw error;
@@ -54,7 +54,7 @@ export async function registerDoctorApi(userData, doctorImageData, token) {
         formData.append('userDTOString', JSON.stringify(userData));
         formData.append('image', doctorImageData);
 
-        const response = await axios.post("http://localhost:8080/admin/auth/registerDoctors", formData, {
+        const response = await axios.post("http://localhost:8080/superAdmin/auth/registerDoctors", formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
@@ -69,7 +69,7 @@ export async function registerDoctorApi(userData, doctorImageData, token) {
 export async function getDoctorsApi() {
     try {
         
-        const response = await axios.get("http://localhost:8080/admin/getAllDoctorsWithImages");
+        const response = await axios.get("http://localhost:8080/superAdmin/getAllDoctorsWithImages");
         return response.data;
     } catch (error) {
         throw error;
@@ -144,7 +144,7 @@ export async function updateDoctorProfileApi(userId,email,currentPassword,passwo
 export async function registerPatientApi(userData) {
     try {
         
-        const response = await axios.post("http://localhost:8080/admin/auth/registerPatient", userData,{
+        const response = await axios.post("http://localhost:8080/superAdmin/auth/registerPatient", userData,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -200,7 +200,7 @@ export async function getAvailableSlots(doctorId, date,token) {
         throw error;
     }
 }
-
+ 
 
 export async function bookAppointmentApi(doctorId,patientId,appointmentDate,appointmentTime,navigate) {
     try {
@@ -364,6 +364,19 @@ export async function getAllAppointmentsForPatient(patientId,token) {
         });
         return response.data;
     } catch (error) {
+        throw error;
+    }
+}
+
+export async function getAllUsers(token){
+    try{
+        const response = await axios.get("http://localhost:8080/superAdmin/auth/getUsers", {  
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    }catch(error){
         throw error;
     }
 }

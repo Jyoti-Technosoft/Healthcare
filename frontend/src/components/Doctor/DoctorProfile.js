@@ -80,7 +80,7 @@ export default function DoctorProfile() {
 
         async function fetchData() {
             try {
-                const userData = await getDoctorsWithIdApi(userId,authToken);
+                const userData = await getDoctorsWithIdApi(userId, authToken);
                 //console.log(userData.user.password);
                 // console.log(userData);
                 setEmail(userData.user.email);
@@ -171,20 +171,20 @@ export default function DoctorProfile() {
         try {
             await updateDoctorProfileApi(receptionistId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age);
         } catch (error) {
-            setCurrentPasswordError("Current password is incorrect");
+            setCurrentPasswordError("Current password is incorrect"); 
         }
     };
 
     return (
-        <div className='background_part padding_top'>
-            <div className="container updateProfileContainer">
+        <div className='background_part mt-3'> 
+            <div className="container">
                 <div className="row flex-lg-nowrap">
                     <div className="col">
                         <div className="row">
                             <div className="col mb-3">
                                 <div className="card border-0 mb-3 shadow  bg-white rounded">
                                     <div className="card-body">
-                                        <div className="e-profile">
+                                        <div className="">
                                             <div className="row">
                                                 {/* <div className="col-12 col-sm-auto mb-3">
                             <div className="mx-auto" style={{ width: '140px' }}>
@@ -570,7 +570,7 @@ export default function DoctorProfile() {
                                                                                 />
                                                                             </div>
                                                                         </div>
-                                                                        <div className="row g-3">                                                                       
+                                                                        <div className="row g-3">
                                                                             <div className="col-md-6">
                                                                                 <label htmlFor="visitingDays" className="form-label">Visiting Days</label>
                                                                                 <input

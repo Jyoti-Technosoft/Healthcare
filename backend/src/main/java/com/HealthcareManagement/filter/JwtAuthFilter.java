@@ -1,6 +1,6 @@
 package com.HealthcareManagement.filter;
 
-import com.HealthcareManagement.Service.impl.AdminServiceImpl;
+import com.HealthcareManagement.Service.impl.SuperAdminServiceImpl;
 import com.HealthcareManagement.Service.impl.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,7 +23,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private AdminServiceImpl adminService;
+    private SuperAdminServiceImpl adminService;
 
 
 

@@ -23,13 +23,16 @@ export default function Dashboard() {
     return (
 
         <div>
-            <div style={{ height: '130px' }}>
+            
+            <div style={{ height: '100px' }}>
                 <Header />
             </div>
-            <div className='sideBar'>
+
+            <div style={{ width:'200px'}}>
                 <Sidebar />
             </div>
-            <div>
+            
+            <div className='dashboardComponents'>
                 {renderSidebarComponent(activeTab)}
             </div>
 

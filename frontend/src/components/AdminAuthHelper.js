@@ -14,7 +14,7 @@ export async function handleAdminLogin(email, password, navigate, setLoginError)
         const response = await loginAdminApi(userData);
 
         var now = new Date();
-        var minutes = 30;
+        var minutes = 60;
         now.setTime(now.getTime() + (minutes * 60 * 1000));
 
         const authTokenFromResponse = response.token;

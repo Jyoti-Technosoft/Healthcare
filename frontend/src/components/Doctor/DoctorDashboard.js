@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import DataTable from 'react-data-table-component';
+import DataTable from 'react-data-table-component'; 
 import Cookies from 'js-cookie';
 import { getAllAppointmentsApi, getDoctorsWithIdApi, getAppointmentWithoutHealthReport } from '../Api';
 import ConsultancyModal from './ConsultancyModal';
@@ -48,7 +48,7 @@ export default function DoctorDashboard() {
         fetchData();
     }, [userId, token]);
 
-    const countTodaysAppointmentsDoctor = () => {
+    const countTodaysAppointmentsDoctor = () => { 
         const today = new Date().toISOString().slice(0, 10);
         return appointment.filter(appointment => appointment.appointmentDate === today).length;
     };
@@ -106,36 +106,36 @@ export default function DoctorDashboard() {
 
     return (
         <div className=''>
-            <div className='dashboard'>
+            <div className=''>
                 <div className="d-flex justify-content-center align-items-center ">
                     <div className="container ">
-                        <div className="row">
-                            <div className="col-md-3"> {/* Adjusted column size */}
-                                <div className="card  mb-4 rounded border-0 justify-content-center" style={{ height: '190px' }}>
+                        <div className="row row-cols-1 row-cols-md-4">
+                            <div className="col mb-4"> {/* Adjusted column size */} 
+                                <div className="card  h-100 rounded border-0 justify-content-center" >
                                     <div className="card-body p-4">
                                         <h1 className='text-center'>{appointment.length}</h1>
                                         <p className='text-center'>Total Appointments</p>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-3"> {/* Adjusted column size */}
-                                <div className="card  mb-4 rounded border-0 justify-content-center" style={{ height: '190px' }}>
+                            <div className="col mb-4"> {/* Adjusted column size */}
+                                <div className="card  h-100 rounded border-0 justify-content-center" >
                                     <div className="card-body p-4">
                                         <h1 className='text-center'>{countTodaysAppointmentsDoctor()}</h1>
                                         <p className='text-center'>Today's Appointments</p>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-3"> {/* Adjusted column size */}
-                                <div className="card  mb-4 rounded border-0 justify-content-center" style={{ height: '190px' }}>
+                            <div className="col mb-4"> {/* Adjusted column size */}
+                                <div className="card h-100  rounded border-0 justify-content-center" >
                                     <div className="card-body p-4">
                                         <h1 className='text-center'>{doctors.length}</h1>
                                         <p className='text-center'>Top Doctors</p>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-3"> {/* Adjusted column size */}
-                                <div className="card  mb-4 rounded border-0 justify-content-center" style={{ height: '190px' }}>
+                            <div className="col mb-4"> {/* Adjusted column size */}
+                                <div className="card h-100  rounded border-0 justify-content-center" >
                                     <div className="card-body p-4">
                                         <h1 className='text-center'>{patients.length}</h1>
                                         <p className='text-center'>Total Patients</p>
@@ -169,7 +169,7 @@ export default function DoctorDashboard() {
                                 </div>
                             </div>
                             <div className="col-md-5"> {/* Adjusted column size */}
-                                <div className="card upcoming-appointments mb-4 rounded border-0 justify-content-end" style={{ height: '550px' }}>
+                                <div className="card upcoming-appointments  mb-4 rounded border-0 justify-content-end" style={{ height: '550px' }}>
                                     <div className="card-body">
                                         <div className="d-flex justify-content-between align-items-center">
                                             <h6 className=''><b className='contentHeadings' style={{ color: 'black' }}> Upcoming Appointments</b> </h6>

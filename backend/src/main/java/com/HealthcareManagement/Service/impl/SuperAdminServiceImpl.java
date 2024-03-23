@@ -1,12 +1,9 @@
 package com.HealthcareManagement.Service.impl;
 
 import com.HealthcareManagement.Model.*;
-import com.HealthcareManagement.Repository.DoctorRepository;
-import com.HealthcareManagement.Repository.PatientRepository;
-import com.HealthcareManagement.Repository.ReceptionistRepository;
-import com.HealthcareManagement.Repository.UserRepository;
+import com.HealthcareManagement.Repository.*;
 import com.HealthcareManagement.Roles;
-import com.HealthcareManagement.Service.AdminService;
+import com.HealthcareManagement.Service.SuperAdminService;
 import com.HealthcareManagement.Service.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,13 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.Doc;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.regex.*;
 @Service
-public class AdminServiceImpl implements AdminService, UserDetailsService {
+public class SuperAdminServiceImpl implements SuperAdminService, UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
@@ -40,6 +36,9 @@ public class AdminServiceImpl implements AdminService, UserDetailsService {
 
     @Autowired
     DoctorRepository doctorRepository;
+
+    @Autowired
+    AdminRepository adminRepository;
     @Autowired
     private PasswordEncoder encoder;
 
@@ -70,6 +69,8 @@ public class AdminServiceImpl implements AdminService, UserDetailsService {
             user.setEmail(userDTO.getEmail());
             user.setPassword(encoder.encode(userDTO.getPassword()));
             user.setRole(userDTO.getRoles());
+            user.setCreatedTime(userDTO.getCreatedTime());
+            user.setUpdatedTime(userDTO.getUpdatedTime());
             userRepository.save(user);
 
             if(Roles.Receptionist.name().equals(userDTO.getRoles())){
@@ -80,6 +81,9 @@ public class AdminServiceImpl implements AdminService, UserDetailsService {
                 patientRepository.save(patient);
                 String decryptedPassword = userDTO.getPassword(); // Implement this method to decrypt password
                 System.out.println("Patient Email: " + email + ", Patient Password: " + decryptedPassword);
+            } else if (Roles.Admin.name().equals(userDTO.getRoles())) {
+                Admin admin = convertToAdmin(userDTO,user);
+                adminRepository.save(admin);
             }
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
         } catch (Exception e) {
@@ -176,6 +180,19 @@ public class AdminServiceImpl implements AdminService, UserDetailsService {
         return patient;
     }
 
+    public Admin convertToAdmin(UserDTO userDTO, User user){
+        Admin admin = new Admin();
+        admin.setName(userDTO.getName());
+        admin.setContact(userDTO.getContact());
+        admin.setGender(userDTO.getGender());
+        admin.setDateOfBirth(userDTO.getDateOfBirth());
+        admin.setAge(userDTO.getAge());
+        admin.setAddress(userDTO.getAddress());
+        admin.setCreatedTime(LocalDateTime.now());
+        admin.setUpdatedTime(LocalDateTime.now());
+        admin.setUser(user);
+        return admin;
+    }
 
     @Override
     public ResponseEntity<String> registerPatient(PatientDTO patientDTO) {

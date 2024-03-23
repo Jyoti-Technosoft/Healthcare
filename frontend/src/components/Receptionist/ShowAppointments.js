@@ -54,7 +54,8 @@ export default function ShowAppointments() {
     };
 
     const columns = [
-        { name: 'ID', selector: (row) => row.id, sortable: true },
+        { name: 'Index', selector: (row, index) => index + 1, sortable: true },
+        { name: 'Appointment ID', selector: (row) => row.id, sortable: true },
         { name: 'Patient Name', selector: (row) => row.patient.name, sortable: true, minWidth: '150px' },
         { name: 'Email', selector: (row) => row.patient.user.email, sortable: true, minWidth: '200px' },
         { name: 'Contact', selector: (row) => row.patient.contact, sortable: true, minWidth: '150px' },
@@ -75,18 +76,18 @@ export default function ShowAppointments() {
 
     return (
         <>
-            <div className='background_part '> 
-                <div className="container patintListContainer"> 
+            <div className='background_part mt-3'> 
+                <div className="container ">
                     <div className="row flex-lg-nowrap">
                         <div className="col">
                             <div className="row">
-                                <div className="col mb-5">
-                                    <div className="card border-0 rounded">
+                                <div className="col mb-3">
+                                    <div className="card border-0 mb-3 shadow  bg-white rounded">
                                         <div className="card-body">
                                             <div className="row">
                                                 <div className="col">
-                                                    <div className="col-12 ">
-
+                                                    <div className="col-12 d-flex justify-content-between align-items-center mb-3">
+                                                        <h6> {appointments.length} Appointments</h6>
                                                         <button type="submit" className={`btn btn-primary float-end ${activeBookAppointmentMenu === 'bookAppointment' ? '' : ''}`} style={{ backgroundColor: '#1977cc' }} onClick={() => setMenu('bookAppointment')}><i class="bi bi-plus" style={{ color: 'white' }}></i>Add</button>
                                                     </div>
                                                 </div>

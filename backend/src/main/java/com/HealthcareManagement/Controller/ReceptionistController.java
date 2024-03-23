@@ -71,7 +71,7 @@ public class ReceptionistController {
     }
 
     @PostMapping("/auth/bookAppointment")
-    @PreAuthorize("hasAuthority('Receptionist')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
     public ResponseEntity<String> BookAppointment( @RequestBody UserDTO userDTO, @RequestHeader("Authorization") String authHeader){
         try{
             return receptionistService.bookAppointment(userDTO);
@@ -81,7 +81,7 @@ public class ReceptionistController {
         }
     }
     @GetMapping("/auth/availableSlots")
-    @PreAuthorize("hasAuthority('Receptionist')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
     public ResponseEntity<Map<String, Integer>> getAppointmentSlots(
             @RequestParam("doctorId") Long doctorId,
             @RequestParam("date") String date) {
@@ -124,7 +124,7 @@ public class ReceptionistController {
 
 
     @GetMapping("/auth/patientConsultationCharge")
-    @PreAuthorize("hasAuthority('Receptionist')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
     public ResponseEntity<String> getConsultationCharge(@RequestParam("patientId") Long patientId,@RequestParam("doctorId") Long doctorId, @RequestParam("date") String appointmentDate) {
         try{
             return receptionistService.calculateConsultationCharge(patientId,doctorId,appointmentDate);
@@ -135,7 +135,7 @@ public class ReceptionistController {
     }
 
     @GetMapping("/auth/getAppointments/{userId}")
-    @PreAuthorize("hasAuthority('Receptionist')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
     public List<Appointment> getAppointment(@PathVariable Long userId){
         try{
             return receptionistService.getAllAppointments(userId);
@@ -145,7 +145,7 @@ public class ReceptionistController {
         }
     }
     @GetMapping("/auth/getAppointments")
-    @PreAuthorize("hasAnyAuthority('Receptionist')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
     public List<Appointment> getAllAppointments(){
         try{
             return receptionistService.getAllAppointments();
@@ -156,7 +156,7 @@ public class ReceptionistController {
     }
 
     @GetMapping("/auth/getDoctors")
-    @PreAuthorize("hasAuthority('Receptionist')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
     public List<Doctor> getAllDoctors(){
         try{
             return receptionistService.getAllDoctors();
@@ -168,12 +168,10 @@ public class ReceptionistController {
 
 
     @GetMapping("/auth/allPatientsList")
-    @PreAuthorize("hasAuthority('Receptionist')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
     public List<Patient> displayPatient() {
        return receptionistService.getAllPatients();
     }
-
-
 
 
 

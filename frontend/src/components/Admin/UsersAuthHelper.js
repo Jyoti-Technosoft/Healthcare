@@ -27,14 +27,14 @@ export async function UsersAuthHelper(email,password,roles,name,contact,dateOfBi
             height,
         };
         await registerUserApi(userData); 
-        alert("User Registration Successfully");
+        //alert("User Registration Successfully");
     } catch (error) {
-        alert("Registration failed! Please try again.");
+        //alert("Registration failed! Please try again.");
     }
 
 }
 
-export async function DoctorAuthHelper(email, password, roles, name, contact, dateOfBirth, age, gender, address, joiningDate, qualification, designation, specialities, department, morningTiming, eveningTiming, doctorImageData,consultationCharge, navigate) {
+export async function DoctorAuthHelper(email, password, roles, name, contact, dateOfBirth, age, gender, address, joiningDate, qualification, designation, specialities, department, morningTiming, eveningTiming, visitingDays, doctorImageData, consultationCharge, navigate) {
     try {
         const token = Cookies.get('authToken');
         if (!token) {
@@ -61,6 +61,7 @@ export async function DoctorAuthHelper(email, password, roles, name, contact, da
             department,
             morningTiming,
             eveningTiming,
+            visitingDays,
             consultationCharge,
         };
 

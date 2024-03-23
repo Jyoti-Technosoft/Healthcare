@@ -74,7 +74,7 @@ export default function Appointments() {
         fetchBrandNames();
     }, []);
 
-    const handleSearch = (e) => { 
+    const handleSearch = (e) => {
         console.log("Search keyword:", e.target.value); // Check if the function is triggered
         const keyword = e.target.value.toLowerCase();
         const filteredData = appointments.filter((appointment) =>
@@ -130,19 +130,18 @@ export default function Appointments() {
     ];
 
     return (
-        <> 
-            <div>
-
-                <div className='centerContainer'>
-                    <div className="container">
-                        <div className="row flex-lg-nowrap">
-                            <div className="col-md-11">
-                                <div className="row">
-                                    <div className="col mb-3">
-                                        <div className="card border-0 rounded">
-                                            <div className="card-body">
+        <>
+            <div className='background_part mt-3'> 
+                <div className="container ">
+                    <div className="row flex-lg-nowrap">
+                        <div className="col">
+                            <div className="row">
+                                <div className="col mb-3">
+                                    <div className="card border-0 mb-3 shadow  bg-white rounded">
+                                        <div className="card-body">
+                                            <div className="row">
                                                 <h6> {appointments.length} Appointments</h6>
-                                                <hr style={{color:'grey'}}/>
+                                                <hr style={{ color: 'grey' }} />
                                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                                     <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Appointments</b></h3>
                                                     <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} />
@@ -166,20 +165,20 @@ export default function Appointments() {
                                         </div>
                                     </div>
                                 </div>
+                                <ConsultancyModal
+                                    appointment={selectedAppointment}
+                                    prescriptions={prescriptions}
+                                    setPrescriptions={setPrescriptions}
+                                    showCloseButton={showCloseButton}
+                                    setShowCloseButton={setShowCloseButton}
+                                    handleAddPrescription={handleAddPrescription}
+                                    handleRemovePrescription={handleRemovePrescription}
+                                    handleCloseButtonClick={handleCloseButtonClick}
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
-                <ConsultancyModal
-                    appointment={selectedAppointment}
-                    prescriptions={prescriptions}
-                    setPrescriptions={setPrescriptions}
-                    showCloseButton={showCloseButton}
-                    setShowCloseButton={setShowCloseButton}
-                    handleAddPrescription={handleAddPrescription}
-                    handleRemovePrescription={handleRemovePrescription}
-                    handleCloseButtonClick={handleCloseButtonClick}
-                />
             </div>
         </>
     )

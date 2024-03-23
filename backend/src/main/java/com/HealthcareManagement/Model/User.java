@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,9 +14,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @Column(unique = true)
     private String email;
-
     @JsonIgnore
     private String password;
     private String role;
@@ -31,6 +31,12 @@ public class User {
     @OneToOne(mappedBy = "user")
     @JsonBackReference
     private Doctor doctor;
+
+    @Column(name = "created_time")
+    private LocalDateTime createdTime;
+
+    @Column(name = "updated_time")
+    private LocalDateTime updatedTime;
 
 
 
@@ -90,5 +96,19 @@ public class User {
         this.doctor = doctor;
     }
 
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
 
+    public void setCreatedTime(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public LocalDateTime getUpdatedTime() {
+        return updatedTime;
+    }
+
+    public void setUpdatedTime(LocalDateTime updatedTime) {
+        this.updatedTime = updatedTime;
+    }
 }
