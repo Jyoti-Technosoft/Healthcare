@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { getReceptionistApi } from "../Api";
+import { getPatientApi } from "../Api";
 import { format } from 'date-fns'; // Import format function from date-fns
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faPencilAlt, faUser } from '@fortawesome/free-solid-svg-icons';
-import { updateReceptionistProfileApi } from '../Api';
-import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireGender, validateRequireAddress, validateRequireWorkingDays, validateRequireShiftTime, validateRequireJoiningDate } from '../Validations';
-
-
-export default function ReceptionistProfile() {
+import { updatePatientProfileApi } from '../Api';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+export default function PatientProfile() {
   const userId = Cookies.get("userId");
-  const stepLabels = ["Account details", "Personal details", "Working details"];
   const roleCookie = Cookies.get('role');
+  const authToken = Cookies.get('authToken');
   const totalSteps = 3;
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
@@ -21,11 +20,10 @@ export default function ReceptionistProfile() {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState('');
   const [address, setAddress] = useState("");
-  const [dayOfWorking, setDayOfWorking] = useState("");
-  const [shiftTime, setShiftTime] = useState("");
   const [role, setRole] = useState("");
-  const [joiningDate, setJoiningDate] = useState("");
-  const [receptionistId, setReceptionistId] = useState("");
+  const [weight,setWeight]=useState("");
+  const [height,setHeight]=useState("");
+  const [patientId, setPatientId] = useState("");
   const [editMode, setEditMode] = useState(false); // State to track whether fields are in edit mode
 
   const [passwordFromDatabase, setPasswordFromDatabase] = useState("");
@@ -35,16 +33,6 @@ export default function ReceptionistProfile() {
   const [currentPasswordVisibility, setCurrentPasswordVisibility] = useState(true);
   const [newPasswordVisibility, setNewPasswordVisibility] = useState(true);
   const [confirmPasswordVisibility, setConfirmPasswordVisibility] = useState(true);
-
-  const [emailError, setEmailError] = useState("");
-  const [currentPasswordError, setCurrentPasswordError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordMatchError, setPasswordMatchError] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [contactError, setContactError] = useState("");
-  const [dobError, setDobError] = useState("");
-  const [genderError, setGenderError] = useState("");
-  const [addressError, setAddressError] = useState("");
 
   const capitalizeName = (name) => {
     return name.toLowerCase().replace(/(^|\s)\S/g, (firstLetter) => firstLetter.toUpperCase());
@@ -76,101 +64,41 @@ export default function ReceptionistProfile() {
 
     async function fetchData() {
       try {
-        const userData = await getReceptionistApi(userId);
-        console.log(userData.user.password);
-        // console.log(userData);
+        const userData = await getPatientApi(userId,authToken);
+        console.log(userData);
         setEmail(userData.user.email);
-        setReceptionistId(userData.id);
+        setPatientId(userData.id);
         setName(userData.name);
         setRole(userData.user.role);
         setPasswordFromDatabase(userData.user.password);
         setContact(userData.contact);
-        const formattedJoiningDate = format(new Date(userData.joiningDate), 'dd MMM yyyy');
-        setJoiningDate(formattedJoiningDate);
-        setDob(userData.dateOfBirth);
+        const formattedDate = new Date(userData.dateOfBirth).toISOString().substr(0, 10);
+        setDob(formattedDate);
         setAge(userData.age);
         setGender(userData.gender);
         setAddress(userData.address);
-        setDayOfWorking(userData.dayOfWork);
-        setShiftTime(userData.shiftTiming);
+        setWeight(userData.weight);
+        setHeight(userData.height);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     }
     fetchData();
-  }, []); 
-
-  
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setEmailError("");
-    setPasswordError("");
-    setPasswordMatchError("");
-    setNameError("");
-    setContactError("");
-    setDobError("");
-    setGenderError("");
-    setAddressError("");
-    setCurrentPasswordError("");
-    const emailRequireValidation = validateRequireEmail(email);
-    const emailPatternValidation = validatePatternEmail(email);
-    const passwordRequireValidation = validateRequirePassword(password);
-    const passwordPatternValidation = validatePatternPassword(password);
-    const nameRequireValidation = validateRequireName(name);
-    const contactRequireValidation = validateRequireContact(contact);
-    const dobRequireValidation = validateRequireDob(dateOfBirth);
-    const genderRequireValidation = validateRequireGender(gender);
-    const addressRequireValidation = validateRequireAddress(address);
-    if (emailRequireValidation) {
-      setEmailError(emailRequireValidation);
-      return;
-    } else if (emailPatternValidation) {
-      setEmailError(emailPatternValidation);
-      return;
-    }
-    if (passwordRequireValidation) {
-      setPasswordError(passwordRequireValidation);
-      return;
-    } else if (passwordPatternValidation) {
-      setPasswordError(passwordPatternValidation);
-      return;
-    }
-    if (password !== confirmPassword) {
-      setPasswordMatchError("Passwords does not match");
-      return;
-    }
-    if (nameRequireValidation) {
-      setNameError(nameRequireValidation);
-      return;
-    }
-    if (contactRequireValidation) {
-      setContactError(contactRequireValidation);
-      return;
-    }
-    if (dobRequireValidation) {
-      setDobError(dobRequireValidation);
-      return;
-    }
-    if (!gender) {
-      setGenderError('Please select a gender');
-      return;
-    }
-    if (addressRequireValidation) {
-      setAddressError(addressRequireValidation);
-      return;
-    }
-
     try {
-      await updateReceptionistProfileApi(receptionistId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age);
+      await updatePatientProfileApi(patientId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age, weight, height);    
+      toast.success('Profile updated successfully');
+      //window.location.reload();
     } catch (error) {
-      setCurrentPasswordError("Current password is incorrect");
+      toast.error('Failed to update profile');
     }
   };
-
   return (
     <div className='background_part mt-3'>
-      <div className="container"> 
+      <div className="container">
         <div className="row flex-lg-nowrap">
           <div className="col">
             <div className="row">
@@ -178,30 +106,14 @@ export default function ReceptionistProfile() {
                 <div className="card border-0 mb-3 shadow  bg-white rounded">
                   <div className="card-body">
                     <div className="">
-                      <div className="row">
-                        {/* <div className="col-12 col-sm-auto mb-3">
-                          <div className="mx-auto" style={{ width: '140px' }}>
-                            <div className="d-flex justify-content-center align-items-center rounded" style={{ height: '140px', backgroundColor: 'rgb(233, 236, 239)' }}>
-                              <span style={{ color: 'rgb(166, 168, 170)', font: 'bold 8pt Arial' }}>140x140</span>
-                            </div>
-                          </div>
-                        </div> */}
+                      <div className="row">                 
                         <div className="col d-flex flex-column flex-sm-row justify-content-between mb-3">
                           <div className="text-center text-sm-left mb-2 mb-sm-0">
-                            <h4 className="pt-sm-2 pb-1 mb-0 updateProfileHeading"><b className='contentHeadings' style={{ color: 'black' }}>Update profile</b></h4>
-
-                            {/* <div className="mt-2">
-                              <button className="btn btn-primary" style={{ width: '125px', fontSize: '12px' }} type="button">
-                                <i className="fa fa-fw fa-camera"></i> &nbsp;
-                                <span>Change Photo</span>
-                              </button>
-                            </div> */}
+                            <h4 className="pt-sm-2 pb-1 mb-0 updateProfileHeading"><b className='contentHeadings' style={{ color: 'black' }}>Patient Profile</b></h4>
                           </div>
                           <div className="text-center text-sm-right profileHead">
                             <span className="badge badge-secondary">{role}</span>
-                            <div className="text-muted"><small>Joined on {joiningDate}</small></div>
-
-
+                            
                           </div>
                         </div>
                       </div>
@@ -214,7 +126,6 @@ export default function ReceptionistProfile() {
                             </a>
                           </li>
                         </ul>
-
                         <div className="">
                           <button className="btn" style={{ width: '70px', fontSize: '13px' }} type="button" onClick={() => setEditMode(true)} >
                             <FontAwesomeIcon icon={faPencilAlt} /> Edit
@@ -222,15 +133,11 @@ export default function ReceptionistProfile() {
                         </div>
                       </div>
 
-
-
-
                       <div className="tab-content pt-3">
                         {[...Array(totalSteps).keys()].map((index) => (
                           <div className={`tab-pane ${step === index + 1 ? 'active' : ''}`} key={index + 1}>
                             {step === index + 1 && (
-                              <form className="form" onSubmit={handleSubmit}>
-
+                              <form className="form">
                                 <>
                                   <br />
                                   <div className="row">
@@ -243,7 +150,7 @@ export default function ReceptionistProfile() {
                                           <input
                                             id="name"
                                             type="text"
-                                            className={`form-control input-field form-control-lg bg-light  ${nameError && 'is-invalid'} `}
+                                            className="form-control input-field form-control-lg bg-light "                                            
                                             placeholder="Name"
                                             value={capitalizeName(name)}
                                             onChange={(event) => {
@@ -251,7 +158,7 @@ export default function ReceptionistProfile() {
                                             }}
                                             readOnly={!editMode}
                                           />
-                                          {nameError && <div className="text-danger">{nameError}</div>}
+                                          
 
                                         </div>
 
@@ -261,7 +168,7 @@ export default function ReceptionistProfile() {
                                           <input
                                             id="phone"
                                             type="number"
-                                            className={`form-control input-field form-control-lg bg-light  ${contactError && 'is-invalid'} `}
+                                            className="form-control input-field form-control-lg bg-light "                                            
                                             placeholder="Phone Number"
                                             value={contact}
                                             onChange={(event) => {
@@ -269,7 +176,6 @@ export default function ReceptionistProfile() {
                                             }}
                                             readOnly={!editMode}
                                           />
-                                          {contactError && <div className="text-danger">{contactError}</div>}
 
                                         </div>
                                         <div className="col-md-6">
@@ -279,7 +185,7 @@ export default function ReceptionistProfile() {
                                             id="dateOfBirth"
                                             type="date"
                                             value={dateOfBirth}
-                                            className={`form-control input-field form-control-lg bg-light  ${dobError && 'is-invalid'} `}
+                                            className="form-control input-field form-control-lg bg-light "                                            
                                             onChange={(event) => {
                                               setDob(event.target.value);
                                               setAge(calculateAge(event.target.value)); // Calculate age
@@ -287,7 +193,6 @@ export default function ReceptionistProfile() {
                                             }}
                                             readOnly={!editMode}
                                           />
-                                          {dobError && <div className="text-danger">{dobError}</div>}
 
                                         </div>
                                         <div className="col-md-6">
@@ -303,6 +208,38 @@ export default function ReceptionistProfile() {
                                           />
                                         </div>
 
+                                        <div className="col-md-6">
+                                          <label htmlFor="weight" className="form-label">Weight</label>
+                                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
+                                          <input
+                                            id="weight"
+                                            type="text"
+                                            className="form-control input-field form-control-lg bg-light "                                            
+                                            placeholder="Weight"
+                                            value={weight}
+                                            onChange={(event) => {
+                                              setWeight(event.target.value);
+                                            }}
+                                            readOnly={!editMode}
+                                          />
+
+                                        </div>
+                                        <div className="col-md-6">
+                                          <label htmlFor="height" className="form-label">Height</label>
+                                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
+                                          <input
+                                            id="height"
+                                            type="text"
+                                            className="form-control input-field form-control-lg bg-light "
+                                            placeholder="Height"
+                                            value={height}
+                                            onChange={(event) => {
+                                              setHeight(event.target.value);
+                                            }}
+                                            readOnly={!editMode}
+                                          />
+                                        </div>
+
                                         <div className="col-md-12 ">
                                           <label className="form-label" htmlFor="gender">
                                             Gender
@@ -314,8 +251,8 @@ export default function ReceptionistProfile() {
                                               type="radio"
                                               name="gender"
                                               id="male"
-                                              value="male"
-                                              checked={gender === "male"}
+                                              value="Male"
+                                              checked={gender === "Male"}
                                               onChange={handleGenderChange}
                                             />
                                             <label className="form-check-label" htmlFor="male">
@@ -328,8 +265,8 @@ export default function ReceptionistProfile() {
                                               type="radio"
                                               name="gender"
                                               id="female"
-                                              value="female"
-                                              checked={gender === "female"}
+                                              value="Female"
+                                              checked={gender === "Female"}
                                               onChange={handleGenderChange}
                                             />
                                             <label className="form-check-label" htmlFor="female">
@@ -351,28 +288,21 @@ export default function ReceptionistProfile() {
                                             </label>
                                           </div>
                                         </div>
-                                        {genderError && <div className="text-danger">{genderError}</div>}
-
 
                                         <div className="col-12">
                                           <label htmlFor="address" className="form-label">Address</label>
                                           <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                           <textarea
                                             id="address"
-                                            className={`form-control input-field form-control-lg bg-light ${addressError && 'is-invalid'} `}
-                                            placeholder="Address"
+                                            className="form-control input-field form-control-lg bg-light "                                            placeholder="Address"
                                             value={address}
                                             onChange={(event) => {
                                               setAddress(event.target.value);
                                             }}
                                             readOnly={!editMode}
                                           />
-                                          {addressError && <div className="text-danger">{addressError}</div>}
-
-
-                                        </div>
+                                       </div>
                                       </div>
-
                                     </div>
                                   </div>
                                   <br />
@@ -388,15 +318,13 @@ export default function ReceptionistProfile() {
                                             <input
                                               id="email"
                                               type="email"
-                                              className={`form-control input-field form-control-lg bg-light  ${emailError && 'is-invalid'} `}
-                                              placeholder="Email"
+                                              className="form-control input-field form-control-lg bg-light "                                              placeholder="Email"
                                               value={email}
                                               onChange={(event) => {
                                                 setEmail(event.target.value);
                                               }}
                                               readOnly={!editMode}
                                             />
-                                            {emailError && <div className="invalid-feedback">{emailError}</div>}
                                           </div>
                                         </div>
                                         <div className="col">
@@ -405,8 +333,7 @@ export default function ReceptionistProfile() {
                                             <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                             <input
                                               id="current-password"
-                                              className={`form-control input-field form-control-lg bg-light  ${currentPasswordError && 'is-invalid'} `}
-                                              type={currentPasswordVisibility ? 'password' : 'text'}
+                                              className="form-control input-field form-control-lg bg-light "                                              type={currentPasswordVisibility ? 'password' : 'text'}
                                               value={currentPassword}
                                               placeholder="••••••"
                                               onChange={(event) => {
@@ -414,7 +341,6 @@ export default function ReceptionistProfile() {
                                               }}
                                               readOnly={!editMode}
                                             />
-                                            {currentPasswordError && <div className="invalid-feedback">{currentPasswordError}</div>}
 
                                             <button
                                               className="btn btn-password-toggle1"
@@ -432,8 +358,7 @@ export default function ReceptionistProfile() {
                                           <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                           <input
                                             id="new-password"
-                                            className={`form-control input-field form-control-lg bg-light  ${passwordError && 'is-invalid'} `}
-                                            type={newPasswordVisibility ? 'password' : 'text'}
+                                            className="form-control input-field form-control-lg bg-light "                                            type={newPasswordVisibility ? 'password' : 'text'}
                                             placeholder="••••••"
                                             value={password}
                                             onChange={(event) => {
@@ -448,7 +373,6 @@ export default function ReceptionistProfile() {
                                           >
                                             <FontAwesomeIcon icon={newPasswordVisibility ? faEyeSlash : faEye} />
                                           </button>
-                                          {passwordError && <div className="invalid-feedback">{passwordError}</div>}
 
                                         </div>
 
@@ -458,8 +382,7 @@ export default function ReceptionistProfile() {
                                             <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                             <input
                                               id="confirm-password"
-                                              className={`form-control input-field form-control-lg bg-light  ${passwordMatchError && 'is-invalid'} `}
-                                              type={confirmPasswordVisibility ? 'password' : 'text'}
+                                              className="form-control input-field form-control-lg bg-light "                                              type={confirmPasswordVisibility ? 'password' : 'text'}
                                               placeholder="••••••"
                                               value={confirmPassword}
                                               onChange={(event) => {
@@ -474,7 +397,6 @@ export default function ReceptionistProfile() {
                                             >
                                               <FontAwesomeIcon icon={confirmPasswordVisibility ? faEyeSlash : faEye} />
                                             </button>
-                                            {passwordMatchError && <div className="text-danger">{passwordMatchError}</div>}
 
                                           </div>
                                         </div>
@@ -483,40 +405,13 @@ export default function ReceptionistProfile() {
                                   </div>
                                   <br />
                                 </>
-                                <>
-                                  <div className="mb-2"><b className='contentHeadings'>Work details</b></div>
-                                  <div className="row g-3">
-                                    <div className="col-md-6">
-                                      <label htmlFor="dayOfWork" input-field className="form-label">Day of Works</label>
-                                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                      <input
-                                        id="dayOfWork"
-                                        type="text"
-                                        className="form-control input-field form-control-lg bg-light"
-                                        placeholder="Days of works"
-                                        value={dayOfWorking}
-                                        readOnly
-                                      />
-                                    </div>
-
-                                    <div className="col-md-6">
-                                      <label htmlFor="shiftTiming" className="form-label">Shift Timing</label>
-                                      <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                      <input
-                                        id="shiftTiming"
-                                        type="text"
-                                        className="form-control input-field form-control-lg bg-light"
-                                        placeholder="Shift Timing"
-                                        value={shiftTime}
-                                        readOnly
-                                      />
-                                    </div>
-                                  </div>
+                                <>                  
                                   {editMode && (
                                     <div className="row">
                                       <div className="col">
                                         <div className="col-12 mt-3">
-                                          <button type="submit" className="btn btn-primary float-end" style={{ backgroundColor: '#1977cc' }}>Update</button>
+                                          <button type="submit" onClick={handleSubmit} className="btn btn-primary float-end" style={{ backgroundColor: '#1977cc' }}>Update</button>
+                                          
                                         </div>
                                       </div>
                                     </div>
@@ -537,6 +432,7 @@ export default function ReceptionistProfile() {
           </div>
         </div>
       </div>
+      <ToastContainer position="bottom-right"/>
     </div>
   )
 }

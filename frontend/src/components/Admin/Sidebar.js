@@ -11,7 +11,7 @@ import ShowAppointments from '../Receptionist/ShowAppointments';
 import MainDashboard from '../MainDashboard';
 import Dashboard from '../Dashboard';
 import Cookies from 'js-cookie';
-import { getDoctorsWithIdApi, getUsersApi } from '../Api';
+import { getDoctorsWithIdApi, getReceptionistApi, getPatientApi } from '../Api';
 import { useSelector, useDispatch } from 'react-redux';
 import Appointments from '../Doctor/Appointments';
 import Patients from '../Doctor/Patients';
@@ -20,6 +20,8 @@ import {
   setActiveTab,
 } from '../../actions/submenuActions';
 import { faClipboardQuestion, faDisplay } from '@fortawesome/free-solid-svg-icons';
+import PatientProfile from '../Patient/PatientProfile';
+import PatientAppointments from '../Patient/PatientAppointments';
 
 export function renderSidebarComponent(activeTab) {
   switch (activeTab) {
@@ -47,6 +49,10 @@ export function renderSidebarComponent(activeTab) {
       return <ShowAppointments />;
     case 'patientsWithAppointment':
       return <Patients />;
+    case 'patientProfile':
+      return <PatientProfile/>;
+    case 'patientAppointments':
+      return <PatientAppointments/>;
     default:
       return <MainDashboard />;
   }
@@ -71,7 +77,20 @@ export default function Sidebar() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const userData = await getUsersApi(userId);
+        const userData = await getReceptionistApi(userId);
+        setName(userData.name);
+        setGender(userData.gender);
+        
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
+    fetchData();
+  }, []);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const userData = await getPatientApi(userId,authToken);
         setName(userData.name);
         setGender(userData.gender);
         
@@ -98,8 +117,6 @@ export default function Sidebar() {
     return `data:image/png;base64,${base64String}`;
   };
 
-  console.log("Name: " + name);
-
   return (
     <div style={{ width: '200px' }}>
       <nav className="adminSidebar shadow-lg d-none d-md-block">
@@ -107,7 +124,7 @@ export default function Sidebar() {
           <div className="row">
             <div className="col-lg-12">
               <div className="d-flex sidebarHeading flex-column align-items-center">
-                {userRole === 'Receptionist' ? (
+                {userRole === 'Receptionist' || userRole === 'Patient' ? (
                   <div className='sidebarProfileImg'>
                     {gender.toLowerCase() === 'female' ? (
                       <img src="img/female2.png" alt="femaleProfile" />
@@ -233,6 +250,18 @@ export default function Sidebar() {
                           <i class="bi bi-people sidebarIcon"></i>Patients
                         </Link>
                       </li>
+                    </>
+                  )}
+                  {userRole === 'Patient' && (
+                    <>
+                      <li className="nav-item sidebarNavLinks">
+                        <Link
+                          className={`nav-link ${activeTab === 'patientAppointments' ? 'Active' : ''}`}
+                          onClick={() => setMenu('patientAppointments')}
+                        >
+                          <i class="bi bi-calendar-week sidebarIcon"></i>Appointments
+                        </Link>
+                      </li>            
                     </>
                   )}
                 </ul>

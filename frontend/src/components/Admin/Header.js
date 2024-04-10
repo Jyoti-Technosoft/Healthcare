@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { getUsersApi } from '../Api';
+import { getReceptionistApi } from '../Api';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveTab } from '../../actions/submenuActions';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,7 @@ export default function Header() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const userData = await getUsersApi(userId);
+                const userData = await getReceptionistApi(userId);
                 setName(userData.name);
                 setGender(userData.gender);
             } catch (error) {
@@ -71,6 +71,7 @@ export default function Header() {
         Cookies.remove('authToken');
         Cookies.remove('userId');
         navigate('/login');
+        window.location.reload();
     };
 
     return (
@@ -97,32 +98,41 @@ export default function Header() {
                                             )}
                                             <div className="row translate-middle-x">
                                                 <div className="col">
-                                                    <div ref={logoutRef} className='logoutCardContainer '>
+                                                    <div ref={logoutRef}>
                                                         {showLogoutCard && (
-                                                            <div className="card mt-3 border-0" style={{ width: '140px', height: '80px', marginLeft: '-90px' }}>
+                                                            <div className="card mt-3 border-0 p-2" style={{ width: '140px', marginLeft: '-80px' }}>
 
-                                                                <ul className="list-group list-group-flush" style={{ marginTop: '-12px' }}>
+                                                                <ul className="list-group list-group-flush" >
                                                                     {userRole === 'Doctor' && (
-                                                                        <li className='listHeader1 d-flex justify-content-between align-items-center'>
-                                                                            <i className="bi bi-person "></i>
-                                                                            <button className={`btn ${activeTab === 'doctorProfile' ? 'active' : ''}`} onClick={() => setMenu('doctorProfile')} style={{ width: '100px', fontSize: '14px', color: 'black' }}>
+                                                                        <li className=' d-flex  align-items-center'>
+                                                                            <i className="bi bi-person ml-2"></i>
+                                                                            <button className="btn" onClick={() => setMenu('doctorProfile')} style={{ fontSize: '14px', color: 'black' }}>
                                                                                 Profile
                                                                             </button>
-                                                                        </li>
+                                                                        </li>                                                                        
                                                                     )}
                                                                     {userRole === 'Receptionist' && (
-                                                                        <li className='listHeader1 d-flex justify-content-between align-items-center'>
-                                                                            <i className="bi bi-person "></i>
-                                                                            <button className={`btn ${activeTab === 'receptionistProfile' ? 'Active' : ''}`} onClick={() => setMenu('receptionistProfile')} style={{ width: '100px', fontSize: '14px', color: 'black' }}>
+                                                                        <li className='  d-flex  align-items-center'>
+                                                                            <i className="bi bi-person ml-2"></i>
+                                                                            <button className="btn" onClick={() => setMenu('receptionistProfile')} style={{ fontSize: '14px', color: 'black' }}>
                                                                                 Profile
                                                                             </button>
-                                                                        </li>
+                                                                        </li>                                    
                                                                     )}
-                                                                    <li className='listHeader1 d-flex justify-content-between align-items-center'>
-                                                                        <i className="bi bi-box-arrow-left "></i>
-                                                                        <button className="btn" onClick={handleLogout} style={{ width: '100px', fontSize: '14px', color: 'black' }}>
+                                                                    {userRole === 'Patient' && (
+                                                                        <li className='  d-flex  align-items-center'>
+                                                                            <i className="bi bi-person ml-2"></i>
+                                                                            <button className="btn" onClick={() => setMenu('patientProfile')} style={{ fontSize: '14px', color: 'black' }}>
+                                                                                Profile
+                                                                            </button>
+                                                                        </li>                                    
+                                                                    )}
+                                                                    
+                                                                    <li className='  d-flex  align-items-center'>
+                                                                        <i className="bi bi-box-arrow-left ml-2"></i>
+                                                                        <button className="btn" onClick={handleLogout} style={{ fontSize: '14px', color: 'black' }}>
                                                                             Logout
-                                                                        </button>
+                                                                        </button>                                                                       
                                                                     </li>
                                                                 </ul>
 

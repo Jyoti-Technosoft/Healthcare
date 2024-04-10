@@ -38,8 +38,6 @@ public class User {
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
 
-
-
     public Long getId() {
         return id;
     }

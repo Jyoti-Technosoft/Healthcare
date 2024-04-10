@@ -69,10 +69,10 @@ export async function DoctorAuthHelper(email, password, roles, name, contact, da
         await registerDoctorApi(userData, doctorImageData, token);
         
         // Alert success message
-        alert("User Registration Successfully");
+        //alert("User Registration Successfully");
     } catch (error) {
         // Alert error message
-        alert("Registration failed! Please try again.");
+        //alert("Registration failed! Please try again.");
     }
 }
 

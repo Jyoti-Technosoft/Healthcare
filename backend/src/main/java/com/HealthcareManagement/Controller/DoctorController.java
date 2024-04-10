@@ -133,7 +133,7 @@ public class DoctorController {
     }
 
     @GetMapping("/auth/healthReport/{appointmentId}")
-    @PreAuthorize("hasAuthority('Doctor')")
+    @PreAuthorize("hasAnyAuthority('Patient','Doctor')")
     public ResponseEntity<List<HealthReport>> fetchHealthReport(@PathVariable Long appointmentId){
         try {
             List<HealthReport> healthReport = doctorService.getHealthreport(appointmentId);

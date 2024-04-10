@@ -10,6 +10,8 @@ import {
     setActiveTab,
 } from '../../actions/submenuActions';
 import { validateRequireName, validateRequireContact, validateRequireId, validateRequireDepartment, validateRequireDoctor, validateRequireTimeSlot } from '../Validations';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function BookAppointment() {
     const [suggestions, setSuggestions] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -38,11 +40,11 @@ export default function BookAppointment() {
     const [departmentError, setDepartmentError] = useState("");
     const [doctorError, setDoctorError] = useState("");
     const [availableSlotsError, setAvailableSlotsError] = useState("");
-    
+
     const setMenu = (submenu) => {
         if (submenu === 'showAppointments') {
             dispatch(setActiveTab('showAppointments'));
-        } 
+        }
     };
 
     const handleInputChange = async (event) => {
@@ -68,7 +70,7 @@ export default function BookAppointment() {
         const fetchDoctors = async () => {
             try {
                 const response = await getDoctorsApi();
-                console.log(response); // Log the entire response for debugging
+                // console.log(response); // Log the entire response for debugging
                 if (response) {
                     // Store doctors with their details including consultation charge
                     setDoctors(response);
@@ -167,20 +169,20 @@ export default function BookAppointment() {
     }
 
     const handleSubmit = async (event) => {
-        setIdError("");
-        setNameError("");
-        setContactError("");
-        setDepartmentError("");
-        setDoctorError("");
-        setAvailableSlotsError("");       
-        event.preventDefault();
+        // setIdError("");
+        // setNameError("");
+        // setContactError("");
+        // setDepartmentError("");
+        // setDoctorError("");
+        // setAvailableSlotsError("");       
+        // event.preventDefault();
 
-        const idRequireValidation = validateRequireId(id);
-        const nameRequireValidation = validateRequireName(name);
-        const contactRequireValidation = validateRequireContact(contact);
-        const departmentRequireValidation = validateRequireDepartment(selectedDepartment);
-        const doctorRequireValidation = validateRequireDoctor(selectedDoctor);
-        const timeSlotsRequireValidation = validateRequireTimeSlot(availableSlots);        
+        // const idRequireValidation = validateRequireId(id);
+        // const nameRequireValidation = validateRequireName(name);
+        // const contactRequireValidation = validateRequireContact(contact);
+        // const departmentRequireValidation = validateRequireDepartment(selectedDepartment);
+        // const doctorRequireValidation = validateRequireDoctor(selectedDoctor);
+        // const timeSlotsRequireValidation = validateRequireTimeSlot(availableSlots);        
 
         // if (idRequireValidation && nameRequireValidation && contactRequireValidation) {
         //     setIdError(idRequireValidation);
@@ -199,6 +201,7 @@ export default function BookAppointment() {
         try {
             // Ensure selectedTimeSlot is a string, not an event object
             const slot = selectedTimeSlot.target.value;
+            console.log("Selected slot: " + slot);
             const [startTime, endTime] = slot.split(' - ');
             const formattedSlot = `${convertTo12Hour(startTime)} to ${convertTo12Hour(endTime)}`;
 
@@ -215,10 +218,19 @@ export default function BookAppointment() {
             console.log('Selected Time Slot:', formattedSlot);
 
             // Call bookAppointmentApi with the extracted slot value
-            await bookAppointmentApi(selectedDoctor, clickedPatientId, formattedDate, formattedSlot, navigate);
-            window.location.reload();
+            await bookAppointmentApi(selectedDoctor, clickedPatientId, formattedDate, formattedSlot);
+            setAvailableSlots([]);
+            setSelectedTimeSlot('');
+            setConsultationCharge('');
+            setDoctorSelected('');
+            setSelectedDepartment('');
+            setClickedPatient('');
+            setSearchQuery('');
+            toast.success('Appointment schedule!');
+            //window.location.reload();
         } catch (error) {
             // Handle error
+            toast.error('Failed to schedule appointment!');
         }
     }
     return (
@@ -489,7 +501,7 @@ export default function BookAppointment() {
                                                                                 type="text"
                                                                                 name="charge"
                                                                                 className="form-control input-field"
-                                                                                
+
                                                                                 id="charge"
                                                                                 placeholder="Consultancy charge"
                                                                                 value={consultationCharge}
@@ -517,6 +529,7 @@ export default function BookAppointment() {
                     </div>
                 </div>
             </div>
+            <ToastContainer position="bottom-right" />
         </div>
     );
 }

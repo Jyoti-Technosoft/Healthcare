@@ -10,6 +10,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   setActiveTab,
 } from '../../actions/submenuActions';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function RegisterUsers() {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
@@ -270,38 +272,48 @@ export default function RegisterUsers() {
       } else {
         await UsersAuthHelper(email, password, role, name, contact, dateOfBirth, age, gender, address, joiningDate, dayOfWorking, shiftTime, navigate);
       }
-      setToastType('success');
-      setToastMessage('User registration successful!');
-      setShowToast(true);
-      //window.location.reload();
+      // Clear form inputs
+      clearFormInputs();
+      toast.success('User register successfully');      
+      setStep(1);      
     } catch (error) {
-      setToastType('failure');
-      setToastMessage('User registration failed! Please try again.');
-      setShowToast(true);
+      toast.error('Failed to register user!');
     }
+  };
+  const clearFormInputs = () => {
+    setName("");
+    setContact("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setRole("");
+    setDob("");
+    setAge("");
+    setGender('');
+    setAddress("");
+    setJoiningDate("");
+    setDayOfWorking("");
+    setShiftTime("");
+    setQualification("");
+    setDesignation("");
+    setSpecialities("");
+    setDepartment("");
+    setConsultationCharge("");
+    setMorningTiming("");
+    setEveningTiming("");
+    setDoctorImageData(null);
+    setSelectedDays([]);
   };
 
   return (
     <>
-
       <div className='background_part mt-3'>
         <div className="container">
-
           <div className="row flex-lg-nowrap">
             <div className="col">
               <div className="row">
                 <div className="col mb-3">
                   <div className="card border-0 mb-3 shadow  bg-white rounded">
-
-                    {showToast && (
-                      <div style={{ maxWidth: '250px' }} className={`toast show ${toastType === 'success' ? 'bg-success' : 'bg-danger'} mr-5 position-absolute end-0`} role="alert" aria-live="assertive" aria-atomic="true">
-                        <div className="toast-header">
-                          <strong className="me-auto">{toastMessage}</strong>
-                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-
-                      </div>
-                    )}
                     <div className="card-body">
                       <div className="">
                         <div className="">
@@ -332,8 +344,6 @@ export default function RegisterUsers() {
                               ))}
                             </ul>
                           )}
-
-
                           <form onSubmit={handleSubmit}>
                             {step === 1 && (
                               <>
@@ -836,6 +846,7 @@ export default function RegisterUsers() {
             </div>
           </div >
         </div>
+        <ToastContainer position="bottom-right" />
       </div>
 
 

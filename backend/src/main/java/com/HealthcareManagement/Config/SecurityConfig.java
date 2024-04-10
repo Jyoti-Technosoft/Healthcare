@@ -45,7 +45,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .cors().and()
                         .authorizeHttpRequests(requests -> requests
                                 .requestMatchers("/superAdmin/loginAdmin").permitAll()
-                                .requestMatchers("/superAdmin/getUser/**").permitAll()
+                                .requestMatchers("/superAdmin/getReceptionist/**").permitAll()
+                                .requestMatchers("/superAdmin/getPatient/**").authenticated()
                                 .requestMatchers("/superAdmin/getDoctors").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll() // Allow all access to /swagger-ui/**
                                 .requestMatchers("/v2/api-docs/**", "/swagger-ui.html", "/swagger-resources/**").permitAll() // Additional paths for Swagger
@@ -53,6 +54,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers("/superAdmin/auth/registerUsers").authenticated()
                                 .requestMatchers("/superAdmin/auth/registerPatient").authenticated()
                                 .requestMatchers("/doctor/auth/**").authenticated()
+                                .requestMatchers("/patient/auth/**").authenticated()
                                 .requestMatchers("/receptionist/auth/updateReceptionistProfile").authenticated()
 
                         .anyRequest().authenticated()

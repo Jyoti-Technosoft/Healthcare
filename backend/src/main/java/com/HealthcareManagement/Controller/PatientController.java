@@ -2,8 +2,10 @@ package com.HealthcareManagement.Controller;
 
 import com.HealthcareManagement.Model.Doctor;
 import com.HealthcareManagement.Model.Patient;
+import com.HealthcareManagement.Model.UserDTO;
 import com.HealthcareManagement.Repository.AppointmentRepository;
 import com.HealthcareManagement.Repository.PatientRepository;
+import com.HealthcareManagement.Service.impl.PatientServiceImpl;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,10 +28,14 @@ public class PatientController {
     AppointmentRepository appointmentRepository;
 
     @Autowired
+    PatientServiceImpl patientService;
+
+    @Autowired
     PatientRepository patientRepository;
 
     @GetMapping("/auth/new/allAppointments/{patientId}")
     @PreAuthorize("hasAnyAuthority('Patient','Doctor')")
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<List> getAllAppointments(@PathVariable Long patientId) {
         // Check if the doctor with the specified ID exists
         Optional<Patient> patient = patientRepository.findById(patientId);
@@ -48,5 +54,16 @@ public class PatientController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.singletonList(new Object[]{errorMessage}));
         }
         return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+
+    @PutMapping("/auth/updatePatientProfile/{userId}")
+    @PreAuthorize("hasAuthority('Patient')")
+    public ResponseEntity<String> UpdateProfile(@PathVariable Long userId, @RequestBody UserDTO userDTO, @RequestHeader("Authorization") String authHeader){
+        try{
+            return patientService.updateprofile(userId,userDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

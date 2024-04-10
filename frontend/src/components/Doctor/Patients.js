@@ -50,13 +50,13 @@ export default function Patients() {
     };
 
     const columns = [
-        { name: 'Index', selector: (row, index) => index + 1, sortable: true, maxWidth: '70px' },
-        { name: 'Patient Id', selector: (row) => row.id, sortable: true },
-        { name: 'Name', selector: (row) => row.name, sortable: true, minWidth: '150px' },
-        { name: 'Email', selector: (row) => row.user.email, sortable: true, minWidth: '200px' },
-        { name: 'Gender', selector: (row) => row.gender, sortable: true },
-        { name: 'Age', selector: (row) => row.age, sortable: true },
-        { name: 'Address', selector: (row) => row.address, sortable: true, minWidth: '250px' },
+        { name: 'Index', selector: (row, index) => index + 1, sortable: true, maxWidth: '70px', center: true },
+        { name: 'Patient Id', selector: (row) => row.id, sortable: true, center: true },
+        { name: 'Name', selector: (row) => row.name, sortable: true, minWidth: '150px', center: true },
+        { name: 'Email', selector: (row) => row.user.email, sortable: true, minWidth: '200px', center: true },
+        { name: 'Gender', selector: (row) => row.gender, sortable: true, center: true },
+        { name: 'Age', selector: (row) => row.age, sortable: true, center: true },
+        { name: 'Address', selector: (row) => row.address, sortable: true, minWidth: '250px', center: true },
     ];
     return (
         <>

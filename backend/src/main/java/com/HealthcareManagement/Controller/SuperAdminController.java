@@ -35,6 +35,9 @@ public class SuperAdminController {
     ReceptionistServiceImpl receptionistService;
     @Autowired
     DoctorServiceImpl doctorService;
+
+    @Autowired
+    PatientServiceImpl patientService;
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -113,12 +116,27 @@ public class SuperAdminController {
         }
     }
 
-    @GetMapping("/getUser/{userId}")
-    public ResponseEntity<?> getUsers(@PathVariable Long userId) {
+    @GetMapping("/getReceptionist/{userId}")
+    public ResponseEntity<?> getReceptionist(@PathVariable Long userId) {
         try {
             Receptionist receptionist = receptionistService.getReceptionistByUserId(userId);
             if (receptionist != null) {
                 return new ResponseEntity<>(receptionist, HttpStatus.OK);
+            } else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/getPatient/{userId}")
+    @PreAuthorize("hasAnyAuthority('SuperAdmin','Patient','Receptionist','Doctor')")
+    public ResponseEntity<?> getPatient(@PathVariable Long userId) {
+        try {
+            Patient patient = patientService.getPatientByUserId(userId);
+            if (patient != null) {
+                return new ResponseEntity<>(patient, HttpStatus.OK);
             } else{
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }

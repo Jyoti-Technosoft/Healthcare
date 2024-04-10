@@ -25,10 +25,23 @@ export async function registerUserApi(userData) {
     }
 }
 
-export async function getUsersApi(userId) {
+export async function getReceptionistApi(userId) {
     try {
         
-        const response = await axios.get(`http://localhost:8080/superAdmin/getUser/${userId}`);
+        const response = await axios.get(`http://localhost:8080/superAdmin/getReceptionist/${userId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+export async function getPatientApi(userId,token) {
+    try {
+        
+        const response = await axios.get(`http://localhost:8080/superAdmin/getPatient/${userId}`,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         return response.data;
     } catch (error) {
         throw error;
@@ -109,6 +122,35 @@ export async function updateReceptionistProfileApi(userId,email,currentPassword,
     }
 }
 
+export async function updatePatientProfileApi(patientId,email,currentPassword,password,name,contact,gender,dateOfBirth,address,age,weight,height,navigate) {
+    try {
+        const userData={
+            email,
+            currentPassword,
+            password,
+            name,
+            contact,
+            gender,
+            dateOfBirth,
+            address,
+            age,
+            weight,
+            height,
+        }
+
+        const response = await axios.put(`http://localhost:8080/patient/auth/updatePatientProfile/${patientId}`,userData,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        //alert("Profile updated Successfully");
+        return response.data;
+    } catch (error) {
+        //alert(error);
+        throw error;
+    }
+}
+
 export async function updateDoctorProfileApi(userId,email,currentPassword,password,name,contact,gender,dateOfBirth,address,age,navigate) {
     try {
         if (!token) {
@@ -133,10 +175,10 @@ export async function updateDoctorProfileApi(userId,email,currentPassword,passwo
                 Authorization: `Bearer ${token}`,
             },
         });
-        alert("Profile updated Successfully");
+        //alert("Profile updated Successfully");
         return response.data;
     } catch (error) {
-        alert(error);
+        //alert(error);
         throw error;
     }
 }
@@ -202,13 +244,8 @@ export async function getAvailableSlots(doctorId, date,token) {
 }
  
 
-export async function bookAppointmentApi(doctorId,patientId,appointmentDate,appointmentTime,navigate) {
+export async function bookAppointmentApi(doctorId,patientId,appointmentDate,appointmentTime) {
     try {
-        if (!token) {
-            console.log('User not authenticated. Redirecting to login...');
-            navigate('/login');
-            return;
-        }
         const userData={
             doctorId,
             patientId,
@@ -222,11 +259,11 @@ export async function bookAppointmentApi(doctorId,patientId,appointmentDate,appo
                 Authorization: `Bearer ${token}`,
             },
         });
-        alert("Appointment booked Successfully");
+        //alert("Appointment booked Successfully");
         return response.data;
     } catch (error) {
         console.log(error);
-        alert(error);
+        //alert(error);
         throw error;
         
     }

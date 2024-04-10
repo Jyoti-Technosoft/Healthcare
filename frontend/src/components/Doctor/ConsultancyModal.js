@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { submitConsultationReport } from '../Api';
 import Cookies from 'js-cookie';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCloseButton, setShowCloseButton, handleAddPrescription, handleCloseButtonClick }) => {
   const [prescriptionFields, setPrescriptionFields] = useState([{ medicineNameInput: '', medicineDosage: '', timing: '1-1-1' }]);
   const [medicineNameSuggestions, setMedicineNameSuggestions] = useState([]);
@@ -41,7 +42,6 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
         name: result.products[0].active_ingredients[0].name,
         strength: result.products[0].active_ingredients[0].strength // Optionally, include strength if needed
       }));
-      console.log("Active Ingredients Suggestions:", activeIngredientsSuggestions);
       setSuggestions(activeIngredientsSuggestions);
     } catch (error) {
       console.error('Error fetching medicine suggestions:', error);
@@ -62,16 +62,21 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
         dosage: prescription.medicineDosage,
         timing: prescription.timing
       }));
+      const disease = document.getElementById('disease').value;
       const notes = document.getElementById('description').value;
       const data = {
         appointmentId,
+        disease,
         prescriptions,
         notes
       };
       await submitConsultationReport(appointmentId, data, token);
-      alert("Report submitted");
+      toast.success('Health Report submitted!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     } catch (error) {
-      console.log(error);
+      toast.error('Failed to submit report!');
     }
   };
 
@@ -83,7 +88,7 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
             <h5 class="modal-title" id="exampleModalLabel">Consultancy Form</h5>
             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div className="modal-body d-flex justify-content-center" style={{ maxHeight: '70vh', overflowY: 'auto', padding: '20px' }}>
+          <div className="modal-body d-flex justify-content-center" style={{ maxHeight: '85vh', overflowY: 'auto', padding: '20px' }}>
             {appointment && (
               <>
                 <div className="container">
@@ -220,7 +225,7 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
                                 value={prescription.timing} // Use prescription.timing for the value
                                 onChange={(e) => {
                                   // Allow only digits in the input
-                                  const inputValue = e.target.value.replace(/\D/g, '');
+                                  const inputValue = e.target.value.replace(/[^\d-]/g, '');
                                   // Update the timing for the specific prescription
                                   const updatedFields = [...prescriptionFields];
                                   updatedFields[index].timing = inputValue;
@@ -293,6 +298,7 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
           </div>
         </div>
       </div>
+      <ToastContainer position="bottom-right" />
     </div>
   );
 };

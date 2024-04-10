@@ -41,7 +41,12 @@ const PatientDetailPage = ({ patient }) => {
   function formatAppointmentDate(dateString) {
     return dateFormatter(dateString);
   }
-  const columns = [
+  const columns = [  
+    { name: 'Index', selector: (row, index) => index + 1, sortable: true, maxWidth: '150px', center: true },
+    { name: 'Appointment ID', selector: (row) => row.id, sortable: true, minWidth: '200px', center: true },
+    { name: 'Appointment Date', selector: (row) => formatAppointmentDate(row.appointmentDate), sortable: true, minWidth: '250px', center: true },
+    { name: 'Appointment time', selector: (row) => row.appointmentTime, sortable: true, minWidth: '250px', center: true },
+    { name: 'Consultancy charge', selector: (row) => row.consultationCharge, sortable: true, center: true },
     {
       name: '', selector: (row) => (
         <div>
@@ -50,13 +55,8 @@ const PatientDetailPage = ({ patient }) => {
             onClick={() => setReportPage(row)}
           ></i>
         </div>
-      ), sortable: true, maxWidth: '70px'
+      ), sortable: true
     },
-    { name: 'Index', selector: (row, index) => index + 1, sortable: true, maxWidth: '70px' },
-    { name: 'Appointment ID', selector: (row) => row.id, sortable: true, minWidth: '110px' },
-    { name: 'Appointment Date', selector: (row) => formatAppointmentDate(row.appointmentDate), sortable: true, minWidth: '160px' },
-    { name: 'Appointment time', selector: (row) => row.appointmentTime, sortable: true, minWidth: '180px' },
-    { name: 'Consultancy charge', selector: (row) => row.consultationCharge, sortable: true, minWidth: '200px' },
   ];
   const handleSearch = (e) => {
     const keyword = e.target.value.toLowerCase();
@@ -124,6 +124,7 @@ const PatientDetailPage = ({ patient }) => {
                               pagination
                               highlightOnHover
                               noDataComponent="No appointments found"
+                              center
                             />
                           )}
                         </div>

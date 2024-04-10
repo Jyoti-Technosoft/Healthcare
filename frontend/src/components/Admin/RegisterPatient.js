@@ -8,10 +8,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-
   setActiveTab,
 } from '../../actions/submenuActions';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function RegisterPatient() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -149,8 +149,11 @@ export default function RegisterPatient() {
     }
     try {
       await UsersAuthHelper(email, password, 'Patient', name, contact, dateOfBirth, age, gender, address, '', '', '', weight, height, navigate);
+      toast.success('Patient register successfully'); 
+      handleClear(); 
+      //dispatch(setActiveTab('patientsList'));
     } catch (error) {
-      alert(error)
+      toast.error('Failed to register patient!');
     }
   };
   function handleClear() {
@@ -442,6 +445,7 @@ export default function RegisterPatient() {
           </div>
         </div>
       </div>
+      <ToastContainer position="bottom-right" />
     </div>
 
   )

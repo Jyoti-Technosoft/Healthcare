@@ -3,8 +3,8 @@ import DataTable from 'react-data-table-component';
 import { getHealthreportsByAppointmentId } from '../Api'
 import Cookies from 'js-cookie';
 import { dateFormatter } from '../Validations';
-import PatientDetailPage from './PatientDetailPage';
-const PatientHealthReport = ({ appointment, patient }) => {
+import PatientAppointments from './PatientAppointments';
+const PatientHealthreport = ({ appointment, patient }) => {
     const authToken = Cookies.get("authToken");
     const [healthReport, setHealthReport] = useState([]);
     const [activeTab, setActiveTab] = useState(true);
@@ -12,13 +12,18 @@ const PatientHealthReport = ({ appointment, patient }) => {
     const setBackMenu = (appointment) => {
         setActiveTab(false);
     };
+    function formatAppointmentDate(dateString) {
+        return dateFormatter(dateString);
+    }
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const appointmentId = appointment.id;
+                console.log("appointment id: " +appointmentId);
                 const data = await getHealthreportsByAppointmentId(appointmentId, authToken);
                 setHealthReport(data); // Set the fetched patients to the state
                 setLoading(false);
+                console.log("Report: " +data);
             } catch (error) {
                 console.error('Error fetching patients:', error);
                 setLoading(false);
@@ -26,9 +31,7 @@ const PatientHealthReport = ({ appointment, patient }) => {
         };
         fetchData();
     }, []);
-    function formatAppointmentDate(dateString) {
-        return dateFormatter(dateString);
-    }
+
     const columns = [
         { name: 'Index', selector: (row, index) => index + 1, sortable: true, maxWidth: '70px' },
         { name: 'Healthreport ID', selector: (row) => row.id, sortable: true, minWidth: '110px' },
@@ -118,10 +121,9 @@ const PatientHealthReport = ({ appointment, patient }) => {
                     </div>
                 </div>
             ) : (
-                <PatientDetailPage />
+                <PatientAppointments />
             )}
         </>
-    );
-
+    )
 }
-export default PatientHealthReport;
+export default PatientHealthreport;

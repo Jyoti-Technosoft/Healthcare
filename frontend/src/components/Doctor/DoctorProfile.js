@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faPencilAlt, faUser } from '@fortawesome/free-solid-svg-icons';
 import { updateDoctorProfileApi, getDoctorsWithIdApi } from '../Api';
 import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireGender, validateRequireAddress, validateRequireWorkingDays, validateRequireShiftTime, validateRequireJoiningDate } from '../Validations';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function DoctorProfile() {
     const userId = Cookies.get("userId");
     const authToken = Cookies.get('authToken');
@@ -21,7 +22,7 @@ export default function DoctorProfile() {
 
     const [role, setRole] = useState("");
     const [joiningDate, setJoiningDate] = useState("");
-    const [receptionistId, setReceptionistId] = useState("");
+    const [doctorId, setDoctorId] = useState("");
     const [editMode, setEditMode] = useState(false); // State to track whether fields are in edit mode
 
     const [passwordFromDatabase, setPasswordFromDatabase] = useState("");
@@ -84,7 +85,7 @@ export default function DoctorProfile() {
                 //console.log(userData.user.password);
                 // console.log(userData);
                 setEmail(userData.user.email);
-                setReceptionistId(userData.id);
+                setDoctorId(userData.id);
                 setName(userData.name);
                 setRole(userData.user.role);
                 setPasswordFromDatabase(userData.user.password);
@@ -169,9 +170,10 @@ export default function DoctorProfile() {
         }
 
         try {
-            await updateDoctorProfileApi(receptionistId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age);
+            await updateDoctorProfileApi(doctorId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age);
+            toast.success('Profile updated successfully');
         } catch (error) {
-            setCurrentPasswordError("Current password is incorrect"); 
+            toast.error('Failed to update profile'); 
         }
     };
 
@@ -610,6 +612,7 @@ export default function DoctorProfile() {
                     </div>
                 </div>
             </div>
+            <ToastContainer position="bottom-right" />
         </div>
     )
 }
