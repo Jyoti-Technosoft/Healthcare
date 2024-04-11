@@ -22,6 +22,7 @@ import {
 import { faClipboardQuestion, faDisplay } from '@fortawesome/free-solid-svg-icons';
 import PatientProfile from '../Patient/PatientProfile';
 import PatientAppointments from '../Patient/PatientAppointments';
+import HealthCalculator from '../Patient/HealthCalculator';
 
 export function renderSidebarComponent(activeTab) {
   switch (activeTab) {
@@ -50,9 +51,11 @@ export function renderSidebarComponent(activeTab) {
     case 'patientsWithAppointment':
       return <Patients />;
     case 'patientProfile':
-      return <PatientProfile/>;
+      return <PatientProfile />;
     case 'patientAppointments':
-      return <PatientAppointments/>;
+      return <PatientAppointments />;
+    case 'healthCalculator':
+      return <HealthCalculator />;
     default:
       return <MainDashboard />;
   }
@@ -80,7 +83,7 @@ export default function Sidebar() {
         const userData = await getReceptionistApi(userId);
         setName(userData.name);
         setGender(userData.gender);
-        
+
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -90,10 +93,10 @@ export default function Sidebar() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const userData = await getPatientApi(userId,authToken);
+        const userData = await getPatientApi(userId, authToken);
         setName(userData.name);
         setGender(userData.gender);
-        
+
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -195,7 +198,7 @@ export default function Sidebar() {
                     </>
                   )}
 
-                  
+
 
                   {(userRole === 'Receptionist' || userRole === 'Admin') && (
                     <>
@@ -256,12 +259,29 @@ export default function Sidebar() {
                     <>
                       <li className="nav-item sidebarNavLinks">
                         <Link
+
+                          className={`nav-link ${activeTab === 'doctorList' ? 'Active' : ''}`}
+                          onClick={() => setMenu('doctorList')}
+                        >
+                          <i class="fas fa-user-md sidebarIcon"></i> Doctors
+                        </Link>
+                      </li>
+                      <li className="nav-item sidebarNavLinks">
+                        <Link
                           className={`nav-link ${activeTab === 'patientAppointments' ? 'Active' : ''}`}
                           onClick={() => setMenu('patientAppointments')}
                         >
                           <i class="bi bi-calendar-week sidebarIcon"></i>Appointments
                         </Link>
-                      </li>            
+                      </li>
+                      <li className="nav-item sidebarNavLinks">
+                        <Link
+                          className={`nav-link ${activeTab === 'healthCalculator' ? 'Active' : ''}`}
+                          onClick={() => setMenu('healthCalculator')}
+                        >
+                          <i class="bi bi-calendar-week sidebarIcon"></i>Health Calculator
+                        </Link>
+                      </li>
                     </>
                   )}
                 </ul>

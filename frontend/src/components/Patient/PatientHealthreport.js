@@ -23,7 +23,6 @@ const PatientHealthreport = ({ appointment, patient }) => {
                 const data = await getHealthreportsByAppointmentId(appointmentId, authToken);
                 setHealthReport(data); // Set the fetched patients to the state
                 setLoading(false);
-                console.log("Report: " +data);
             } catch (error) {
                 console.error('Error fetching patients:', error);
                 setLoading(false);

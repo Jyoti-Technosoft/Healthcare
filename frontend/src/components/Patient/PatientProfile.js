@@ -65,7 +65,6 @@ export default function PatientProfile() {
     async function fetchData() {
       try {
         const userData = await getPatientApi(userId,authToken);
-        console.log(userData);
         setEmail(userData.user.email);
         setPatientId(userData.id);
         setName(userData.name);

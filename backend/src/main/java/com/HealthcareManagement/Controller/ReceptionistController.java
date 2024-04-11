@@ -156,7 +156,7 @@ public class ReceptionistController {
     }
 
     @GetMapping("/auth/getDoctors")
-    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','Patient')")
     public List<Doctor> getAllDoctors(){
         try{
             return receptionistService.getAllDoctors();

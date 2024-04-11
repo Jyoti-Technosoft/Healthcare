@@ -17,12 +17,12 @@ export default function ReceptionistDashboard() {
   const userId = Cookies.get("userId");
   const token = Cookies.get("authToken");
   const activeTab = useSelector((state) => state.submenu.activeTab);
-    const dispatch = useDispatch();
-    const setMenu = (menu) => {
-        if (activeTab !== menu) {
-            dispatch(setActiveTab(menu));
-        }
-    };
+  const dispatch = useDispatch();
+  const setMenu = (menu) => {
+      if (activeTab !== menu) {
+          dispatch(setActiveTab(menu));
+      }
+  };
 
   function formatAppointmentDate(dateString) {
     return dateFormatter(dateString);

@@ -133,7 +133,27 @@ export function calculateAge(dateOfBirth){
 
 export function dateFormatter(dateString){
     const date = new Date(dateString);
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const options = { day: 'numeric', month: 'short', year: 'numeric' };
     const formattedDate = date.toLocaleDateString('en-GB', options);
     return formattedDate.replace(/\b(\d{1})\b/g, '0$1st').replace(/\b(\d{2})\b/g, '$1th');
 }
+
+export const calculateBMI = (height, weight) => {
+    if (height && weight) {
+        const heightMeters = height / 100;
+        const bmiValue = weight / (heightMeters * heightMeters);
+        return bmiValue.toFixed(2);
+    }
+    return null;
+};
+
+export const calculateIdealWeight = (height) => {
+    const exactWeight = Math.round((height - 100) * 0.9);
+    const minHeight = Math.round(exactWeight * 0.9); // 10% below exact weight
+    const maxHeight = Math.round(exactWeight * 1.1); // 10% above exact weight
+
+    return {
+        exactWeight: exactWeight,
+        weightRange: [minHeight, maxHeight]
+    };
+};
