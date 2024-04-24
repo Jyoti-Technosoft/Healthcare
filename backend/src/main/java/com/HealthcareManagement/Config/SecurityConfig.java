@@ -55,6 +55,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers("/superAdmin/auth/registerPatient").authenticated()
                                 .requestMatchers("/doctor/auth/**").authenticated()
                                 .requestMatchers("/patient/auth/**").authenticated()
+                                .requestMatchers("/receptionist/auth/todayAppointment").authenticated()
                                 .requestMatchers("/receptionist/auth/updateReceptionistProfile").authenticated()
 
                         .anyRequest().authenticated()

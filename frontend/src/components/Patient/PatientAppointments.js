@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { getAllAppointmentsForPatient, getPatientApi } from '../Api'; 
+import { getAllAppointmentsForPatient, getPatientApi, getAllHealthreports } from '../Api';
 import Cookies from 'js-cookie';
 import { dateFormatter } from '../Validations';
 import PatientHealthreport from './PatientHealthreport';
@@ -12,6 +12,7 @@ export default function PatientAppointments() {
     const [filteredAppointments, setFilteredAppointments] = useState([]);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [showHealthreport, setShowHealthreport] = useState(true);
+    const [healthReport, setHealthReport] = useState([]);
     function formatAppointmentDate(dateString) {
         return dateFormatter(dateString);
     }
@@ -24,6 +25,9 @@ export default function PatientAppointments() {
                 const data = await getAllAppointmentsForPatient(patientId, authToken);
                 setAppointments(data);
                 setFilteredAppointments(data);
+
+                const healthReportData = await getAllHealthreports(authToken);
+                setHealthReport(healthReportData);
             } catch (error) {
                 console.error('Error fetching appointments:', error);
             }
@@ -36,19 +40,21 @@ export default function PatientAppointments() {
         setShowHealthreport(false);
     }
     const columns = [
-        
+
         { name: 'Index', selector: (row, index) => index + 1, sortable: true, maxWidth: '200px' },
         { name: 'Appointment ID', selector: (row) => row.id, sortable: true, maxWidth: '200px' },
         { name: 'Appointment Date', selector: (row) => formatAppointmentDate(row.appointmentDate), sortable: true, maxWidth: '250px' },
         { name: 'Appointment time', selector: (row) => row.appointmentTime, sortable: true, maxWidth: '250px' },
-        { name: 'Consultancy charge', selector: (row) => row.consultationCharge, sortable: true,maxWidth:'200px'},
+        { name: 'Consultancy charge', selector: (row) => row.consultationCharge, sortable: true, maxWidth: '200px' },
         {
             name: '', selector: (row) => (
                 <div>
-                    <i
-                        className="bi bi-eye-fill reportEyeIcon"
-                        onClick={() => setReportPage(row)}
-                    ></i>
+                    {healthReport.some(report => report.appointment.id === row.id) && (
+                        <i
+                            className="bi bi-eye-fill reportEyeIcon"
+                            onClick={() => setReportPage(row)}
+                        ></i>
+                    )}
                 </div>
             ), sortable: true, maxWidth: '100px'
         },

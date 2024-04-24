@@ -339,6 +339,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         appointment.setConsultationCharge(consultationCharge);
         appointment.setConsultationChargeType(consultationChargeType);
         appointment.setPaymentMode("Cash");
+        appointment.setArrive("0");
         appointment.setPatient(patient);
         appointment.setDoctor(doctor);
         return appointment;

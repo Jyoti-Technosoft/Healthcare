@@ -46,7 +46,7 @@ export default function PatientDashboard() {
         return appointments.filter(appointment => appointment.appointmentDate === today);
     };
     const columns = [
-        { name: 'Index', selector: (row, index) => index + 1, sortable: true, maxWidth: '20px' },
+        { name: 'SR.NO', selector: (row, index) => index + 1, sortable: true, maxWidth: '20px' },
         { name: 'Appointment Id', selector: row => row.id, sortable: true, maxWidth: '110px' },
         { name: 'Patient Id', selector: row => row.patient.id, sortable: true, maxWidth: '100px' },
         { name: 'Patient Name', selector: row => row.patient.name, sortable: true, maxWidth: '125px' },
@@ -59,7 +59,7 @@ export default function PatientDashboard() {
             <div className="d-flex justify-content-center align-items-center ">
                 <div className="container">
                     <div className="row row-cols-1 row-cols-md-4">
-                        <div className="col mb-4"> {/* Adjusted column size */}
+                        <div className="col mb-4"> 
                             <div className="card  h-100 rounded border-0 justify-content-center" >
                                 <div className="card-body p-1 ">
                                     <h1 className='text-center'>{appointments.length}</h1>
@@ -67,7 +67,7 @@ export default function PatientDashboard() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col mb-4"> {/* Adjusted column size */}
+                        <div className="col mb-4"> 
                             <div className="card  h-100 rounded border-0 justify-content-center" >
                                 <div className="card-body p-1">
                                     <h1 className='text-center'>{todaysAppointments().length}</h1>
@@ -75,7 +75,7 @@ export default function PatientDashboard() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col mb-4"> {/* Adjusted column size */}
+                        <div className="col mb-4"> 
                             <div className="card  h-100 rounded border-0 justify-content-center" >
                                 <div className="card-body p-1">
                                     <h1 className='text-center'>{upcomingAppointments.length}</h1>
@@ -83,7 +83,7 @@ export default function PatientDashboard() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col mb-4"> {/* Adjusted column size */}
+                        <div className="col mb-4"> 
                             <div className="card  h-100 rounded border-0 justify-content-center" >
                                 <div className="card-body p-1">
                                     <h1 className='text-center'>{doctors.length}</h1>
@@ -97,9 +97,9 @@ export default function PatientDashboard() {
             <div className="d-flex justify-content-center align-items-center ">
                 <div className="container">
                     <div className="row">
-                        <div className="col-md-7 "> {/* Adjusted column size */}
-                            <div className="card todayAppointmentCard  mb-4 rounded border-0 justify-content-end" style={{ height: '550px' }}>
-                                <div className="card-body">
+                        <div className="col-md-7 ">
+                            <div className="card todayAppointmentCard  mb-4 rounded border-0 justify-content-end">
+                                <div className="card-body" style={{ height: '500px', overflowY: 'auto' }}>
                                     <h6><b className='contentHeadings' style={{ color: 'black' }}> Todays Appointments</b> </h6>
                                     <br />
                                     <DataTable
@@ -116,8 +116,8 @@ export default function PatientDashboard() {
                             </div>
                         </div>
                         <div className="col-md-5">
-                            <div className="card upcoming-appointments  mb-4 rounded border-0 justify-content-end" style={{ height: '550px' }}>
-                                <div className="card-body">
+                            <div className="card upcoming-appointments  mb-4 rounded border-0 justify-content-end">
+                                <div className="card-body" style={{ height: '500px', overflowY: 'auto' }}>
                                     <div className="d-flex justify-content-between align-items-center">
                                         <h6 className=''><b className='contentHeadings' style={{ color: 'black' }}> Upcoming Appointments</b> </h6>
                                         <a style={{ cursor: 'pointer', fontSize: '12px' }} onClick={() => setMenu('patientAppointments')}>See all<i class="bi bi-chevron-right" style={{ fontSize: '10px' }}></i></a>
@@ -126,8 +126,8 @@ export default function PatientDashboard() {
 
                                         {upcomingAppointments.slice(0, 5).map(appointment => (
                                             <>
-                                                <div key={appointment.id} className="appointment-item" >
-                                                    <div className='dashboardPatientImg mt-1'>
+                                                <div key={appointment.id} className="d-flex align-items-center" >
+                                                    <div className='dashboardPatientImg'>
                                                         {appointment.patient.gender.toLowerCase() === 'female' && (
                                                             <img src="img/female2.png" alt="femaleProfile" />
                                                         )}
@@ -135,14 +135,14 @@ export default function PatientDashboard() {
                                                             <img src="img/maleRecep.png" alt="maleProfile" />
                                                         )}
                                                     </div>
-                                                    <div className='ml-5'>
+                                                    <div className='ml-3'>
                                                         <span style={{ fontSize: '14px' }}><strong>{appointment.patient.name}</strong></span>
                                                         <p style={{ fontSize: '12px', fontFamily: 'Arial, Helvetica, sans-serif' }}>{appointment.patient.gender}, {appointment.patient.age} <span className='ml-2'>{appointment.doctor.name}</span>  <span className='ml-2'>  {formatAppointmentDate(appointment.appointmentDate)}, {appointment.appointmentTime}</span></p>
 
                                                     </div>
-                                                    <hr style={{ color: 'grey' }} />
+                                                    
                                                 </div>
-
+                                                <hr style={{ color: 'grey' }} />
                                             </>
                                         ))}
                                     </div>

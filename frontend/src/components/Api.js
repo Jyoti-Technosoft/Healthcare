@@ -244,7 +244,7 @@ export async function getAvailableSlots(doctorId, date,token) {
 }
  
 
-export async function bookAppointmentApi(doctorId,patientId,appointmentDate,appointmentTime) {
+export async function bookAppointmentApi(doctorId,patientId,appointmentDate,appointmentTime,token) {
     try {
         const userData={
             doctorId,
@@ -259,11 +259,9 @@ export async function bookAppointmentApi(doctorId,patientId,appointmentDate,appo
                 Authorization: `Bearer ${token}`,
             },
         });
-        //alert("Appointment booked Successfully");
         return response.data;
     } catch (error) {
         console.log(error);
-        //alert(error);
         throw error;
         
     }
@@ -352,6 +350,19 @@ export async function getAllDoctors(token) {
         throw error;
     }
 }
+export async function getAllHealthreports(token) {
+    try {
+        
+        const response = await axios.get(`http://localhost:8080/doctor/auth/allHealthReport`,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
 export async function getHealthreportsByAppointmentId(appointmentId,token) {
     try {
         
@@ -408,6 +419,51 @@ export async function getAllAppointmentsForPatient(patientId,token) {
 export async function getAllUsers(token){
     try{
         const response = await axios.get("http://localhost:8080/superAdmin/auth/getUsers", {  
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    }catch(error){
+        throw error;
+    }
+}
+export async function updatePatientArrive(appointmentIds, token) {
+    try {
+        const appointmentIdsParam = appointmentIds.join(','); // Convert array to comma-separated string
+        const response = await axios.put(`http://localhost:8080/receptionist/auth/todayAppointment?appointmentIds=${appointmentIdsParam}`, null, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+export async function doctorLeaveRequest(fromDate,toDate,fromTime,toTime,reason,doctorId,token){
+    try {       
+        const userData={
+            fromDate,
+            toDate,
+            fromTime,
+            toTime,
+            reason,
+        } 
+        const response = await axios.post(`http://localhost:8080/doctor/auth/doctorLeaveRequest/${doctorId}`,userData,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getDoctorLeaveRequest(doctorId,token){
+    try{
+        const response = await axios.get(`http://localhost:8080/doctor/auth/getDoctorLeaveRequest/${doctorId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },

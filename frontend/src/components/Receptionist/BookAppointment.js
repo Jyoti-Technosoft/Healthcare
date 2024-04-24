@@ -218,7 +218,7 @@ export default function BookAppointment() {
             console.log('Selected Time Slot:', formattedSlot);
 
             // Call bookAppointmentApi with the extracted slot value
-            await bookAppointmentApi(selectedDoctor, clickedPatientId, formattedDate, formattedSlot);
+            await bookAppointmentApi(selectedDoctor, clickedPatientId, formattedDate, formattedSlot,authToken);
             setAvailableSlots([]);
             setSelectedTimeSlot('');
             setConsultationCharge('');

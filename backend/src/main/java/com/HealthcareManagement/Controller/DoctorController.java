@@ -2,6 +2,7 @@ package com.HealthcareManagement.Controller;
 
 import com.HealthcareManagement.Model.*;
 import com.HealthcareManagement.Repository.AppointmentRepository;
+import com.HealthcareManagement.Repository.DoctorLeaveRepository;
 import com.HealthcareManagement.Repository.DoctorRepository;
 import com.HealthcareManagement.Service.DoctorService;
 import io.swagger.annotations.Api;
@@ -29,6 +30,9 @@ public class DoctorController {
     DoctorRepository doctorRepository;
     @Autowired
     AppointmentRepository appointmentRepository;
+
+    @Autowired
+    DoctorLeaveRepository doctorLeaveRepository;
 
     @GetMapping("/auth/getDoctor/{userId}")
     @PreAuthorize("hasAuthority('Doctor')")
@@ -132,6 +136,24 @@ public class DoctorController {
         }
     }
 
+    @GetMapping("/auth/allHealthReport")
+    @PreAuthorize("hasAnyAuthority('Patient','Doctor')")
+    public ResponseEntity<List<HealthReport>> fetchHealthReport(){
+        try {
+            List<HealthReport> healthReport = doctorService.getAllHealthreport();
+            if (healthReport != null) {
+                // Return health report with prescriptions
+                return ResponseEntity.ok(healthReport);
+            } else {
+                // Health report not found
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception
+            throw e; // Rethrow the exception
+        }
+    }
+
     @GetMapping("/auth/healthReport/{appointmentId}")
     @PreAuthorize("hasAnyAuthority('Patient','Doctor')")
     public ResponseEntity<List<HealthReport>> fetchHealthReport(@PathVariable Long appointmentId){
@@ -149,5 +171,39 @@ public class DoctorController {
             throw e; // Rethrow the exception
         }
     }
+
+    @PostMapping("/auth/doctorLeaveRequest/{doctorId}")
+    @PreAuthorize("hasAuthority('Doctor')")
+    public ResponseEntity<String> doctorLeaveRequest(@PathVariable Long doctorId,@RequestBody UserDTO userDTO){
+        try{
+            return doctorService.doctorLeaveRequest(doctorId,userDTO);
+        }catch(Exception e){
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @GetMapping("/auth/getDoctorLeaveRequest/{doctorId}")
+    @PreAuthorize("hasAuthority('Doctor')")
+    public ResponseEntity<List<DoctorLeave>> getDoctorLeaveRequest(@PathVariable Long doctorId) {
+        try {
+            Optional<Doctor> existingDoctor = doctorRepository.findById(doctorId);
+            if (existingDoctor.isPresent()) {
+                List<DoctorLeave> leaveRequests = doctorLeaveRepository.findByDoctorId(doctorId);
+                if (!leaveRequests.isEmpty()) {
+                    return ResponseEntity.ok(leaveRequests);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+
 
 }

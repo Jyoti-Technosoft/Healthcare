@@ -174,6 +174,21 @@ public class ReceptionistController {
     }
 
 
+    @PutMapping("/auth/todayAppointment")
+    @PreAuthorize("hasAuthority('Receptionist')")
+    public ResponseEntity<String> updateArrivalStatus(@RequestParam("appointmentIds") List<Long> appointmentIds) {
+        List<Appointment> appointments = appointmentRepository.findAllById(appointmentIds);
+
+        if (appointments.isEmpty()) {
+            return new ResponseEntity<>("No appointments found", HttpStatus.NOT_FOUND);
+        }
+        appointments.forEach(appointment -> {
+            appointment.setArrive("1");
+            appointmentRepository.save(appointment);
+        });
+
+        return new ResponseEntity<>("Arrival status updated successfully", HttpStatus.OK);
+    }
 
 
 

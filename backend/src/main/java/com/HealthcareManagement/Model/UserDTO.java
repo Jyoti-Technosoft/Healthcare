@@ -57,6 +57,69 @@ public class UserDTO {
     private String medicineName;
     private String dosage;
     private String timing;
+    private String arrive;
+
+    private String fromDate;
+    private String toDate;
+    private String fromTime;
+    private String toTime;
+    private String reason;
+
+    public String getArrive() {
+        return arrive;
+    }
+
+    public void setArrive(String arrive) {
+        this.arrive = arrive;
+    }
+
+    public LocalDateTime getExaminationDateTime() {
+        return examinationDateTime;
+    }
+
+    public void setExaminationDateTime(LocalDateTime examinationDateTime) {
+        this.examinationDateTime = examinationDateTime;
+    }
+
+    public String getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public String getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
+    }
+
+    public String getFromTime() {
+        return fromTime;
+    }
+
+    public void setFromTime(String fromTime) {
+        this.fromTime = fromTime;
+    }
+
+    public String getToTime() {
+        return toTime;
+    }
+
+    public void setToTime(String toTime) {
+        this.toTime = toTime;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
     public Long getId() {
         return id;

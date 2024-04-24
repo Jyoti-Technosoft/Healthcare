@@ -13,7 +13,7 @@
 .regervation_part .btn_2 {
   background-image: -webkit-linear-gradient(to right, #fff, #fff, #fff);
   background-image: -o-linear-gradient(to right, #fff, #fff, #fff);
-  background-image: linear-gradient(to right, #fff, #fff, #fff); 
+  background-image: linear-gradient(to right, #fff, #fff, #fff);
 }
 
 
@@ -107,12 +107,8 @@
     height: 50px !important;
     width: 40px !important;
     padding: 6px;
-
-
-    position: absolute;
+    display: inline-block;
   }
-
-
 
   .logoutBtn Link {
     margin-top: -85px;
@@ -474,7 +470,7 @@
 
 
 
-  
+
 
   .suggestion-list {
     list-style-type: none;
@@ -637,7 +633,14 @@
     background-color: #F5F5F5;
   }
 
+  .leaveCalenderCard{
+    width: 300px !important;
 
+  }
+  .vertical-separator {
+    height: 100%; /* Adjust height as needed */
+    border: 2px solid #ddd; /* Set border style and color */
+  }
 }
 
 /* For small screens */
@@ -652,9 +655,17 @@
     /* height: 150px !important; */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
   }
+  .leaveCalenderCard{
+    width: 230px !important;
 
+  }
+  .vertical-separator {
+    display: none !important;
+  }
 
-
+  .slideBox {
+    width: 80% !important;
+  }
 
   .todayAppointmentCard {
     height: 700px !important;
@@ -685,7 +696,7 @@
     height: 50px !important;
     width: 40px !important;
     padding: 6px;
-    position: absolute;
+    display: inline-block;
   }
 
   .dashboardCard {
@@ -1007,7 +1018,30 @@
 
 
 }
+.highlighted-date{
+  background-color: #1977cc !important;
+  border-radius: 20px !important;
+  color: white !important;
+}
+.between-date {
+  background-color: #f2f2f2 !important; /* Grey color for in-between dates */
+}
+.react-calendar__navigation__label__labelText{
+  font-size: 12px !important;
+}
+.react-calendar__month-view__weekdays{
+  font-size: 10px !important;
+}
 
+.selected-date{
+  border-radius: 20px !important;
+}
+.today-date{
+  border: 1px solid #FABA5F !important; /* Change the border color as needed */
+  border-radius: 50% !important;
+  background-color: transparent !important;
+  color: #000 !important;
+}
 .me-1 {
   font-size: 15px !important;
   color: grey !important;
@@ -1064,9 +1098,11 @@
   transition: 0.4s;
   border-radius: 50px;
 }
-.appointmentButton:hover{
+
+.appointmentButton:hover {
   background: #1c84e3;
 }
+
 #search {
   color: #444444;
   font-size: 14px;
@@ -1088,7 +1124,7 @@
   border-radius: 50px;
   text-align: left;
   border: 1px solid #bfdcf7;
-  
+
 }
 
 #search .search-section form input[type=text] {
@@ -1116,6 +1152,14 @@
   background: #1c84e3;
 }
 
+
+
+.reactCalender {
+  border: none !important;
+  /* width: 300px;
+  max-width: 100%;
+  margin: auto; */
+}
 
 /* Custom css end */
 

@@ -2,16 +2,18 @@ import React from 'react';
 import { Slide, Box } from '@mui/material';
 import BMICalculator from './BMICalculator';
 import IdealWeight from './IdealWeight';
+import AgeCalculator from './AgeCalculator';
 const SlidePanel = ({ showForm, toggleForm, activePanel }) => {
     
     return (
         <Slide direction="left" in={showForm} mountOnEnter unmountOnExit>
             <Box
+                className='slideBox'
                 sx={{
                     position: "fixed",
                     top: 0,
                     right: 0,
-                    width: "40%",
+                    width: "43%",
                     height: "100vh",
                     background: "#ffffff",
                     borderRadius: "0.5%",
@@ -24,12 +26,17 @@ const SlidePanel = ({ showForm, toggleForm, activePanel }) => {
                     <div className="container ">
                         {activePanel === 'BMI' && (
                             <>
-                                <BMICalculator toggleForm={toggleForm}/>
+                                <BMICalculator toggleForm={toggleForm(null)}/>
                             </>
                         )}
                         {activePanel === 'IdealWeight' && (
                             <>
-                                <IdealWeight toggleForm={toggleForm}/>
+                                <IdealWeight toggleForm={toggleForm(null)}/>
+                            </>
+                        )}
+                        {activePanel === 'Age' && (
+                            <>
+                                <AgeCalculator toggleForm={toggleForm(null)}/>
                             </>
                         )}
                     </div>

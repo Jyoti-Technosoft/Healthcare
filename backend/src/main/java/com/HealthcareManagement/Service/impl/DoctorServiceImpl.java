@@ -38,9 +38,13 @@ public class DoctorServiceImpl implements DoctorService {
     HealthReportRepository healthReportRepository;
     @Autowired
     MedicationRepository medicationRepository;
+    @Autowired
+    DoctorLeaveRepository doctorLeaveRepository;
 
     @Autowired
     private PasswordEncoder encoder;
+
+
     @Override
     public Doctor getDoctorByUserId(Long userId) {
         return doctorRepository.findByUserId(userId)
@@ -117,6 +121,19 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public List<HealthReport> getAllHealthreport() {
+        List<HealthReport> healthReports = healthReportRepository.findAll();
+        if (!healthReports.isEmpty()) {
+            // Iterate through each health report and fetch prescriptions for each one
+            for (HealthReport healthReport : healthReports) {
+                List<Medication> prescriptions = medicationRepository.findByHealthReportId(healthReport.getId());
+                healthReport.setPrescriptions(prescriptions);
+            }
+        }
+        return healthReports;
+    }
+
+    @Override
     public List<HealthReport> getHealthreport(Long appointmentId) {
         List<HealthReport> healthReports = healthReportRepository.findByAppointmentId(appointmentId);
         if (!healthReports.isEmpty()) {
@@ -129,6 +146,41 @@ public class DoctorServiceImpl implements DoctorService {
         return healthReports;
     }
 
+    @Override
+    public ResponseEntity<String> doctorLeaveRequest(Long doctorId,UserDTO userDTO) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Long loggedInUserId = ((UserInfoDetails) authentication.getPrincipal()).getId();
+
+            Optional<Doctor> existingDoctor = doctorRepository.findById(doctorId);
+            if(existingDoctor.isPresent()) {
+                Doctor existingDocId = existingDoctor.get();
+                DoctorLeave doctorLeave = convertToDoctorLeaveRequest(userDTO, existingDocId, loggedInUserId);
+                doctorLeaveRepository.save(doctorLeave);
+                return ResponseEntity.status(HttpStatus.CREATED).body("Leave applied successfully");
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor id not found");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Leave not apply");
+        }
+    }
+
+    public DoctorLeave convertToDoctorLeaveRequest(UserDTO userDTO,Doctor doctor,Long loggedInUserId){
+        DoctorLeave doctorLeave = new DoctorLeave();
+        doctorLeave.setFromDate(userDTO.getFromDate());
+        doctorLeave.setToDate(userDTO.getToDate());
+        doctorLeave.setFromTime(userDTO.getFromTime());
+        doctorLeave.setToTime(userDTO.getToTime());
+        doctorLeave.setReason(userDTO.getReason());
+        doctorLeave.setCreatedBy(userRepository.getOne(loggedInUserId));
+        doctorLeave.setUpdatedBy(userRepository.getOne(loggedInUserId));
+        doctorLeave.setCreatedTime(LocalDateTime.now());
+        doctorLeave.setUpdatedTime(LocalDateTime.now());
+        doctorLeave.setDoctor(doctor);
+        return doctorLeave;
+    }
 
 
     public HealthReport convertToHealthReport(UserDTO userDTO, Appointment appointment,Long loggedInUserId){

@@ -106,10 +106,11 @@ export default function DoctorList() {
                         <hr />
                         <div className="d-flex justify-content-between align-items-center mb-3">
                           <input type="text" className='form-control input-field searchDoctor' placeholder="Search..." onChange={handleSearch} />
-                          <div className="btn-group border rounded " role="group">
+                          <div className="btn-group border-0  rounded " role="group">
                             <button
                               className={`btn btn-link border-0 ${activeIcon === false ? 'activeIcon' : ''}`}
                               onClick={() => handleIconClick(false)}
+                              style={{borderColor:'white'}}
                             >
                               <i className="bi bi-list-task"></i>
                             </button>
@@ -117,6 +118,7 @@ export default function DoctorList() {
                             <button
                               className={`btn btn-link border-0 ${activeIcon === true ? 'activeIcon' : ''}`}
                               onClick={() => handleIconClick(true)}
+                              style={{borderColor:'white'}}
                             >
                               <i className="bi bi-grid-1x2"></i>
                             </button>

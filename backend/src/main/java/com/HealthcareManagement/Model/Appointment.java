@@ -41,6 +41,7 @@ public class Appointment {
     private String consultationCharge;
     private String consultationChargeType;
     private String paymentMode;
+    private String arrive;
 
 
     @Transient
@@ -149,5 +150,13 @@ public class Appointment {
 
     public void setConsultationChargeType(String consultationChargeType) {
         this.consultationChargeType = consultationChargeType;
+    }
+
+    public String getArrive() {
+        return arrive;
+    }
+
+    public void setArrive(String arrive) {
+        this.arrive = arrive;
     }
 }

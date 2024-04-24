@@ -14,5 +14,8 @@ public interface DoctorService {
 
     public ResponseEntity<String> healthReport(UserDTO userDTO);
 
+    public List<HealthReport> getAllHealthreport();
     public List<HealthReport> getHealthreport(Long appointmentId);
+
+    public ResponseEntity<String> doctorLeaveRequest (Long doctorId,UserDTO userDTO);
 }

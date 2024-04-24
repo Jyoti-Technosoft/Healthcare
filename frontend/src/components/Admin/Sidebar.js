@@ -9,6 +9,7 @@ import DoctorList from '../Receptionist/DoctorList';
 import DoctorProfile from '../Doctor/DoctorProfile';
 import ShowAppointments from '../Receptionist/ShowAppointments';
 import MainDashboard from '../MainDashboard';
+import DoctorLeaves from '../Doctor/DoctorLeaves';
 import Dashboard from '../Dashboard';
 import Cookies from 'js-cookie';
 import { getDoctorsWithIdApi, getReceptionistApi, getPatientApi } from '../Api';
@@ -56,6 +57,8 @@ export function renderSidebarComponent(activeTab) {
       return <PatientAppointments />;
     case 'healthCalculator':
       return <HealthCalculator />;
+    case 'doctorLeaves':
+      return <DoctorLeaves />;
     default:
       return <MainDashboard />;
   }
@@ -253,6 +256,14 @@ export default function Sidebar() {
                           <i class="bi bi-people sidebarIcon"></i>Patients
                         </Link>
                       </li>
+                      <li className="nav-item sidebarNavLinks">
+                        <Link
+                          className={`nav-link ${activeTab === 'doctorLeaves' ? 'Active' : ''}`}
+                          onClick={() => setMenu('doctorLeaves')}
+                        >
+                          <i class="bi bi-file-earmark-text sidebarIcon"></i>Leave Management
+                        </Link>
+                      </li>
                     </>
                   )}
                   {userRole === 'Patient' && (
@@ -279,7 +290,7 @@ export default function Sidebar() {
                           className={`nav-link ${activeTab === 'healthCalculator' ? 'Active' : ''}`}
                           onClick={() => setMenu('healthCalculator')}
                         >
-                          <i class="bi bi-calendar-week sidebarIcon"></i>Health Calculator
+                          <i class="bi bi-calculator sidebarIcon"></i>Health Calculator
                         </Link>
                       </li>
                     </>
