@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getSearchPatientsApi, getDoctorsApi, getAvailableSlots, bookAppointmentApi, fetchConsultationChargeApi } from '../Api';
+import { getSearchPatientsApi, getDoctorsApi, getAvailableSlots, bookAppointmentApi, fetchConsultationChargeApi, getAllDoctorsLeaveRequest, getDoctorLeaveRequest } from '../Api';
 import 'react-calendar/dist/Calendar.css'; // Import calendar CSS
 import Calendar from 'react-calendar'; // Import react-calendar
 import { FaTimes } from 'react-icons/fa'; // Import the close icon or any other icon library you prefer
@@ -9,9 +9,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
     setActiveTab,
 } from '../../actions/submenuActions';
-import { validateRequireName, validateRequireContact, validateRequireId, validateRequireDepartment, validateRequireDoctor, validateRequireTimeSlot } from '../Validations';
+import { convertTo12HourFormat, validateRequireName, validateRequireContact, validateRequireId, validateRequireDepartment, validateRequireDoctor, validateRequireTimeSlot } from '../Validations';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { startOfDay } from 'date-fns';
 export default function BookAppointment() {
     const [suggestions, setSuggestions] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -25,6 +26,7 @@ export default function BookAppointment() {
     const [selectedDate, setSelectedDate] = useState(new Date()); // State for selected date
     const [availableSlots, setAvailableSlots] = useState([]);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+    const [leaveRequests, setLeaveRequests] = useState([]);
     const [timeSlots, setTimeSlots] = useState([]);
     const [doctorSelected, setDoctorSelected] = useState(false);
     const authToken = Cookies.get('authToken');
@@ -113,6 +115,14 @@ export default function BookAppointment() {
         } catch (error) {
             console.error('Error fetching:', error);
         }
+        try {
+            const fetchedLeaveRequests = await getDoctorLeaveRequest(doctorId, authToken);
+            setLeaveRequests(fetchedLeaveRequests);
+            console.log('Leave Requests:', fetchedLeaveRequests);
+        } catch (error) {
+            console.log(error);
+        }
+
     };
 
     const getDayIndex = (dayName) => {
@@ -144,6 +154,7 @@ export default function BookAppointment() {
 
     const handleDateSelect = async (date) => {
         const selectedDateUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())); // Convert to UTC
+        console.log("Selected date===> ", selectedDate);
         setSelectedDate(selectedDateUTC);
 
         try {
@@ -157,6 +168,7 @@ export default function BookAppointment() {
         } catch (error) {
             console.error('Error fetching:', error);
         }
+
     };
 
     const convertTo12Hour = (time) => {
@@ -201,9 +213,7 @@ export default function BookAppointment() {
         try {
             // Ensure selectedTimeSlot is a string, not an event object
             const slot = selectedTimeSlot.target.value;
-            console.log("Selected slot: " + slot);
-            const [startTime, endTime] = slot.split(' - ');
-            const formattedSlot = `${convertTo12Hour(startTime)} to ${convertTo12Hour(endTime)}`;
+            console.log("Selected slot: " + slot);           
 
             const year = selectedDate.getFullYear();
             // Add 1 to month because months are zero-indexed (January is 0, February is 1, etc.)
@@ -215,10 +225,10 @@ export default function BookAppointment() {
             console.log('Selected Doctor:', selectedDoctor);
             console.log('Clicked Patient ID:', clickedPatientId);
             console.log('Selected Date:', formattedDate);
-            console.log('Selected Time Slot:', formattedSlot);
+            console.log('Selected Time Slot:', slot);
 
             // Call bookAppointmentApi with the extracted slot value
-            await bookAppointmentApi(selectedDoctor, clickedPatientId, formattedDate, formattedSlot,authToken);
+            await bookAppointmentApi(selectedDoctor, clickedPatientId, formattedDate, slot, authToken);
             setAvailableSlots([]);
             setSelectedTimeSlot('');
             setConsultationCharge('');
@@ -233,6 +243,9 @@ export default function BookAppointment() {
             toast.error('Failed to schedule appointment!');
         }
     }
+
+
+
     return (
         <div className='background_part mt-3'>
             <div className="container ">
@@ -383,86 +396,125 @@ export default function BookAppointment() {
                                                                 <>
                                                                     <div className="row">
                                                                         <div className="col-md-6 form-group mt-3 ">
-                                                                            <label className='form-label'>Appointment Date</label>
-                                                                            <Calendar
-                                                                                onChange={handleDateSelect}
-                                                                                value={selectedDate}
+                                                                            <label className='form-label'>Appointment Date</label> <br/>
+                                                                            <h6 className='text-center mt-4' style={{fontSize:'14px', color:'#1977cc'}}>Slots Available. Click on preferrable date to book slot</h6>
+                                                                            <div className='card  border-0'>
+                                                                                <Calendar
+                                                                                    onChange={handleDateSelect}
+                                                                                    value={selectedDate}
+                                                                                    className="reactCalender"
+                                                                                    tileClassName={({ date, view }) => {
+                                                                                        // Find the selected doctor object
+                                                                                        const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(selectedDoctor));
 
-                                                                                tileClassName={({ date, view }) => {
-                                                                                    // Find the selected doctor object
-                                                                                    const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(selectedDoctor));
+                                                                                        // Check if the selected doctor is available on this date
+                                                                                        if (selectedDoc && view === 'month' && selectedDoc.visitingDays) {
+                                                                                            const day = date.getDay();
+                                                                                            const visitingDaysArray = selectedDoc.visitingDays.split(',');
 
-                                                                                    // Check if the selected doctor is available on this date
-                                                                                    if (selectedDoc && view === 'month' && selectedDoc.visitingDays) {
-                                                                                        const day = date.getDay();
-                                                                                        const visitingDaysArray = selectedDoc.visitingDays.split(',');
-
-                                                                                        // Check if the day is not included in visiting days
-                                                                                        let isAvailable = false;
-                                                                                        for (let visitingDaysString of visitingDaysArray) {
-                                                                                            const visitingDays = visitingDaysString.split('-');
-                                                                                            if (visitingDays.length === 2) {
-                                                                                                const startDayIndex = getDayIndex(visitingDays[0]);
-                                                                                                const endDayIndex = getDayIndex(visitingDays[1]);
-                                                                                                if (day >= startDayIndex && day <= endDayIndex) {
-                                                                                                    isAvailable = true;
-                                                                                                    break;
-                                                                                                }
-                                                                                            } else {
-                                                                                                const dayName = getDayName(day);
-                                                                                                if (visitingDays.includes(dayName)) {
-                                                                                                    isAvailable = true;
-                                                                                                    break;
-                                                                                                }
-                                                                                            }
-                                                                                        }
-
-                                                                                        // Return the appropriate class based on availability
-                                                                                        return isAvailable ? 'custom-tile-green' : 'custom-tile-red';
-                                                                                    }
-                                                                                    return null;
-                                                                                }}
-                                                                                tileDisabled={({ date, view }) => {
-                                                                                    // Find the selected doctor object
-                                                                                    const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(selectedDoctor));
-
-                                                                                    // Check if the selected doctor is available on this date
-                                                                                    if (selectedDoc && view === 'month' && selectedDoc.visitingDays) {
-                                                                                        const day = date.getDay();
-                                                                                        const visitingDaysArray = selectedDoc.visitingDays.split(',');
-
-                                                                                        // Check if the day is not included in visiting days
-                                                                                        let isAvailable = false;
-                                                                                        for (let visitingDaysString of visitingDaysArray) {
-                                                                                            const visitingDays = visitingDaysString.split('-');
-                                                                                            if (visitingDays.length === 2) {
-                                                                                                const startDayIndex = getDayIndex(visitingDays[0]);
-                                                                                                const endDayIndex = getDayIndex(visitingDays[1]);
-                                                                                                if (day >= startDayIndex && day <= endDayIndex) {
-                                                                                                    isAvailable = true;
-                                                                                                    break;
-                                                                                                }
-                                                                                            } else {
-                                                                                                const dayName = getDayName(day);
-                                                                                                if (visitingDays.includes(dayName)) {
-                                                                                                    isAvailable = true;
-                                                                                                    break;
+                                                                                            // Check if the day is not included in visiting days
+                                                                                            let isAvailable = false;
+                                                                                            for (let visitingDaysString of visitingDaysArray) {
+                                                                                                const visitingDays = visitingDaysString.split('-');
+                                                                                                if (visitingDays.length === 2) {
+                                                                                                    const startDayIndex = getDayIndex(visitingDays[0]);
+                                                                                                    const endDayIndex = getDayIndex(visitingDays[1]);
+                                                                                                    if (day >= startDayIndex && day <= endDayIndex) {
+                                                                                                        isAvailable = true;
+                                                                                                        break;
+                                                                                                    }
+                                                                                                } else {
+                                                                                                    const dayName = getDayName(day);
+                                                                                                    if (visitingDays.includes(dayName)) {
+                                                                                                        isAvailable = true;
+                                                                                                        break;
+                                                                                                    }
                                                                                                 }
                                                                                             }
+
+                                                                                            const isDateWithinLeavePeriod = leaveRequests.some(request => {
+                                                                                                let fromTime = new Date(request.fromDate);
+                                                                                                let endTime = new Date(request.toDate);
+                                                                                                fromTime.setHours(0, 0, 0);
+                                                                                                endTime.setHours(23, 59, 59);
+
+                                                                                                return request.doctor.id == selectedDoctor &&
+                                                                                                    date >= fromTime && date <= endTime;
+                                                                                            });
+
+
+
+                                                                                            // Return the appropriate class based on availability and leave period
+                                                                                            if (isDateWithinLeavePeriod) {
+                                                                                                return 'custom-tile-leave'; // Add CSS class for leave period
+                                                                                            } else if (isAvailable) {
+                                                                                                return 'custom-tile-green'; // Add CSS class for available dates
+                                                                                            } else {
+                                                                                                return 'custom-tile-red'; // Add CSS class for unavailable dates
+                                                                                            }
                                                                                         }
+                                                                                        return null;
+                                                                                    }}
+                                                                                    tileDisabled={({ date, view }) => {
+                                                                                        // Find the selected doctor object
+                                                                                        const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(selectedDoctor));
+                                                                                        const isPastDate = date < startOfDay(new Date());
+                                                                                        // Check if the selected doctor is available on this date
+                                                                                        if (selectedDoc && view === 'month' && selectedDoc.visitingDays) {
+                                                                                            const day = date.getDay();
+                                                                                            const visitingDaysArray = selectedDoc.visitingDays.split(',');
 
-                                                                                        // Disable the tile if it's not available
-                                                                                        return !isAvailable;
-                                                                                    }
-                                                                                    return false;
-                                                                                }}
+                                                                                            // Check if the day is not included in visiting days
+                                                                                            let isAvailable = false;
+                                                                                            for (let visitingDaysString of visitingDaysArray) {
+                                                                                                const visitingDays = visitingDaysString.split('-');
+                                                                                                if (visitingDays.length === 2) {
+                                                                                                    const startDayIndex = getDayIndex(visitingDays[0]);
+                                                                                                    const endDayIndex = getDayIndex(visitingDays[1]);
+                                                                                                    if (day >= startDayIndex && day <= endDayIndex) {
+                                                                                                        isAvailable = true;
+                                                                                                        break;
+                                                                                                    }
+                                                                                                } else {
+                                                                                                    const dayName = getDayName(day);
+                                                                                                    if (visitingDays.includes(dayName)) {
+                                                                                                        isAvailable = true;
+                                                                                                        break;
+                                                                                                    }
+                                                                                                }
+                                                                                            }
 
-                                                                            />
+                                                                                            const isDateWithinLeavePeriod = leaveRequests.some(request => {
+                                                                                                let fromTime = new Date(request.fromDate);
+                                                                                                let endTime = new Date(request.toDate);
+                                                                                                fromTime.setHours(0, 0, 0);
+                                                                                                // endTime.setHours(0,) // Commented out as it might not be necessary
+
+                                                                                                return request.doctor.id == selectedDoctor &&
+                                                                                                    date.getTime() >= fromTime.getTime() && date.getTime() <= new Date(request.toDate).getTime() &&
+                                                                                                    !(request.fromDate == request.toDate && request.fromTime != null && request.toTime != null && request.fromTime !== request.toTime); // Check if fromTime and toTime are equal
+                                                                                            });
+
+                                                                                            // Disable the tile if it's not available or within a leave request period, but not if fromTime and toTime are equal
+                                                                                            return (!isAvailable || isPastDate || isDateWithinLeavePeriod);
+                                                                                        }
+                                                                                        return false;
+                                                                                    }}
+
+                                                                                />
+                                                                                <div className="indicators">
+                                                                                    <div className="indicator green">Slots Available</div>
+                                                                                    <div className="indicator red">No Slots Available</div>
+                                                                                    <div className="indicator leave">On Leave</div>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
 
-                                                                        <div className="col-md-6 form-group mt-3">
+                                                                        <div className="col-md-6 form-group mt-3" style={{fontSize:'13px'}}>
                                                                             <label className='form-label'>Available Slots</label>
-                                                                            <table className="table custom-table">
+                                                                            <h6 className='text-center mt-4' style={{fontSize:'16px' , color:'#1977cc'}}>Select the time slot and click Make an appointment button </h6>
+                                                                            {selectedDate && <h6 className='text-center mt-2' style={{fontSize:'14px'}}>Available time slots for <b style={{color:'black'}}> {selectedDate.getDate().toString().padStart(2, '0')}-{(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-{selectedDate.getFullYear()}</b></h6>}
+                                                                            <table className=" custom-table-new">
                                                                                 <thead>
                                                                                     <tr>
                                                                                         <th>Time Slots</th>
@@ -470,25 +522,48 @@ export default function BookAppointment() {
                                                                                     </tr>
                                                                                 </thead>
                                                                                 <tbody>
-                                                                                    {availableSlots && Object.entries(availableSlots).map(([timeSlot, slotsCount]) => (
-                                                                                        <tr key={timeSlot}>
-                                                                                            <td>{timeSlot}</td>
-                                                                                            <td >
-                                                                                                <div className="form-check d-flex  ml-3">
-                                                                                                    <input
-                                                                                                        type="radio"
-                                                                                                        id={timeSlot}
-                                                                                                        name="availableSlots"
-                                                                                                        value={timeSlot}
+                                                                                    {availableSlots &&
+                                                                                        Object.entries(availableSlots).map(([timeSlot, slotsCount]) => {
+                                                                                            const isDisabled = leaveRequests.some(request => {
+                                                                                                const requestFromDate = request.fromDate;
+                                                                                                const requestToDate = request.toDate;
+                                                                                                const requestFromTime = request.fromTime;
+                                                                                                const requestToTime = request.toTime;
 
-                                                                                                        className={`form-check-input justify-content-start ${availableSlotsError && 'is-invalid'} `}
-                                                                                                        onChange={handleTimeSlotSelect}
-                                                                                                    />
-                                                                                                    <label htmlFor={timeSlot} >{`${slotsCount} slots available`}</label>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    ))}
+                                                                                                const isOnSelectedDate = selectedDate.toISOString().split('T')[0] === requestFromDate && selectedDate.toISOString().split('T')[0] === requestToDate;
+                                                                                                // Convert time slot string to start and end times
+                                                                                                const [slotStartTime, slotEndTime] = timeSlot.split(' to ');
+                                                                                                                                                                                                
+                                                                                                const isTimeSlotOverlap = isOnSelectedDate && requestFromTime && requestToTime &&
+                                                                                                    slotStartTime >= requestFromTime &&
+                                                                                                    slotEndTime <= requestToTime;
+
+                                                                                                return isTimeSlotOverlap;
+                                                                                            }) || slotsCount === 0;
+
+                                                                                            return (
+                                                                                                <tr key={timeSlot}>
+                                                                                                    <td>{timeSlot}</td>
+                                                                                                    <td>
+                                                                                                        <div className="form-check d-flex ml-3 availability">
+                                                                                                            <input
+                                                                                                                type="radio"
+                                                                                                                id={timeSlot}
+                                                                                                                name="availableSlots"
+                                                                                                                value={timeSlot}
+                                                                                                                style={{ cursor: 'pointer' }}
+                                                                                                                className={`form-check-input justify-content-start ${availableSlotsError && 'is-invalid'} `}
+                                                                                                                onChange={handleTimeSlotSelect}
+                                                                                                                disabled={isDisabled} // Set disabled attribute based on isDisabled flag
+                                                                                                            />
+                                                                                                            <label htmlFor={timeSlot} className="form-check-label mt-1">{`${slotsCount} slots available`}</label>
+                                                                                                        </div>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            );
+                                                                                        })
+                                                                                    }
+
                                                                                 </tbody>
                                                                             </table>
                                                                             {availableSlotsError && <div className="invalid-feedback">{availableSlotsError}</div>}

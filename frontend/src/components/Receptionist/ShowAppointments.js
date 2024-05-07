@@ -8,6 +8,7 @@ import {
     setShowAppointmentsMenu,
     setActiveTab,
 } from '../../actions/submenuActions';
+import { convertTo12Hour } from '../Validations';
 export default function ShowAppointments() {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -67,11 +68,9 @@ export default function ShowAppointments() {
         { name: 'Doctor name', selector: (row) => row.doctor.name, sortable: true, minWidth: '150px' },
         { name: 'Department', selector: (row) => row.doctor.department, sortable: true, minWidth: '150px' },
         { name: 'Appointment Date', selector: (row) => row.appointmentDate, sortable: true, minWidth: '160px' },
-        { name: 'Appointment Time', selector: (row) => row.appointmentTime, sortable: true, minWidth: '180px' },
+        { name: 'Appointment Time', selector: (row) => convertTo12Hour(row.appointmentTime), sortable: true, minWidth: '180px' },
         { name: 'Consultation charge', selector: (row) => row.consultationCharge, sortable: true, minWidth: '150px' },
         { name: 'Payment mode', selector: (row) => row.paymentMode, sortable: true, minWidth: '150px' },
-
-
     ];
 
     return (

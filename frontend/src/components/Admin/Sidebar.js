@@ -24,6 +24,7 @@ import { faClipboardQuestion, faDisplay } from '@fortawesome/free-solid-svg-icon
 import PatientProfile from '../Patient/PatientProfile';
 import PatientAppointments from '../Patient/PatientAppointments';
 import HealthCalculator from '../Patient/HealthCalculator';
+import AddDoctorLeaves from '../Doctor/AddDoctorLeaves';
 
 export function renderSidebarComponent(activeTab) {
   switch (activeTab) {
@@ -59,6 +60,8 @@ export function renderSidebarComponent(activeTab) {
       return <HealthCalculator />;
     case 'doctorLeaves':
       return <DoctorLeaves />;
+    case 'addDoctorLeaves':
+      return <AddDoctorLeaves/>;
     default:
       return <MainDashboard />;
   }

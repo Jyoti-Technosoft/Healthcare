@@ -6,8 +6,11 @@ import com.HealthcareManagement.Roles;
 import com.HealthcareManagement.Service.SuperAdminService;
 import com.HealthcareManagement.Service.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,6 +44,12 @@ public class SuperAdminServiceImpl implements SuperAdminService, UserDetailsServ
     AdminRepository adminRepository;
     @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
+
+    @Value("${spring.mail.username}")
+    private String fromMail;
 
 
 
@@ -205,5 +214,15 @@ public class SuperAdminServiceImpl implements SuperAdminService, UserDetailsServ
         Optional<User> userDetail = userRepository.findByEmail(email);
         return userDetail.map(UserInfoDetails::new).orElseThrow(()-> new UsernameNotFoundException("Email not found " +email));
     }
+
+    public void sendMail(String mailId, Mail mail){
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setFrom(fromMail);
+        simpleMailMessage.setSubject(mail.getSubject());
+        simpleMailMessage.setText(mail.getMessage());
+        simpleMailMessage.setTo(mailId);
+        javaMailSender.send(simpleMailMessage);
+    }
+
 
 }

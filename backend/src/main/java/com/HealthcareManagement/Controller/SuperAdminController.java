@@ -171,9 +171,11 @@ public class SuperAdminController {
     }
 
 
-    @PostMapping("/auth/send-email")
-    public void sendEmail(@RequestBody EmailDTO emailDTO) {
-        emailService.sendEmail(emailDTO.getTo(), emailDTO.getSubject(), emailDTO.getBody());
+    @PostMapping("/auth/sendMail/{mailId}")
+    @PreAuthorize("hasAuthority('Doctor')")
+    public String sendEmail(@PathVariable String mailId, @RequestBody Mail mail) {
+        superAdminService.sendMail(mailId,mail);
+        return "Mail sent successfully!!!";
     }
 
     @PostMapping("/auth/registerPatient")
@@ -187,6 +189,8 @@ public class SuperAdminController {
             throw e;
         }
     }
+
+
 
 
 }

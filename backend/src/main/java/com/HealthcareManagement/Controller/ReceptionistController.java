@@ -2,6 +2,7 @@ package com.HealthcareManagement.Controller;
 
 import com.HealthcareManagement.Model.*;
 import com.HealthcareManagement.Repository.AppointmentRepository;
+import com.HealthcareManagement.Repository.DoctorLeaveRepository;
 import com.HealthcareManagement.Service.ReceptionistService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class ReceptionistController {
 
     @Autowired
     AppointmentRepository appointmentRepository;
+
+    @Autowired
+    DoctorLeaveRepository doctorLeaveRepository;
 
     @PutMapping("/auth/updateReceptionistProfile/{userId}")
     @PreAuthorize("hasAuthority('Receptionist')")
@@ -93,13 +97,14 @@ public class ReceptionistController {
 
         // Iterate through each hour of the day from 0:00 to 23:00 (24-hour format)
         for (int hour = 9; hour < 17; hour++) {
+            // Define the start and end times for the current hour slot
             LocalTime startTime = LocalTime.of(hour, 0);
-            LocalTime endTime = LocalTime.of(hour, 59); // Assuming appointments are for the entire hour
+            LocalTime endTime = LocalTime.of(hour + 1, 0); // Assuming appointments are for the entire hour
 
-            // Format the start and end times with AM/PM information
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
-            String startTimeString = startTime.format(formatter);
-            String endTimeString = endTime.format(formatter);
+            // Format the start and end times as time range string "HH:mm - HH:mm"
+            String startTimeString = startTime.toString();
+            String endTimeString = endTime.toString();
+            String timeRange = startTimeString + " to " + endTimeString;
 
             // Count appointments within the hour
             int totalAppointmentsWithinHour = appointmentRepository.countAppointmentsByDoctorIdAndDateTimeRange(
@@ -108,18 +113,13 @@ public class ReceptionistController {
             // Calculate available slots
             int remainingSlots = 20 - totalAppointmentsWithinHour;
 
-            // Calculate next hour for display
-            int nextHour = (hour + 1) % 24;
-
-            // Format the hour range string (e.g., "00:00 - 01:00")
-            String hourRange = String.format("%02d:00 - %02d:00", hour, nextHour);
-
-            // Store available slots for this hour
-            availableSlotsMap.put(hourRange, remainingSlots);
+            // Store available slots for this hour range
+            availableSlotsMap.put(timeRange, remainingSlots);
         }
 
         return ResponseEntity.ok(availableSlotsMap);
     }
+
 
 
 
@@ -190,6 +190,15 @@ public class ReceptionistController {
         return new ResponseEntity<>("Arrival status updated successfully", HttpStatus.OK);
     }
 
-
+    @GetMapping("/auth/getAllDoctorsLeaveRequest")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
+    public List<DoctorLeave> getAllDoctorsLeaveRequest(){
+        try{
+            return doctorLeaveRepository.findAll();
+        }catch(Exception e){
+            e.printStackTrace();
+            throw e;
+        }
+    }
 
 }

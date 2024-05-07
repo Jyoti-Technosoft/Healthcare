@@ -28,6 +28,36 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
             @Param("endTime") String endTime);
 
 
+    @Query("SELECT COUNT(a) FROM Appointment a " +
+            "WHERE a.doctor.id = :doctorId " +
+            "AND a.appointmentDate = :appointmentDate ")
+    int countAppointmentsSlotsByDoctorIdAndDate(
+            @Param("doctorId") Long doctorId,
+            @Param("appointmentDate") LocalDate appointmentDate);
+
+//    @Query("SELECT a FROM Appointment a " +
+//            "WHERE a.doctor.id = :doctorId " +
+//            "AND ((a.appointmentDate >= :fromDate AND a.appointmentDate <= :toDate) " +
+//            "AND ((a.appointmentTime >= :fromTime AND a.appointmentTime <= :toTime) OR " +
+//            "(a.appointmentTime <= :fromTime AND a.appointmentTime >= :toTime)))")
+//    List<Appointment> findAppointmentsDuringLeave(@Param("fromDate") String fromDate,
+//                                                  @Param("toDate") String toDate,
+//                                                  @Param("fromTime") String fromTime,
+//                                                  @Param("toTime") String toTime,
+//                                                  @Param("doctorId") Long doctorId);
+
+
+    @Query("SELECT a FROM Appointment a " +
+            "WHERE a.doctor.id = :doctorId " +
+            "AND ((a.appointmentDate = :fromDate AND a.appointmentTime >= :fromTime) OR " +
+            "(a.appointmentDate = :toDate AND a.appointmentTime <= :toTime) OR " +
+            "(a.appointmentDate > :fromDate AND a.appointmentDate < :toDate))")
+    List<Appointment> findAppointmentsDuringLeave(@Param("fromDate") String fromDate,
+                                                  @Param("toDate") String toDate,
+                                                  @Param("fromTime") String fromTime,
+                                                  @Param("toTime") String toTime,
+                                                  @Param("doctorId") Long doctorId);
+
 
     @Query("SELECT a.consultationCharge FROM Appointment a " +
             "WHERE a.patient.id = :patientId " +

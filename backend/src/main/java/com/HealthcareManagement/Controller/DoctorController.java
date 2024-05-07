@@ -184,7 +184,7 @@ public class DoctorController {
     }
 
     @GetMapping("/auth/getDoctorLeaveRequest/{doctorId}")
-    @PreAuthorize("hasAuthority('Doctor')")
+    @PreAuthorize("hasAnyAuthority('Doctor','Receptionist')")
     public ResponseEntity<List<DoctorLeave>> getDoctorLeaveRequest(@PathVariable Long doctorId) {
         try {
             Optional<Doctor> existingDoctor = doctorRepository.findById(doctorId);

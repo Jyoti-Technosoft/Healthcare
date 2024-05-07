@@ -280,3 +280,28 @@ export const convertTo12HourFormat = (time) => {
     return `${formattedHours}:${minutes} ${amPm}`;
 };
 
+export const convertTo12Hour = (timeRange) => {
+    // Split the time range string into start and end times
+    const [startTime, endTime] = timeRange.split(' to ');
+    
+    // Convert start time to 12-hour format
+    const formattedStartTime = convertTo12HourFormat(startTime);
+    
+    // Convert end time to 12-hour format
+    const formattedEndTime = convertTo12HourFormat(endTime);
+
+    // Return the formatted time range string
+    return `${formattedStartTime} to ${formattedEndTime}`;
+};
+
+export const getDayIndex = (dayName) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days.findIndex((day) => day.toLowerCase() === dayName.toLowerCase());
+};
+
+
+// Function to convert the numeric day returned by date.getDay() to the corresponding day name
+export const getDayName = (dayIndex) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[dayIndex];
+};

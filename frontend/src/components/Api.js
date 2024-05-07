@@ -473,5 +473,17 @@ export async function getDoctorLeaveRequest(doctorId,token){
         throw error;
     }
 }
+export async function getAllDoctorsLeaveRequest(token){
+    try{
+        const response = await axios.get("http://localhost:8080/receptionist/auth/getAllDoctorsLeaveRequest", { 
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    }catch(error){
+        throw error;
+    }
+}
 
 

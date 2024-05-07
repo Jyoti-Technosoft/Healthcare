@@ -21,6 +21,43 @@
 /* .sideBar{
   width: calc(100% - 100px);
 } */
+.custom-table-new {
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+.custom-table-new th,
+.custom-table-new td {
+  padding: 10px !important;
+  border: 1px solid #ddd !important;
+  text-align: center !important;
+}
+
+.custom-table-new th {
+  background-color: #1977cc !important;
+  /* Green */
+  color: white !important;
+}
+
+.custom-table-new tbody tr:nth-child(even) {
+  background-color: aliceblue !important;
+}
+
+.custom-table-new tbody tr:nth-child(odd) {
+  background-color: #ffffff !important;
+  /* White for odd rows */
+}
+
+.custom-table-new tbody tr:hover {
+  background-color: #ddd !important;
+}
+
+.availability {
+  display: flex !important;
+  align-items: center !important;
+}
+
+
 
 
 /* For big screens */
@@ -31,11 +68,9 @@
     color: black !important;
     padding-right: 10px;
     font-size: 16px;
-
   }
 
   .dashboard {
-
     width: calc(100% - 100px);
     position: absolute;
     left: 80px !important;
@@ -45,7 +80,6 @@
   .dashboardComponents {
     margin-left: 220px;
   }
-
 
   .vertical-line {
     border-left: 1px solid #ccc;
@@ -79,13 +113,8 @@
   }
 
   .sidebarDoctorProfileImg {
-
-
     width: 80px !important;
-
   }
-
-
 
   .headerProfileImg {
 
@@ -516,22 +545,67 @@
 
 
 
-  .custom-tile-green {
-    color: green !important;
-    /* Apply green text color for available dates */
+  .custom-tile-green::before {
+    content: "✔";
+    /* Display a checkmark or any other indicator for available dates */
+    color: green;
+    margin-right: 5px;
+    /* Adjust spacing as needed */
   }
 
-  .custom-tile-red {
-    color: red !important;
-    /* Apply red text color for unavailable dates */
+  .custom-tile-red::before {
+    content: "✘";
+    /* Display a cross mark or any other indicator for unavailable dates */
+    color: red;
+    margin-right: 5px !important;
+    /* Adjust spacing as needed */
   }
+
+  .custom-tile-leave::before {
+    content: "📅";
+    /* Display a calendar icon or any other indicator for leave periods */
+    color: gray;
+    margin-right: 5px;
+    /* Adjust spacing as needed */
+  }
+
+  .indicators {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px !important;
+  }
+
+  .indicator {
+    display: flex;
+    align-items: center;
+    font-size: 13px !important;
+  }
+
+  .green::before {
+    content: "✔";
+    color: green !important;
+    margin-right: 5px;
+  }
+
+  .red::before {
+    content: "✘";
+    color: red;
+    margin-right: 5px;
+  }
+
+  .leave::before {
+    content: "📅";
+    color: gray;
+    margin-right: 5px;
+  }
+
 
   .react-calendar__tile--active {
     color: white !important;
     /* Adjust the color to ensure visibility */
   }
 
-  .custom-table {
+  /* .custom-table {
     width: 100%;
     border-collapse: collapse;
   }
@@ -549,7 +623,7 @@
 
   .custom-table tbody tr:nth-child(even) {
     background-color: #f2f2f2;
-  }
+  } */
 
   .form-check-input {
     height: 10px;
@@ -559,6 +633,13 @@
     margin-left: 200px;
   }
 
+  .reactCalender {
+    border: none !important;
+    width: 100% !important;
+    /* Ensure the calendar takes up the full width of the card */
+    max-width: 600px !important;
+
+  }
 
 
 
@@ -633,18 +714,38 @@
     background-color: #F5F5F5;
   }
 
-  .leaveCalenderCard{
+  .leaveCalenderCard {
     width: 300px !important;
 
   }
+
+  /* .custom-tile-leave{
+    background-color:  #f08e87 !important;
+    color: #000 !important;
+  } */
   .vertical-separator {
-    height: 100%; /* Adjust height as needed */
-    border: 2px solid #ddd; /* Set border style and color */
+    height: 100%;
+    /* Adjust height as needed */
+    border: 2px solid #ddd;
+    /* Set border style and color */
   }
 }
 
 /* For small screens */
 @media (max-width: 991px) {
+  .reactCalender {
+    border: none !important;
+    width: 100% !important;
+    /* Ensure the calendar takes up the full width of the card */
+    max-width: 400px !important;
+    /* width: 300px;
+  max-width: 100%;
+  margin: auto; */
+  }
+  .react-calendar__tile--active {
+    color: white !important;
+    /* Adjust the color to ensure visibility */
+  }
   .card {
     border: 1px solid #ccc !important;
     /* Border style */
@@ -655,10 +756,12 @@
     /* height: 150px !important; */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
   }
-  .leaveCalenderCard{
+
+  .leaveCalenderCard {
     width: 230px !important;
 
   }
+
   .vertical-separator {
     display: none !important;
   }
@@ -924,11 +1027,11 @@
 
 
 
-  .custom-table th,
+  /* .custom-table th,
   .custom-table td {
     border: 1px solid #ddd;
 
-  }
+  } */
 
   .box-area {
     margin: 0 10px;
@@ -1013,35 +1116,95 @@
     font-size: 14px !important;
   }
 
+  .custom-tile-green::before {
+    content: "✔";
+    /* Display a checkmark or any other indicator for available dates */
+    color: green;
+    margin-right: 5px;
+    /* Adjust spacing as needed */
+  }
 
+  .custom-tile-red::before {
+    content: "✘";
+    /* Display a cross mark or any other indicator for unavailable dates */
+    color: red;
+    margin-right: 5px !important;
+    /* Adjust spacing as needed */
+  }
+
+  .custom-tile-leave::before {
+    content: "📅";
+    /* Display a calendar icon or any other indicator for leave periods */
+    color: gray;
+    margin-right: 5px;
+    /* Adjust spacing as needed */
+  }
+
+  .indicators {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px !important;
+  }
+
+  .indicator {
+    display: flex;
+    align-items: center;
+    font-size: 10px !important;
+  }
+
+  .green::before {
+    content: "✔";
+    color: green !important;
+    margin-right: 5px;
+  }
+
+  .red::before {
+    content: "✘";
+    color: red;
+    margin-right: 5px;
+  }
+
+  .leave::before {
+    content: "📅";
+    color: gray;
+    margin-right: 5px;
+  }
 
 
 
 }
-.highlighted-date{
+
+.highlighted-date {
   background-color: #1977cc !important;
   border-radius: 20px !important;
   color: white !important;
 }
+
 .between-date {
-  background-color: #f2f2f2 !important; /* Grey color for in-between dates */
+  background-color: #f2f2f2 !important;
+  /* Grey color for in-between dates */
 }
-.react-calendar__navigation__label__labelText{
+
+.react-calendar__navigation__label__labelText {
   font-size: 12px !important;
 }
-.react-calendar__month-view__weekdays{
+
+.react-calendar__month-view__weekdays {
   font-size: 10px !important;
 }
 
-.selected-date{
+.selected-date {
   border-radius: 20px !important;
 }
-.today-date{
-  border: 1px solid #FABA5F !important; /* Change the border color as needed */
+
+.today-date {
+  border: 1px solid #FABA5F !important;
+  /* Change the border color as needed */
   border-radius: 50% !important;
   background-color: transparent !important;
   color: #000 !important;
 }
+
 .me-1 {
   font-size: 15px !important;
   color: grey !important;
@@ -1154,12 +1317,7 @@
 
 
 
-.reactCalender {
-  border: none !important;
-  /* width: 300px;
-  max-width: 100%;
-  margin: auto; */
-}
+
 
 /* Custom css end */
 
