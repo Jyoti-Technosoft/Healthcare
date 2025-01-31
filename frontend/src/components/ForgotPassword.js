@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { sendOTP } from './Api';
 import { ToastContainer, toast } from 'react-toastify';
-import { validateRequireEmail, validatePatternEmail } from './Validations';
+import { validateRequireEmail } from './Validations';
+
 function ForgotPassword({ setEmail, sendOTPCompo, backToLogin }) {
     const [emailForOTP, setEmailForOTP] = useState("");
     const [emailForOTPError, setEmailForOTPError] = useState("");
+    
     const handleSendOTP = async (event) => {
         event.preventDefault();
         setEmailForOTPError("");
@@ -52,7 +54,7 @@ function ForgotPassword({ setEmail, sendOTPCompo, backToLogin }) {
                     <button style={{ background: '#1977cc ', borderColor: 'white' }} className="btn btn-lg btn-primary w-100 fs-6" onClick={handleSendOTP}> Send OTP </button>
                 </div>
                 <div>
-                    <p className='text-center' style={{ color: '#1977cc', cursor: 'pointer' }} onClick={backToLogin}><i class="bi bi-chevron-left"></i>&nbsp;Back to Login</p>
+                    <p className='text-center' style={{ color: '#1977cc', cursor: 'pointer' }} onClick={backToLogin}><i className="bi bi-chevron-left"></i>&nbsp;Back to Login</p>
                 </div>
             </div>
             <ToastContainer position="bottom-right" />

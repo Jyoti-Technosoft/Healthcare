@@ -3,7 +3,6 @@ import React from 'react'
 export default function Banner() {
   return (
     <>
-        {/* <!-- banner part start--> */} 
             <section className="banner_part">
                 <div className="container">
                     <div className="row align-items-center">
@@ -29,8 +28,6 @@ export default function Banner() {
                     </div>
                 </div>
             </section>
-        {/* <!-- banner part end--> */}
-
     </>
   )
 }

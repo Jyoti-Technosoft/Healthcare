@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { UsersAuthHelper, DoctorAuthHelper } from './UsersAuthHelper';
-import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireGender, validateRequireAddress, validateRequireWorkingDays, validateRequireShiftTime, validateRequireJoiningDate, validateRequireConsultancyCharge, calculateAge, validateRequireQualification, validateRequireDesignation, validateRequireSpeciality, validateRequireDepartment, validateRequireMorningTime, validateRequireEveningTime, validateRequireVisitingDays } from '../Validations';
-import Cookies from 'js-cookie';
+import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireAddress, validateRequireWorkingDays, validateRequireShiftTime, validateRequireJoiningDate, validateRequireConsultancyCharge, calculateAge, validateRequireQualification, validateRequireDesignation, validateRequireSpeciality, validateRequireDepartment, validateRequireMorningTime, validateRequireEveningTime, validateRequireVisitingDays } from '../Validations';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
-import { useSelector, useDispatch } from 'react-redux';
+import {  useDispatch } from 'react-redux';
 import {
   setActiveTab,
 } from '../../actions/submenuActions';
@@ -35,18 +34,13 @@ export default function RegisterUsers() {
   const [morningTiming, setMorningTiming] = useState("");
   const [eveningTiming, setEveningTiming] = useState("");
   const [doctorImageData, setDoctorImageData] = useState(null);
-  const [passwordVisibility, setPasswordVisibility] = useState(true); // State to toggle password visibility
-  const [confirmpasswordVisibility, setConfirmPasswordVisibility] = useState(true); // State to toggle password visibility
+  const [passwordVisibility, setPasswordVisibility] = useState(true); 
+  const [confirmpasswordVisibility, setConfirmPasswordVisibility] = useState(true);
   const [selectedDays, setSelectedDays] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const stepLabels = ["Account details", "Personal details", "Working details"];
-  const roleCookie = Cookies.get('role');
-  const totalSteps = 3; // Update with the total number of steps in your form
-
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState('success');
+  const totalSteps = 3;
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -56,8 +50,6 @@ export default function RegisterUsers() {
   const [dobError, setDobError] = useState("");
   const [genderError, setGenderError] = useState("");
   const [addressError, setAddressError] = useState("");
-  const [dayOfWorkError, setDayOfWorkError] = useState("");
-  const [shiftTimeError, setShiftTimeError] = useState("");
 
   const [joiningDateError, setJoiningDateError] = useState("");
   const [qualificationError, setQualificationError] = useState("");
@@ -130,7 +122,6 @@ export default function RegisterUsers() {
       const nameRequireValidation = validateRequireName(name);
       const contactRequireValidation = validateRequireContact(contact);
       const dobRequireValidation = validateRequireDob(dateOfBirth);
-      const genderRequireValidation = validateRequireGender(gender);
       const addressRequireValidation = validateRequireAddress(address);
       if (nameRequireValidation) {
         setNameError(nameRequireValidation);
@@ -153,9 +144,6 @@ export default function RegisterUsers() {
         return;
       }
     } else if (step === 3 && (role === 'Receptionist' || role === 'Doctor')) {
-
-      setDayOfWorkError("");
-      setShiftTimeError("");
 
       setJoiningDateError("");
       setQualificationError("");
@@ -184,11 +172,9 @@ export default function RegisterUsers() {
       const selectedDaysRequireValidation = validateRequireVisitingDays(selectedDays);
 
       if (daysOfWorkRequireValidation) {
-        setDayOfWorkError(daysOfWorkRequireValidation);
         return;
       }
       if (shiftTimingRequireValidation) {
-        setShiftTimeError(shiftTimingRequireValidation);
         return;
       }
       if (joiningDateRequireValidation) {
@@ -242,10 +228,9 @@ export default function RegisterUsers() {
 
   const handleDateOfBirthChange = (event) => {
     const dob = event.target.value;
-    setDob(dob); // Update date of birth state
-    setAge(calculateAge(dob)); // Calculate and update age state
+    setDob(dob); 
+    setAge(calculateAge(dob)); 
   };
-
 
   const capitalizeName = (name) => {
     return name.toLowerCase().replace(/(^|\s)\S/g, (firstLetter) => firstLetter.toUpperCase());
@@ -272,7 +257,6 @@ export default function RegisterUsers() {
       } else {
         await UsersAuthHelper(email, password, role, name, contact, dateOfBirth, age, gender, address, joiningDate, dayOfWorking, shiftTime, navigate);
       }
-      // Clear form inputs
       clearFormInputs();
       toast.success('User register successfully');
       setStep(1);
@@ -280,6 +264,7 @@ export default function RegisterUsers() {
       toast.error('Failed to register user!');
     }
   };
+
   const clearFormInputs = () => {
     setName("");
     setContact("");
@@ -347,8 +332,6 @@ export default function RegisterUsers() {
                           <form onSubmit={handleSubmit}>
                             {step === 1 && (
                               <>
-                                {/* Step 1 */}
-                                {/* Your Step 1 Form Fields */}
                                 <div className="row g-3">
                                   <div className="col-12">
                                     <label htmlFor="email" className="form-label">Email</label>
@@ -415,7 +398,7 @@ export default function RegisterUsers() {
                                   </div>
 
                                   <div className="col-12">
-                                    <label style={{ fontSize: '14px' }} for="exampleInputPassword1" className="form-label">Select Your role</label>
+                                    <label style={{ fontSize: '14px' }} htmlFor="exampleInputPassword1" className="form-label">Select Your role</label>
                                     <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                     <select
                                       className="form-select input-field form-control-lg bg-light "
@@ -439,8 +422,6 @@ export default function RegisterUsers() {
                             )}
                             {step === 2 && (role === 'Receptionist' || role === 'Doctor' || role === 'Admin') && (
                               <>
-                                {/* Step 2 */}
-                                {/* Your Step 2 Form Fields for Receptionist */}
                                 <div className="row g-3">
                                   <div className="col-md-6">
                                     <label htmlFor="name" className="form-label">Name</label>
@@ -498,7 +479,7 @@ export default function RegisterUsers() {
                                       className="form-control input-field form-control-lg bg-light "
                                       placeholder="Age"
                                       value={age}
-                                      readOnly // Prevent user input
+                                      readOnly 
                                     />
                                   </div>
 
@@ -634,7 +615,6 @@ export default function RegisterUsers() {
                                       <option value="8am-12pm">8:00 AM - 12:00 PM</option>
                                       <option value="9am-1pm">9:00 AM - 1:00 PM</option>
                                       <option value="10am-3pm">10:00 AM - 3:00 PM</option>
-                                      {/* Add more options for shift timings */}
                                     </select>
                                   </div>
                                 </div>
@@ -764,7 +744,6 @@ export default function RegisterUsers() {
                                       <option value="10:00 AM to 1:00 PM">10:00 AM to 1:00 PM</option>
                                       <option value="9:00 AM to 12:00 PM">9:00 AM to 12:00 PM</option>
                                       <option value="N/A">N/A</option>
-                                      {/* Add more options for shift timings */}
                                     </select>
                                     {morningTimeError && <div className="invalid-feedback">{morningTimeError}</div>}
 
@@ -783,7 +762,6 @@ export default function RegisterUsers() {
                                       <option value="2:00 PM to 6:00 PM">2:00 PM to 6:00 PM</option>
                                       <option value="1:00 AM to 5:00 PM">1:00 AM to 5:00 PM</option>
                                       <option value="N/A">N/A</option>
-                                      {/* Add more options for shift timings */}
                                     </select>
                                     {eveningTimeError && <div className="invalid-feedback">{eveningTimeError}</div>}
 
@@ -816,7 +794,6 @@ export default function RegisterUsers() {
                                 </div>
                               </>
                             )}
-                            {/* Add more steps as needed */}
 
                             <div className="col-12 mt-5">
                               {step > 1 && (
@@ -835,7 +812,6 @@ export default function RegisterUsers() {
                                 <button type="submit" className="btn btn-primary float-end" style={{ backgroundColor: '#1977cc' }}>Register</button>
                               )}
                             </div>
-
                           </form>
                         </div>
                       </div>
@@ -848,8 +824,6 @@ export default function RegisterUsers() {
         </div>
         <ToastContainer position="bottom-right" />
       </div>
-
-
     </>
   );
 }

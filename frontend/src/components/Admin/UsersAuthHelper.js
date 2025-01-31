@@ -1,7 +1,6 @@
 import { registerUserApi, registerDoctorApi } from "../Api";
 import Cookies from 'js-cookie'; 
 
-
 export async function UsersAuthHelper(email,password,roles,name,contact,dateOfBirth,age,gender,address,joiningDate,dayOfWork,shiftTiming,weight,height,navigate) {
     try {
         const token = Cookies.get('authToken');
@@ -27,9 +26,7 @@ export async function UsersAuthHelper(email,password,roles,name,contact,dateOfBi
             height,
         };
         await registerUserApi(userData,token); 
-        //alert("User Registration Successfully");
     } catch (error) {
-        //alert("Registration failed! Please try again.");
     }
 
 }
@@ -43,7 +40,6 @@ export async function DoctorAuthHelper(email, password, roles, name, contact, da
             return;
         }
 
-        // Prepare user data
         const userData = {
             email,
             password,
@@ -65,14 +61,8 @@ export async function DoctorAuthHelper(email, password, roles, name, contact, da
             consultationCharge,
         };
 
-        // Call registerDoctorApi with user data and image data
         await registerDoctorApi(userData, doctorImageData, token);
-        
-        // Alert success message
-        //alert("User Registration Successfully");
     } catch (error) {
-        // Alert error message
-        //alert("Registration failed! Please try again.");
     }
 }
 

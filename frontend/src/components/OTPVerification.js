@@ -2,27 +2,13 @@ import React, { useRef, useState, useEffect } from 'react';
 import { focusNextInput } from './Validations';
 import { verifyOTP } from './Api';
 import { ToastContainer, toast } from 'react-toastify';
-function OTP_Verification({ email, verifyOTPCompo, backToLogin }) {
+
+function OTPVerification({ email, verifyOTPCompo, backToLogin }) {
     const inputs = useRef([]);
-    const [timer, setTimer] = useState(120); // Initial time in seconds
+    const [timer, setTimer] = useState(120);
     const [timerExpired, setTimerExpired] = useState(false);
     const [otp, setOtp] = useState(Array(6).fill(""));
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setTimer((prevTimer) => {
-                if (prevTimer === 0) {
-                    clearInterval(interval); // Stop the timer when it reaches 0
-                    setTimerExpired(true);
-                    return 0;
-                }
-                return prevTimer - 1;
-            });
-        }, 1000);
 
-        return () => clearInterval(interval);
-    }, []);
-
-    // Format the timer into minutes and seconds
     const minutes = Math.floor(timer / 60);
     const seconds = timer % 60;
     const newOtp = [...otp];
@@ -40,6 +26,7 @@ function OTP_Verification({ email, verifyOTPCompo, backToLogin }) {
             setOtp(newOtp);
         }
     };
+
     const handleVerifyOTP = async (event) => {
         event.preventDefault();
         const otpString = otp.join('');
@@ -54,6 +41,22 @@ function OTP_Verification({ email, verifyOTPCompo, backToLogin }) {
             toast.error('Invalid or expired OTP!'); 
         }
     };
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTimer((prevTimer) => {
+                if (prevTimer === 0) {
+                    clearInterval(interval); 
+                    setTimerExpired(true);
+                    return 0;
+                }
+                return prevTimer - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <div className="col-md-6 right-box mt-5">
             <div className="row align-items-center">
@@ -61,9 +64,7 @@ function OTP_Verification({ email, verifyOTPCompo, backToLogin }) {
                     <h2 className='text-center'>Enter your Verification code</h2>
                     <p className='text-center'>We have send you an One Time Passcode via this email address</p>
                 </div>
-                {/* OTP Blocks */}
-                <div class="form-group">
-                    {/* <label for="otp">OTP</label> */}
+                <div className="form-group">
                     <div className="input-group-new mb-3">
                         {[...Array(6)].map((_, index) => (
                             <React.Fragment key={index}>
@@ -93,7 +94,7 @@ function OTP_Verification({ email, verifyOTPCompo, backToLogin }) {
                     <button style={{ background: '#1977cc ', borderColor: 'white' }} onClick={handleVerifyOTP} className="btn btn-lg btn-primary w-100 fs-6" > Verify OTP </button>
                 </div>
                 <div>
-                    <p className='text-center' style={{ color: '#1977cc', cursor: 'pointer', fontSize: '14px' }} onClick={backToLogin}><i class="bi bi-chevron-left"></i>&nbsp;Back to Login</p>
+                    <p className='text-center' style={{ color: '#1977cc', cursor: 'pointer', fontSize: '14px' }} onClick={backToLogin}><i className="bi bi-chevron-left"></i>&nbsp;Back to Login</p>
                 </div>
             </div>
             <ToastContainer position="bottom-right" />
@@ -101,4 +102,4 @@ function OTP_Verification({ email, verifyOTPCompo, backToLogin }) {
     );
 }
 
-export default OTP_Verification;
+export default OTPVerification;

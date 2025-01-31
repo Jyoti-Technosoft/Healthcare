@@ -10,7 +10,6 @@ import DoctorProfile from '../Doctor/DoctorProfile';
 import ShowAppointments from '../Receptionist/ShowAppointments';
 import MainDashboard from '../MainDashboard';
 import DoctorLeaves from '../Doctor/DoctorLeaves';
-import Dashboard from '../Dashboard';
 import Cookies from 'js-cookie';
 import { getDoctorsWithIdApi, getReceptionistApi, getPatientApi } from '../Api';
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,7 +19,6 @@ import UserList from './UserList';
 import {
   setActiveTab,
 } from '../../actions/submenuActions';
-import { faClipboardQuestion, faDisplay } from '@fortawesome/free-solid-svg-icons';
 import PatientProfile from '../Patient/PatientProfile';
 import PatientAppointments from '../Patient/PatientAppointments';
 import HealthCalculator from '../Patient/HealthCalculator';
@@ -95,6 +93,7 @@ export default function Sidebar() {
       }
     }
     fetchData();
+    // eslint-disable-next-line
   }, []);
   useEffect(() => {
     async function fetchData() {
@@ -108,6 +107,7 @@ export default function Sidebar() {
       }
     }
     fetchData();
+    // eslint-disable-next-line
   }, []);
   useEffect(() => {
     async function fetchDoctorsWithId() {
@@ -121,6 +121,7 @@ export default function Sidebar() {
       }
     }
     fetchDoctorsWithId();
+    // eslint-disable-next-line
   }, []);
   const decodeBase64Image = (base64String) => {
     return `data:image/png;base64,${base64String}`;
@@ -147,7 +148,7 @@ export default function Sidebar() {
                       <img
                         src={decodeBase64Image(doctorImage)}
                         className="rounded"
-                        alt="Doctor image"
+                        alt="Doctor"
                         style={{ marginTop: '-10px', width: '250px' }}
                       />
                     )}
@@ -180,42 +181,27 @@ export default function Sidebar() {
                     </Link>
                   </li>
 
-
-
                   {userRole === 'SuperAdmin' && (
                     <>
-
                       <li className="nav-item sidebarNavLinks">
                         <Link
                           className={`nav-link ${activeTab === 'usersList' ? 'Active' : ''}`}
                           onClick={() => setMenu('usersList')}
                         >
-                          <i class="bi bi-people sidebarIcon"></i>Users
+                          <i className="bi bi-people sidebarIcon"></i>Users
                         </Link>
                       </li>
-                      {/* <li className="nav-item sidebarNavLinks">
-                        <Link
-                          className={`dropdown-item ${activeTab === 'showAppointments' ? 'Active' : ''}`}
-                          onClick={() => setMenu('showAppointments')}
-                        >
-                          <i class="bi bi-calendar-week sidebarIcon"></i>Appointments
-                        </Link>
-                      </li> */}
                     </>
                   )}
-
-
-
                   {(userRole === 'Receptionist' || userRole === 'Admin') && (
                     <>
-
                       <li className="nav-item sidebarNavLinks">
                         <Link
 
                           className={`nav-link ${activeTab === 'doctorList' ? 'Active' : ''}`}
                           onClick={() => setMenu('doctorList')}
                         >
-                          <i class="fas fa-user-md sidebarIcon"></i>Doctor
+                          <i className="fas fa-user-md sidebarIcon"></i>Doctor
                         </Link>
                       </li>
 
@@ -233,12 +219,11 @@ export default function Sidebar() {
                           className={`dropdown-item ${activeTab === 'showAppointments' ? 'Active' : ''}`}
                           onClick={() => setMenu('showAppointments')}
                         >
-                          <i class="bi bi-calendar-week sidebarIcon"></i>Appointments
+                          <i className="bi bi-calendar-week sidebarIcon"></i>Appointments
                         </Link>
                       </li>
                     </>
                   )}
-
 
                   {userRole === 'Doctor' && (
                     <>
@@ -247,7 +232,7 @@ export default function Sidebar() {
                           className={`nav-link ${activeTab === 'doctorAppointments' ? 'Active' : ''}`}
                           onClick={() => setMenu('doctorAppointments')}
                         >
-                          <i class="bi bi-calendar-week sidebarIcon"></i>Appointments
+                          <i className="bi bi-calendar-week sidebarIcon"></i>Appointments
                         </Link>
                       </li>
 
@@ -256,7 +241,7 @@ export default function Sidebar() {
                           className={`nav-link ${activeTab === 'patientsWithAppointment' ? 'Active' : ''}`}
                           onClick={() => setMenu('patientsWithAppointment')}
                         >
-                          <i class="bi bi-people sidebarIcon"></i>Patients
+                          <i className="bi bi-people sidebarIcon"></i>Patients
                         </Link>
                       </li>
                       <li className="nav-item sidebarNavLinks">
@@ -264,7 +249,7 @@ export default function Sidebar() {
                           className={`nav-link ${activeTab === 'doctorLeaves' ? 'Active' : ''}`}
                           onClick={() => setMenu('doctorLeaves')}
                         >
-                          <i class="bi bi-file-earmark-text sidebarIcon"></i>Leave Management
+                          <i className="bi bi-file-earmark-text sidebarIcon"></i>Leave Management
                         </Link>
                       </li>
                     </>
@@ -277,7 +262,7 @@ export default function Sidebar() {
                           className={`nav-link ${activeTab === 'doctorList' ? 'Active' : ''}`}
                           onClick={() => setMenu('doctorList')}
                         >
-                          <i class="fas fa-user-md sidebarIcon"></i> Doctors
+                          <i className="fas fa-user-md sidebarIcon"></i> Doctors
                         </Link>
                       </li>
                       <li className="nav-item sidebarNavLinks">
@@ -285,7 +270,7 @@ export default function Sidebar() {
                           className={`nav-link ${activeTab === 'patientAppointments' ? 'Active' : ''}`}
                           onClick={() => setMenu('patientAppointments')}
                         >
-                          <i class="bi bi-calendar-week sidebarIcon"></i>Appointments
+                          <i className="bi bi-calendar-week sidebarIcon"></i>Appointments
                         </Link>
                       </li>
                       <li className="nav-item sidebarNavLinks">
@@ -293,7 +278,7 @@ export default function Sidebar() {
                           className={`nav-link ${activeTab === 'healthCalculator' ? 'Active' : ''}`}
                           onClick={() => setMenu('healthCalculator')}
                         >
-                          <i class="bi bi-calculator sidebarIcon"></i>Health Calculator
+                          <i className="bi bi-calculator sidebarIcon"></i>Health Calculator
                         </Link>
                       </li>
                     </>
@@ -305,8 +290,6 @@ export default function Sidebar() {
           </div>
         </div>
       </nav>
-
-
     </div>
   );
 }

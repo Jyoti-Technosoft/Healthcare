@@ -1,38 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { getSearchPatientsApi, getDoctorsApi, getAvailableSlots, bookAppointmentApi, fetchConsultationChargeApi, getAllDoctorsLeaveRequest, getDoctorLeaveRequest } from '../Api';
-import 'react-calendar/dist/Calendar.css'; // Import calendar CSS
-import Calendar from 'react-calendar'; // Import react-calendar
-import { FaTimes } from 'react-icons/fa'; // Import the close icon or any other icon library you prefer
+import { getSearchPatientsApi, getDoctorsApi, getAvailableSlots, bookAppointmentApi, fetchConsultationChargeApi, getDoctorLeaveRequest } from '../Api';
+import 'react-calendar/dist/Calendar.css';
+import Calendar from 'react-calendar';
 import Cookies from 'js-cookie';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import {
     setActiveTab,
 } from '../../actions/submenuActions';
-import { convertTo12HourFormat, validateRequireName, validateRequireContact, validateRequireId, validateRequireDepartment, validateRequireDoctor, validateRequireTimeSlot } from '../Validations';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { startOfDay } from 'date-fns';
+
 export default function BookAppointment() {
     const [suggestions, setSuggestions] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [clickedPatient, setClickedPatient] = useState(null);
-    const [clickedPatientId, setClickedPatientId] = useState('');
-    const [currentStep, setCurrentStep] = useState(1); // Track the current step of the form
     const [doctors, setDoctors] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState('');
     const [selectedDepartment, setSelectedDepartment] = useState('');
     const [consultationCharge, setConsultationCharge] = useState('');
-    const [selectedDate, setSelectedDate] = useState(new Date()); // State for selected date
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [availableSlots, setAvailableSlots] = useState([]);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
     const [leaveRequests, setLeaveRequests] = useState([]);
-    const [timeSlots, setTimeSlots] = useState([]);
     const [doctorSelected, setDoctorSelected] = useState(false);
     const authToken = Cookies.get('authToken');
-    const navigate = useNavigate();
     const dispatch = useDispatch();
     const [id, setId] = useState("");
     const [name, setName] = useState("");
@@ -53,47 +47,22 @@ export default function BookAppointment() {
 
     const handleInputChange = async (event) => {
         const value = event?.target?.value;
-
         try {
             if (value.trim() === '') {
-                // If search query is empty, reset suggestions
                 setSuggestions([]);
 
             } else {
-                // Call API to fetch suggestions based on the search query
                 const data = await getSearchPatientsApi(value, authToken);
-                setSuggestions(data); // Update suggestions state with the fetched data
+                setSuggestions(data);
             }
         } catch (error) {
             console.error('Error fetching suggestions:', error);
         }
     };
 
-    useEffect(() => {
-        // Fetch doctors data from API
-        const fetchDoctors = async () => {
-            try {
-                const response = await getDoctorsApi();
-                // console.log(response); // Log the entire response for debugging
-                if (response) {
-                    // Store doctors with their details including consultation charge
-                    setDoctors(response);
-                } else {
-                    console.error('Empty response from the API');
-                }
-            } catch (error) {
-                console.error('Error fetching doctors:', error);
-            }
-        };
-        fetchDoctors();
-    }, []);
-
     const handleSuggestionClick = (patient) => {
-        // Handle click on a suggestion item
         setClickedPatient(patient);
-        //setClickedPatientId(patient.id);
         setSuggestions([]);
-        setCurrentStep(2); // Move to the next step after clicking on a suggestion
     };
 
     const handleDoctorSelect = async (doctorId) => {
@@ -101,30 +70,22 @@ export default function BookAppointment() {
         setDoctorSelected(true);
         try {
             const response = await fetchConsultationChargeApi(clickedPatient.id, doctorId, selectedDate, authToken);
-            setConsultationCharge(response); // Update consultation charge state with the fetched value
+            setConsultationCharge(response);
         } catch (error) {
             console.error('Error fetching consultation charge:', error);
         }
-
         try {
-            // Fetch available slots for the selected doctor and selected date
             const response = await getAvailableSlots(doctorId, selectedDate, authToken);
-            console.log('Available Slots Response:', response);
-            setAvailableSlots(response); // Assuming the response is in the format { data: { timeSlot1: slotsCount1, timeSlot2: slotsCount2, ... } }
-
+            setAvailableSlots(response);
             const response1 = await fetchConsultationChargeApi(clickedPatient.id, doctorId, selectedDate, authToken);
-            setConsultationCharge(response1); // Update consultation charge state with the fetched value
+            setConsultationCharge(response1);
         } catch (error) {
-            console.error('Error fetching:', error);
         }
         try {
             const fetchedLeaveRequests = await getDoctorLeaveRequest(doctorId, authToken);
             setLeaveRequests(fetchedLeaveRequests);
-            console.log('Leave Requests:', fetchedLeaveRequests);
         } catch (error) {
-            console.log(error);
         }
-
     };
 
     const getDayIndex = (dayName) => {
@@ -132,22 +93,9 @@ export default function BookAppointment() {
         return days.findIndex((day) => day.toLowerCase() === dayName.toLowerCase());
     };
 
-    // Function to convert the numeric day returned by date.getDay() to the corresponding day name
     const getDayName = (dayIndex) => {
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         return days[dayIndex];
-    };
-
-    // Function to get time slots based on selected tab (AM/PM)
-    const getTimeSlots = (tab) => {
-        const amSlots = ['9:00 AM', '10:00 AM', '11:00 AM'];
-        const pmSlots = ['12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM'];
-        return tab === 'AM' ? amSlots : pmSlots;
-    };
-
-    const handleTabChange = (tab) => {
-        const slots = getTimeSlots(tab);
-        setTimeSlots(slots);
     };
 
     const handleTimeSlotSelect = (slot) => {
@@ -155,81 +103,25 @@ export default function BookAppointment() {
     };
 
     const handleDateSelect = async (date) => {
-        const selectedDateUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())); // Convert to UTC
-        console.log("Selected date===> ", selectedDate);
+        const selectedDateUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
         setSelectedDate(selectedDateUTC);
-
         try {
-            // Fetch available slots for the selected doctor and newly selected date
             const response = await getAvailableSlots(selectedDoctor, selectedDateUTC, authToken);
-            // console.log('Available Slots Response:', response);
-            setAvailableSlots(response); // Assuming the response is in the format { data: { timeSlot1: slotsCount1, timeSlot2: slotsCount2, ... } }
+            setAvailableSlots(response);
 
             const response1 = await fetchConsultationChargeApi(clickedPatient.id, selectedDoctor, selectedDateUTC, authToken);
-            setConsultationCharge(response1); // Update consultation charge state with the fetched value
+            setConsultationCharge(response1);
         } catch (error) {
-            console.error('Error fetching:', error);
         }
-
     };
 
-    const convertTo12Hour = (time) => {
-        const [hours, minutes] = time.split(':');
-        let hour = parseInt(hours);
-        const suffix = hour >= 12 ? 'PM' : 'AM';
-        hour = hour % 12 || 12; // Convert 0 to 12
-        const formattedHour = hour.toString().padStart(2, '0'); // Add leading zero if single-digit hour
-        return `${formattedHour}:${minutes} ${suffix}`;
-    }
-
     const handleSubmit = async (event) => {
-        // setIdError("");
-        // setNameError("");
-        // setContactError("");
-        // setDepartmentError("");
-        // setDoctorError("");
-        // setAvailableSlotsError("");       
-        // event.preventDefault();
-
-        // const idRequireValidation = validateRequireId(id);
-        // const nameRequireValidation = validateRequireName(name);
-        // const contactRequireValidation = validateRequireContact(contact);
-        // const departmentRequireValidation = validateRequireDepartment(selectedDepartment);
-        // const doctorRequireValidation = validateRequireDoctor(selectedDoctor);
-        // const timeSlotsRequireValidation = validateRequireTimeSlot(availableSlots);        
-
-        // if (idRequireValidation && nameRequireValidation && contactRequireValidation) {
-        //     setIdError(idRequireValidation);
-        //     setNameError(nameRequireValidation);
-        //     setContactError(contactRequireValidation);
-        //     return;
-        // }
-        // if (departmentRequireValidation || doctorRequireValidation || timeSlotsRequireValidation ) {
-        //     setDepartmentError(departmentRequireValidation);
-        //     setDoctorError(doctorRequireValidation);
-        //     setAvailableSlotsError(timeSlotsRequireValidation);
-        //     console.log("Slot error: " +availableSlotsError)            
-        //     return;
-        // }
-
         try {
-            // Ensure selectedTimeSlot is a string, not an event object
             const slot = selectedTimeSlot.target.value;
-            console.log("Selected slot: " + slot);
-
             const year = selectedDate.getFullYear();
-            // Add 1 to month because months are zero-indexed (January is 0, February is 1, etc.)
-            const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0'); // Ensure two digits
-            const day = selectedDate.getDate().toString().padStart(2, '0'); // Ensure two digits
+            const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+            const day = selectedDate.getDate().toString().padStart(2, '0');
             const formattedDate = `${year}-${month}-${day}`;
-
-            // Log the data being passed to bookAppointmentApi for debugging
-            console.log('Selected Doctor:', selectedDoctor);
-            console.log('Clicked Patient ID:', clickedPatient.id);
-            console.log('Selected Date:', formattedDate);
-            console.log('Selected Time Slot:', slot);
-
-            // Call bookAppointmentApi with the extracted slot value
             await bookAppointmentApi(selectedDoctor, clickedPatient.id, formattedDate, slot, authToken);
             setAvailableSlots([]);
             setSelectedTimeSlot('');
@@ -239,14 +131,35 @@ export default function BookAppointment() {
             setClickedPatient('');
             setSearchQuery('');
             toast.success('Appointment schedule!');
-            //window.location.reload();
         } catch (error) {
-            // Handle error
             toast.error('Failed to schedule appointment!');
         }
     }
 
-
+    useEffect(() => {
+        const fetchDoctors = async () => {
+            try {
+                const response = await getDoctorsApi();
+                if (response) {
+                    setDoctors(response);
+                } else {
+                    console.error('Empty response from the API');
+                }
+            } catch (error) {
+                console.error('Error fetching doctors:', error);
+            }
+        };
+        fetchDoctors();
+        setId("");
+        setName("");
+        setContact("");
+        setIdError("");
+        setNameError("");
+        setContactError("");
+        setDepartmentError("");
+        setDoctorError("");
+        setAvailableSlotsError("");
+    }, []);
 
     return (
         <div className='background_part mt-3'>
@@ -257,7 +170,6 @@ export default function BookAppointment() {
                             <div className="col mb-3">
                                 <div className="card border-0 mb-3 shadow  bg-white rounded">
                                     <div className="card-body">
-                                        {/* <!-- ======= Appointment Section ======= --> */}
                                         <section id="appointment" className="appointment">
                                             <div className="container">
                                                 <i className="bi bi-arrow-left"
@@ -266,20 +178,20 @@ export default function BookAppointment() {
                                                     onMouseEnter={(e) => e.target.style.backgroundColor = '#E5E4E2'}
                                                     onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                                                 ></i>
-                                                <div class="section-title">
+                                                <div className="section-title">
                                                     <label className='contentHeadings appointmentHeading' style={{ color: 'black' }}>Make an Appointment</label>
                                                 </div>
                                                 <>
                                                     <div className='regervation_content'>
                                                         <div id="search" >
-                                                            <div class="search-top">
+                                                            <div className="search-top">
                                                                 <div className='row'>
                                                                     <div style={{ position: 'relative' }} className="col-lg-4 col-md-6 search-section">
                                                                         <Autocomplete
                                                                             value={searchQuery}
                                                                             onChange={(event, newValue) => {
                                                                                 setSearchQuery(newValue);
-                                                                                handleSuggestionClick(newValue); // Call handleSuggestionClick when a suggestion is selected
+                                                                                handleSuggestionClick(newValue);
                                                                             }}
                                                                             onInputChange={handleInputChange}
                                                                             options={suggestions}
@@ -294,7 +206,6 @@ export default function BookAppointment() {
                                                                                         endAdornment: (
                                                                                             <>
                                                                                                 {params.InputProps.endAdornment}
-                                                                                                {/* <i className="fas fa-search" style={{ marginRight: '10px', cursor: 'pointer' }} /> */}
                                                                                             </>
                                                                                         ),
                                                                                     }}
@@ -356,7 +267,6 @@ export default function BookAppointment() {
                                                                         className={`form-select input-field form-control-lg bg-light  ${departmentError && 'is-invalid'} `}
                                                                         onChange={(e) => {
                                                                             setSelectedDepartment(e.target.value);
-                                                                            // Clear the selected doctor when changing the department
                                                                             setSelectedDoctor('');
                                                                         }}
                                                                         required
@@ -405,15 +315,10 @@ export default function BookAppointment() {
                                                                                     value={selectedDate}
                                                                                     className="reactCalender"
                                                                                     tileClassName={({ date, view }) => {
-                                                                                        // Find the selected doctor object
                                                                                         const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(selectedDoctor));
-
-                                                                                        // Check if the selected doctor is available on this date
                                                                                         if (selectedDoc && view === 'month' && selectedDoc.visitingDays) {
                                                                                             const day = date.getDay();
                                                                                             const visitingDaysArray = selectedDoc.visitingDays.split(',');
-
-                                                                                            // Check if the day is not included in visiting days
                                                                                             let isAvailable = false;
                                                                                             for (let visitingDaysString of visitingDaysArray) {
                                                                                                 const visitingDays = visitingDaysString.split('-');
@@ -432,40 +337,33 @@ export default function BookAppointment() {
                                                                                                     }
                                                                                                 }
                                                                                             }
-
                                                                                             const isDateWithinLeavePeriod = leaveRequests.some(request => {
                                                                                                 let fromTime = new Date(request.fromDate);
                                                                                                 let endTime = new Date(request.toDate);
                                                                                                 fromTime.setHours(0, 0, 0);
                                                                                                 endTime.setHours(23, 59, 59);
 
-                                                                                                return request.doctor.id == selectedDoctor &&
+                                                                                                return request.doctor.id === selectedDoctor &&
                                                                                                     date >= fromTime && date <= endTime;
                                                                                             });
 
-
-
-                                                                                            // Return the appropriate class based on availability and leave period
                                                                                             if (isDateWithinLeavePeriod) {
-                                                                                                return 'custom-tile-leave'; // Add CSS class for leave period
+                                                                                                return 'custom-tile-leave';
                                                                                             } else if (isAvailable) {
-                                                                                                return 'custom-tile-green'; // Add CSS class for available dates
+                                                                                                return 'custom-tile-green';
                                                                                             } else {
-                                                                                                return 'custom-tile-red'; // Add CSS class for unavailable dates
+                                                                                                return 'custom-tile-red';
                                                                                             }
                                                                                         }
                                                                                         return null;
                                                                                     }}
                                                                                     tileDisabled={({ date, view }) => {
-                                                                                        // Find the selected doctor object
                                                                                         const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(selectedDoctor));
                                                                                         const isPastDate = date < startOfDay(new Date());
-                                                                                        // Check if the selected doctor is available on this date
                                                                                         if (selectedDoc && view === 'month' && selectedDoc.visitingDays) {
                                                                                             const day = date.getDay();
                                                                                             const visitingDaysArray = selectedDoc.visitingDays.split(',');
 
-                                                                                            // Check if the day is not included in visiting days
                                                                                             let isAvailable = false;
                                                                                             for (let visitingDaysString of visitingDaysArray) {
                                                                                                 const visitingDays = visitingDaysString.split('-');
@@ -487,16 +385,13 @@ export default function BookAppointment() {
 
                                                                                             const isDateWithinLeavePeriod = leaveRequests.some(request => {
                                                                                                 let fromTime = new Date(request.fromDate);
-                                                                                                let endTime = new Date(request.toDate);
                                                                                                 fromTime.setHours(0, 0, 0);
-                                                                                                // endTime.setHours(0,) // Commented out as it might not be necessary
 
-                                                                                                return request.doctor.id == selectedDoctor &&
+                                                                                                return request.doctor.id === selectedDoctor &&
                                                                                                     date.getTime() >= fromTime.getTime() && date.getTime() <= new Date(request.toDate).getTime() &&
-                                                                                                    !(request.fromDate == request.toDate && request.fromTime != null && request.toTime != null && request.fromTime !== request.toTime); // Check if fromTime and toTime are equal
+                                                                                                    !(request.fromDate === request.toDate && request.fromTime != null && request.toTime != null && request.fromTime !== request.toTime); // Check if fromTime and toTime are equal
                                                                                             });
 
-                                                                                            // Disable the tile if it's not available or within a leave request period, but not if fromTime and toTime are equal
                                                                                             return (!isAvailable || isPastDate || isDateWithinLeavePeriod);
                                                                                         }
                                                                                         return false;
@@ -532,7 +427,6 @@ export default function BookAppointment() {
                                                                                                 const requestToTime = request.toTime;
 
                                                                                                 const isOnSelectedDate = selectedDate.toISOString().split('T')[0] === requestFromDate && selectedDate.toISOString().split('T')[0] === requestToDate;
-                                                                                                // Convert time slot string to start and end times
                                                                                                 const [slotStartTime, slotEndTime] = timeSlot.split(' to ');
 
                                                                                                 const isTimeSlotOverlap = isOnSelectedDate && requestFromTime && requestToTime &&
@@ -555,7 +449,7 @@ export default function BookAppointment() {
                                                                                                                 style={{ cursor: 'pointer' }}
                                                                                                                 className={`form-check-input justify-content-start ${availableSlotsError && 'is-invalid'} `}
                                                                                                                 onChange={handleTimeSlotSelect}
-                                                                                                                disabled={isDisabled} // Set disabled attribute based on isDisabled flag
+                                                                                                                disabled={isDisabled}
                                                                                                             />
                                                                                                             <label htmlFor={timeSlot} className="form-check-label mt-1">{`${slotsCount} slots available`}</label>
                                                                                                         </div>
@@ -577,7 +471,6 @@ export default function BookAppointment() {
                                                                                 type="text"
                                                                                 name="charge"
                                                                                 className="form-control input-field"
-
                                                                                 id="charge"
                                                                                 placeholder="Consultancy charge"
                                                                                 value={consultationCharge}

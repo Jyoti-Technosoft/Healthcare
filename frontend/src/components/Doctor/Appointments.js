@@ -1,30 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { getAllAppointmentsApi, getAllPatientsApi, getDoctorsWithIdApi, getAppointmentWithoutHealthReport } from '../Api';
+import {  getDoctorsWithIdApi, getAppointmentWithoutHealthReport } from '../Api';
 import Cookies from 'js-cookie';
 import ConsultancyModal from './ConsultancyModal';
-import {
-    setActiveTab,
-    setMiddleCompo,
-    setResetPreviousTab,
-} from '../../actions/submenuActions';
-import { useSelector, useDispatch } from 'react-redux';
-import ConsultancyPage from './PatientDetailPage';
 import { dateFormatter } from '../Validations';
+
 export default function Appointments() {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [doctorId, setDoctorId] = useState('');
     const [filteredAppointments, setFilteredAppointments] = useState([]);
-    const [selectedAppointment, setSelectedAppointment] = useState(null); // Added state to store selected appointment
+    const [selectedAppointment, setSelectedAppointment] = useState(null); 
     const userId = Cookies.get("userId");
     const authToken = Cookies.get("authToken");
     const [prescriptions, setPrescriptions] = useState([]);
     const [showCloseButton, setShowCloseButton] = useState(false);
-
-    const [brandNames, setBrandNames] = useState([]);
-    const [medications, setMedications] = useState([]);
-    const [error, setError] = useState(null);
 
     function formatAppointmentDate(dateString) {
         return dateFormatter(dateString);
@@ -34,18 +23,12 @@ export default function Appointments() {
         const fetchData = async () => {
             try {
                 const doctorInfo = await getDoctorsWithIdApi(userId, authToken);
-                const fetchedDoctorId = doctorInfo.id; // Store doctorId in a local variable
-                console.log("Doctor id: " + fetchedDoctorId);
-
-                const data = await getAppointmentWithoutHealthReport(fetchedDoctorId, authToken); // Use fetchedDoctorId directly
-                const appointmentId = data.appointmentId;
+                const fetchedDoctorId = doctorInfo.id; 
+                const data = await getAppointmentWithoutHealthReport(fetchedDoctorId, authToken); 
                 setAppointments(data);
-
-
                 setFilteredAppointments(data);
                 setLoading(false);
             } catch (error) {
-                console.error('Error fetching appointments:', error);
                 setLoading(false);
             }
         };
@@ -61,37 +44,29 @@ export default function Appointments() {
                 if (!response.ok) {
                     throw new Error('Failed to fetch brand names');
                 }
-                const data = await response.json();
-                setBrandNames(data.results.map(result => result.term));
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching brand names:', error);
-                setError(error.message);
                 setLoading(false);
             }
         };
-
         fetchBrandNames();
     }, []);
 
     const handleSearch = (e) => {
-        console.log("Search keyword:", e.target.value); // Check if the function is triggered
         const keyword = e.target.value.toLowerCase();
         const filteredData = appointments.filter((appointment) =>
-            appointment.patient.id.toString().includes(keyword) || // Assuming ID is the first element
-            appointment.patient.name.toLowerCase().includes(keyword) || // Patient name
-            appointment.patient.contact.toLowerCase().includes(keyword) || // Contact
-            appointment.appointmentDate.toLowerCase().includes(keyword) || // Appointment Date
-            appointment.appointmentTime.toLowerCase().includes(keyword)  // Appointment time
+            appointment.patient.id.toString().includes(keyword) || 
+            appointment.patient.name.toLowerCase().includes(keyword) || 
+            appointment.patient.contact.toLowerCase().includes(keyword) || 
+            appointment.appointmentDate.toLowerCase().includes(keyword) || 
+            appointment.appointmentTime.toLowerCase().includes(keyword)  
         );
-        console.log("Filtered Appointments:", filteredData); // Check if filtered data is set correctly
         setFilteredAppointments(filteredData);
-
     };
 
     const handleToggleModal = (appointment) => {
-        setSelectedAppointment(appointment); // Set selected appointment
-        // Show the modal using Bootstrap's modal API
+        setSelectedAppointment(appointment); 
         const modal = new window.bootstrap.Modal(document.getElementById('consultancyModal'));
         modal.show();
     };

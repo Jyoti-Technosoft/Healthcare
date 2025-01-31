@@ -4,11 +4,13 @@ import { getHealthreportsByAppointmentId } from '../Api'
 import Cookies from 'js-cookie';
 import { dateFormatter } from '../Validations';
 import PatientAppointments from './PatientAppointments';
+
 const PatientHealthreport = ({ appointment, patient }) => {
     const authToken = Cookies.get("authToken");
     const [healthReport, setHealthReport] = useState([]);
     const [activeTab, setActiveTab] = useState(true);
     const [loading, setLoading] = useState(true);
+
     const setBackMenu = (appointment) => {
         setActiveTab(false);
     };
@@ -19,9 +21,8 @@ const PatientHealthreport = ({ appointment, patient }) => {
         const fetchData = async () => {
             try {
                 const appointmentId = appointment.id;
-                console.log("appointment id: " +appointmentId);
                 const data = await getHealthreportsByAppointmentId(appointmentId, authToken);
-                setHealthReport(data); // Set the fetched patients to the state
+                setHealthReport(data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching patients:', error);
@@ -29,6 +30,7 @@ const PatientHealthreport = ({ appointment, patient }) => {
             }
         };
         fetchData();
+        // eslint-disable-next-line
     }, []);
 
     const columns = [
@@ -97,7 +99,6 @@ const PatientHealthreport = ({ appointment, patient }) => {
                                                     <hr style={{ color: 'grey' }} />
                                                     <div className="d-flex justify-content-between align-items-center mb-3">
                                                         <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>HealthReport</b></h3>
-                                                        {/* <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} /> */}
                                                     </div>
                                                     {loading ? (
                                                         <p>Loading...</p>

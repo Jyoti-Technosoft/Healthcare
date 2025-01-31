@@ -7,7 +7,6 @@ export function validateRequireEmail(email) {
 }
 
 export function validatePatternEmail(email) {
-    // If email is empty, return an empty string indicating it meets the requirement
     if (email.trim() === "") {
         return "";
     }
@@ -110,7 +109,6 @@ export function validateRequireSpeciality(speciality) {
     return speciality.trim() ? "" : "Specialities is required";
 }
 
-
 export function validateRequireMorningTime(morningTime) {
     return morningTime.trim() ? "" : "Morning Time is required";
 }
@@ -149,9 +147,8 @@ export const calculateBMI = (height, weight) => {
 
 export const calculateIdealWeight = (height) => {
     const exactWeight = Math.round((height - 100) * 0.9);
-    const minHeight = Math.round(exactWeight * 0.9); // 10% below exact weight
-    const maxHeight = Math.round(exactWeight * 1.1); // 10% above exact weight
-
+    const minHeight = Math.round(exactWeight * 0.9); 
+    const maxHeight = Math.round(exactWeight * 1.1);
     return {
         exactWeight: exactWeight,
         weightRange: [minHeight, maxHeight]
@@ -183,15 +180,12 @@ export const getClassificationFromBMI = (bmiValue, classificationTable) => {
 
 export const getAgeCalculator = (dateOfBirth, ageDate, setAge) => {
     if (dateOfBirth && ageDate) {
-        const diff = ageDate - dateOfBirth;
         const ageDateObj = new Date(ageDate);
         const dobDateObj = new Date(dateOfBirth);
-
         let years = ageDateObj.getFullYear() - dobDateObj.getFullYear();
         let months = ageDateObj.getMonth() - dobDateObj.getMonth();
         let days = ageDateObj.getDate() - dobDateObj.getDate();
 
-        // Adjust months and years
         if (days < 0) {
             months--;
             days += new Date(ageDateObj.getFullYear(), ageDateObj.getMonth(), 0).getDate();
@@ -200,7 +194,6 @@ export const getAgeCalculator = (dateOfBirth, ageDate, setAge) => {
             years--;
             months += 12;
         }
-
         setAge({
             years: years,
             months: months,
@@ -209,7 +202,6 @@ export const getAgeCalculator = (dateOfBirth, ageDate, setAge) => {
     }
 };
 
-// utils.js
 export const handleRowSelect = (selectedRows, setSelectedRows, row) => {
     const selectedIndex = selectedRows.indexOf(row.id);
     let newSelected = [];
@@ -226,27 +218,24 @@ export const handleRowSelect = (selectedRows, setSelectedRows, row) => {
             selectedRows.slice(selectedIndex + 1)
         );
     }
-
     setSelectedRows(newSelected);
 };
 
 export const calculateTotalDays = (startDate, endDate, setTotalDays) => {
-    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    const oneDay = 24 * 60 * 60 * 1000; 
     const start = new Date(startDate);
     const end = new Date(endDate);
-    const totalDays = Math.round(Math.abs((start - end) / oneDay)) + 1; // Adding 1 to include both start and end dates
+    const totalDays = Math.round(Math.abs((start - end) / oneDay)) + 1; 
     setTotalDays(totalDays);
 };
 
 export const highlightDateRange = (start, end, setHighlightedDates) => {
     const startDate = new Date(start);
     const endDate = new Date(end);
-    
     const datesToHighlight = [];
     const currentDate = new Date(startDate);
-
     while (currentDate <= endDate) {
-        const formattedDate = currentDate.toLocaleDateString('en-GB'); // Format date as "dd/mm/yyyy"
+        const formattedDate = currentDate.toLocaleDateString('en-GB'); 
         datesToHighlight.push(formattedDate);
         currentDate.setDate(currentDate.getDate() + 1);
     }
@@ -258,39 +247,25 @@ export const getCurrentDate = () => {
     let month = '' + (today.getMonth() + 1);
     let day = '' + today.getDate();
     const year = today.getFullYear();
-
     if (month.length < 2) 
         month = '0' + month;
     if (day.length < 2) 
         day = '0' + day;
-
     return [year, month, day].join('-');
 }
 
 export const convertTo12HourFormat = (time) => {
-    // Split the time string into hours and minutes
     const [hours, minutes] = time.split(':');
-    
-    // Convert hours to 12-hour format
     let formattedHours = parseInt(hours, 10);
     const amPm = formattedHours >= 12 ? 'PM' : 'AM';
     formattedHours = formattedHours % 12 || 12;
-
-    // Return the formatted time string
     return `${formattedHours}:${minutes} ${amPm}`;
 };
 
 export const convertTo12Hour = (timeRange) => {
-    // Split the time range string into start and end times
     const [startTime, endTime] = timeRange.split(' to ');
-    
-    // Convert start time to 12-hour format
     const formattedStartTime = convertTo12HourFormat(startTime);
-    
-    // Convert end time to 12-hour format
     const formattedEndTime = convertTo12HourFormat(endTime);
-
-    // Return the formatted time range string
     return `${formattedStartTime} to ${formattedEndTime}`;
 };
 
@@ -299,8 +274,6 @@ export const getDayIndex = (dayName) => {
     return days.findIndex((day) => day.toLowerCase() === dayName.toLowerCase());
 };
 
-
-// Function to convert the numeric day returned by date.getDay() to the corresponding day name
 export const getDayName = (dayIndex) => {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     return days[dayIndex];

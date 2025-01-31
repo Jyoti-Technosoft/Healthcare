@@ -1,7 +1,6 @@
 import { registerPatientApi } from "../Api";
 import Cookies from 'js-cookie'; 
 
-
 export async function handlePatientRegistration(name, contact, email, dateOfBirth, gender, age, weight, height, address, navigate) {
 
     try {

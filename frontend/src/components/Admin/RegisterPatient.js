@@ -1,17 +1,16 @@
 import React, { useState } from 'react'
-import { handlePatientRegistration } from './PatientDoctorAuthHelper';
-import { useNavigate, Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 import { UsersAuthHelper } from './UsersAuthHelper';
-import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireGender, validateRequireAddress, validateRequireWeight, validateRequireHeight, calculateAge } from '../Validations';
+import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireAddress, validateRequireWeight, validateRequireHeight, calculateAge } from '../Validations';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons';
-import { useSelector, useDispatch } from 'react-redux';
+import {  useDispatch } from 'react-redux';
 import {
   setActiveTab,
 } from '../../actions/submenuActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 export default function RegisterPatient() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -26,9 +25,9 @@ export default function RegisterPatient() {
   const [address, setAddress] = useState("");
   const [step, setStep] = useState(1);
   const stepLabels = ["Register Patient"];
-  const [passwordVisibility, setPasswordVisibility] = useState(true); // State to toggle password visibility
-  const [confirmpasswordVisibility, setConfirmPasswordVisibility] = useState(true); // State to toggle password visibility
-  const roleCookie = Cookies.get('role');
+  const [passwordVisibility, setPasswordVisibility] = useState(true); 
+  const [confirmpasswordVisibility, setConfirmPasswordVisibility] = useState(true); 
+
   const totalSteps = 1;
   const navigate = useNavigate();
 
@@ -37,7 +36,6 @@ export default function RegisterPatient() {
   const setMenu = (submenu) => {
 
     if (submenu === 'patientsList') {
-      // If the submenu is registerPatient, dispatch actions to reset the previous state to null
       dispatch(setActiveTab('patientsList'));
     }
   };
@@ -53,22 +51,24 @@ export default function RegisterPatient() {
   const [weightError, setWeightError] = useState("");
   const [heightError, setHeightError] = useState("");
 
-
-
   const handleGenderChange = (event) => {
     setGender(event.target.value);
   };
+
   const capitalizeName = (name) => {
     return name.toLowerCase().replace(/(^|\s)\S/g, (firstLetter) => firstLetter.toUpperCase());
   };
+
   const handleDateOfBirthChange = (event) => {
     const dob = event.target.value;
-    setDob(dob); // Update date of birth state
-    setAge(calculateAge(dob)); // Calculate and update age state
+    setDob(dob); 
+    setAge(calculateAge(dob));
   };
+
   const togglePasswordVisibility = () => {
     setPasswordVisibility(!passwordVisibility);
   };
+
   const toggleConfirmPasswordVisibility = () => {
     setConfirmPasswordVisibility(!confirmpasswordVisibility);
   };
@@ -93,12 +93,9 @@ export default function RegisterPatient() {
     const nameRequireValidation = validateRequireName(name);
     const contactRequireValidation = validateRequireContact(contact);
     const dobRequireValidation = validateRequireDob(dateOfBirth);
-    const genderRequireValidation = validateRequireGender(gender);
     const addressRequireValidation = validateRequireAddress(address);
     const weightRequireValidation = validateRequireWeight(weight);
     const heightRequireValidation = validateRequireHeight(height);
-
-
 
     if (emailRequireValidation) {
       setEmailError(emailRequireValidation);
@@ -151,13 +148,11 @@ export default function RegisterPatient() {
       await UsersAuthHelper(email, password, 'Patient', name, contact, dateOfBirth, age, gender, address, '', '', '', weight, height, navigate);
       toast.success('Patient register successfully'); 
       handleClear(); 
-      //dispatch(setActiveTab('patientsList'));
     } catch (error) {
       toast.error('Failed to register patient!');
     }
   };
   function handleClear() {
-    // Clear all form fields by setting their respective state to an empty string
     setName("");
     setPassword("");
     setConfirmPassword("");
@@ -329,7 +324,7 @@ export default function RegisterPatient() {
                             className="form-control input-field "
                             placeholder="Age"
                             value={age}
-                            readOnly // Prevent user input
+                            readOnly 
                           />
                         </div>
 

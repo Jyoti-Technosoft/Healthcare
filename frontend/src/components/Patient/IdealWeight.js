@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import { calculateIdealWeight } from '../Validations';
-import CloseIcon from '@mui/icons-material/Close'; // Import the CloseIcon component from Material-UI
+import CloseIcon from '@mui/icons-material/Close';
+
 const IdealWeight = ({ toggleForm }) => {
     const [height, setHeight] = useState('');
     const [idealWeight, setIdealWeight] = useState(null);
 
     const handleCalculateIdealWeight = () => {
-        const weightInfo = calculateIdealWeight(height); // Call the function
+        const weightInfo = calculateIdealWeight(height);
         setIdealWeight(weightInfo);
     };
     const handleClose = () => {
-        toggleForm(); // Close the form when close button is clicked
+        toggleForm();
     };
     return (
         <div>

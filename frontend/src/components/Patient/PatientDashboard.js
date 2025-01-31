@@ -7,6 +7,7 @@ import {
     setActiveTab,
 } from '../../actions/submenuActions';
 import { useSelector, useDispatch } from 'react-redux';
+
 export default function PatientDashboard() {
     const [appointments, setAppointments] = useState([]);
     const userId = Cookies.get("userId");
@@ -39,12 +40,15 @@ export default function PatientDashboard() {
 
         fetchData();
     }, [userId, authToken]);
+
     const upcomingAppointments = appointments
         .filter(appointment => new Date(appointment.appointmentDate) >= new Date());
+
     const todaysAppointments = () => {
         const today = new Date().toISOString().slice(0, 10);
         return appointments.filter(appointment => appointment.appointmentDate === today);
     };
+
     const columns = [
         { name: 'SR.NO', selector: (row, index) => index + 1, sortable: true, maxWidth: '20px' },
         { name: 'Appointment Id', selector: row => row.id, sortable: true, maxWidth: '110px' },
@@ -108,8 +112,7 @@ export default function PatientDashboard() {
                                         pagination
                                         highlightOnHover
                                         noDataComponent="No todays appointments found"
-                                        // paginationPerPage={paginationPerPage}
-                                        paginationRowsPerPageOptions={[5]} // Only one option for rows per page
+                                        paginationRowsPerPageOptions={[5]} 
 
                                     />
                                 </div>
@@ -120,7 +123,7 @@ export default function PatientDashboard() {
                                 <div className="card-body" style={{ height: '500px', overflowY: 'auto' }}>
                                     <div className="d-flex justify-content-between align-items-center">
                                         <h6 className=''><b className='contentHeadings' style={{ color: 'black' }}> Upcoming Appointments</b> </h6>
-                                        <a style={{ cursor: 'pointer', fontSize: '12px' }} onClick={() => setMenu('patientAppointments')}>See all<i class="bi bi-chevron-right" style={{ fontSize: '10px' }}></i></a>
+                                        <a href='#' style={{ cursor: 'pointer', fontSize: '12px' }} onClick={() => setMenu('patientAppointments')}>See all<i className="bi bi-chevron-right" style={{ fontSize: '10px' }}></i></a>
                                     </div>
                                     <div className=" mt-3">
 

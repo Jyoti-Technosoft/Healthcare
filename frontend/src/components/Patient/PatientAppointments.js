@@ -4,6 +4,7 @@ import { getAllAppointmentsForPatient, getPatientApi, getAllHealthreports } from
 import Cookies from 'js-cookie';
 import { dateFormatter } from '../Validations';
 import PatientHealthreport from './PatientHealthreport';
+
 export default function PatientAppointments() {
     const [appointments, setAppointments] = useState([]);
     const [patients, setPatients] = useState([]);
@@ -13,9 +14,11 @@ export default function PatientAppointments() {
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [showHealthreport, setShowHealthreport] = useState(true);
     const [healthReport, setHealthReport] = useState([]);
+
     function formatAppointmentDate(dateString) {
         return dateFormatter(dateString);
     }
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -35,6 +38,7 @@ export default function PatientAppointments() {
 
         fetchData();
     }, [userId, authToken]);
+
     const setReportPage = (appointment) => {
         setSelectedAppointment(appointment);
         setShowHealthreport(false);
@@ -113,7 +117,6 @@ export default function PatientAppointments() {
                                                         highlightOnHover
                                                         noDataComponent="No appointments found"
                                                     />
-
                                                 </div>
                                             </div>
                                         </div>

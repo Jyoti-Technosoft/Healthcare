@@ -2,21 +2,22 @@ import React, { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { TextField, Button, Box } from '@mui/material';
 import { getAgeCalculator } from '../Validations';
+
 const AgeCalculator = ({ toggleForm }) => {
     const [dateOfBirth, setDateOfBirth] = useState(null);
     const [ageDate, setAgeDate] = useState(new Date());
     const [age, setAge] = useState(null);
 
     const handleClose = () => {
-        toggleForm(); // Close the form when close button is clicked
+        toggleForm(); 
     };
 
     const handleDateOfBirthChange = (date) => {
-        setDateOfBirth(date); // Update Date of Birth
+        setDateOfBirth(date); 
     };
 
     const handleAgeDateChange = (date) => {
-        setAgeDate(date); // Update Age Date
+        setAgeDate(date); 
     };
 
     const calculateAge = () => {
@@ -31,8 +32,6 @@ const AgeCalculator = ({ toggleForm }) => {
                 <CloseIcon onClick={handleClose} style={{ cursor: 'pointer', color: 'grey' }} />
             </div>
             <hr style={{ color: 'grey' }} />
-
-            {/* Date of Birth Picker */}
             <Box sx={{ width: '100%', marginBottom: '1rem' }}>
                 <TextField
                     label="Date of Birth"
@@ -45,7 +44,6 @@ const AgeCalculator = ({ toggleForm }) => {
                     style={{ width: '100%' }}
                 />
 
-                {/* Age Date Picker */}
                 <TextField
                     className='mt-4'
                     label="Age at the Date of"
@@ -62,7 +60,6 @@ const AgeCalculator = ({ toggleForm }) => {
                 </Button>
             </Box>
 
-            {/* Display Age */}
             {age && (
                 <div className="mt-4">
                     <h4>Age:</h4>

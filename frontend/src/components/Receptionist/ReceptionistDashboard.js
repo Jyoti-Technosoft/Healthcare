@@ -11,10 +11,9 @@ import { useSelector, useDispatch } from 'react-redux';
 export default function ReceptionistDashboard() {
 
   const [appointments, setAppointments] = useState([]);
-  const [appointmentsDoctor, setAppointmentsDoctor] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [patients, setPatients] = useState([]);
-  const [paginationPerPage, setPaginationPerPage] = useState(5); // Default rows per page
+  const [paginationPerPage, setPaginationPerPage] = useState(5);
   const [selectedRows, setSelectedRows] = useState([]);
   const userId = Cookies.get("userId");
   const token = Cookies.get("authToken");
@@ -46,6 +45,7 @@ export default function ReceptionistDashboard() {
       }
     };
     fetchData();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -55,7 +55,6 @@ export default function ReceptionistDashboard() {
         const fetchedDoctorId = doctorInfo.id;
 
         const data = await getAllAppointmentsApi(fetchedDoctorId, token);
-        setAppointmentsDoctor(data);
       } catch (error) {
         console.error('Error fetching appointments:', error);
       }
@@ -67,15 +66,12 @@ export default function ReceptionistDashboard() {
   const handleArriveButtonClick = async () => {
     try {
       await updatePatientArrive(selectedRows, token);
-
-      // Fetch updated appointment data and update state
       const updatedAppointments = await getAllAppointments(token);
       setAppointments(updatedAppointments);
 
-      const doctorInfo = await getDoctorsWithIdApi(userId, token);
-      const fetchedDoctorId = doctorInfo.id;
-      const updatedDoctorAppointments = await getAllAppointmentsApi(fetchedDoctorId, token);
-      setAppointmentsDoctor(updatedDoctorAppointments);
+      // const doctorInfo = await getDoctorsWithIdApi(userId, token);
+      // const fetchedDoctorId = doctorInfo.id;
+      // const updatedDoctorAppointments = await getAllAppointmentsApi(fetchedDoctorId, token);
     } catch (error) {
       console.error('Error updating arrival status:', error);
     }
@@ -88,26 +84,22 @@ export default function ReceptionistDashboard() {
 
   const todaysAppointments = () => {
     const today = new Date().toISOString().slice(0, 10);
-    const arrivedAppointments = appointments.filter(appointment => appointment.appointmentDate === today && appointment.arrive == 1);
-    const notArrivedAppointments = appointments.filter(appointment => appointment.appointmentDate === today && appointment.arrive != 1);
-
-    // Sort arrived appointments by appointment time
+    const arrivedAppointments = appointments.filter(appointment => appointment.appointmentDate === today && appointment.arrive === 1);
+    const notArrivedAppointments = appointments.filter(appointment => appointment.appointmentDate === today && appointment.arrive !== 1);
     const sortedArrivedAppointments = arrivedAppointments.sort((a, b) => new Date(a.appointmentTime) - new Date(b.appointmentTime));
-
-    // Concatenate sorted arrived appointments with not arrived appointments
     return [...sortedArrivedAppointments, ...notArrivedAppointments];
   };
 
   const upcomingAppointments = appointments
     .filter(appointment => new Date(appointment.appointmentDate) >= new Date())
-    .sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate)) // Sort appointments in ascending order of the date
-    .slice(0, 10); // Take the first 10 appointments
+    .sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate))
+    .slice(0, 10);
 
   const isSelected = (row) => selectedRows.includes(row.id);
   const columns = [
     {
       cell: (row) => {
-        if (row.arrive == 1) {
+        if (row.arrive === 1) {
           return <div style={{ width: '7px', height: '7px', backgroundColor: '#77dd77', borderRadius: '50%', display: 'inline-block' }}></div>;
         } else {
           return (
@@ -180,7 +172,7 @@ export default function ReceptionistDashboard() {
                 <div className="card-body" style={{ height: '500px', overflowY: 'auto' }}>
                   <div className="d-flex justify-content-between align-items-center">
                     <h6><b className='contentHeadings' style={{ color: 'black' }}> Todays Appointments</b> </h6>
-                    {todaysAppointments().length > 0 && (<button type="submit" className="btn btn-primary" style={{ backgroundColor: '#77dd77', borderColor: 'white' }} onClick={handleArriveButtonClick} disabled={selectedRows.length === 0}><i class="bi bi-plus" style={{ color: 'white' }}></i>Arrive</button>)}
+                    {todaysAppointments().length > 0 && (<button type="submit" className="btn btn-primary" style={{ backgroundColor: '#77dd77', borderColor: 'white' }} onClick={handleArriveButtonClick} disabled={selectedRows.length === 0}><i className="bi bi-plus" style={{ color: 'white' }}></i>Arrive</button>)}
                   </div>
 
                   <br />
@@ -191,7 +183,7 @@ export default function ReceptionistDashboard() {
                     highlightOnHover
                     noDataComponent="No todays appointments found"
                     paginationPerPage={paginationPerPage}
-                    paginationRowsPerPageOptions={[5]} // Only one option for rows per page
+                    paginationRowsPerPageOptions={[5]}
                     onChangePage={(page) => setCurrentPage(page)}
                   />
                 </div>
@@ -202,7 +194,7 @@ export default function ReceptionistDashboard() {
                 <div className="card-body" style={{ height: '500px', overflowY: 'auto' }}>
                   <div className="d-flex justify-content-between align-items-center">
                     <h6 className=''><b className='contentHeadings' style={{ color: 'black' }}> Upcoming Appointments</b> </h6>
-                    <a style={{ cursor: 'pointer', fontSize: '12px' }} onClick={() => setMenu('showAppointments')}>See all<i class="bi bi-chevron-right" style={{ fontSize: '10px' }}></i></a>
+                    <a href='#' style={{ cursor: 'pointer', fontSize: '12px' }} onClick={() => setMenu('showAppointments')}>See all<i className="bi bi-chevron-right" style={{ fontSize: '10px' }}></i></a>
                   </div>
                   <div className=" mt-3">
                     {upcomingAppointments.slice(0, 5).map(appointment => (

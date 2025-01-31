@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'; 
 import { getAllUsers } from '../Api';
 import Cookies from 'js-cookie';
+
 export default function AdminDashboard() {
     const [users, setUsers] = useState([]);
     const [receptionist, setReceptionist] = useState([]);
@@ -20,7 +21,7 @@ export default function AdminDashboard() {
             }
         };
         fetchData();
-    }, []);
+    }, [token]);
     const todayUsersCount = () =>{
         const today = new Date().toISOString().slice(0, 10);
         return users.filter(user => user.createdTime === today).length;
@@ -62,14 +63,6 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
                         </div>
-                        {/* <div className="col mb-4"> 
-                            <div className="card h-100  rounded border-0 justify-content-center" >
-                                <div className="card-body p-4">
-                                    <h1 className='text-center'>{patients.length}</h1>
-                                    <p className='text-center'>Total Patients</p>
-                                </div>
-                            </div>
-                        </div> */}
                     </div>
                 </div>
             </div>

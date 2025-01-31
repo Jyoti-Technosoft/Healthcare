@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { getAllPatientsApi, getAllAppointmentsApi, getDoctorsWithIdApi, getPatientsListForDoctor } from '../Api';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-    setActiveTab,
-} from '../../actions/submenuActions';
+import { getDoctorsWithIdApi, getPatientsListForDoctor } from '../Api';
 import Cookies from 'js-cookie';
 import PatientDetailPage from './PatientDetailPage';
+
 export default function Patients() {
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -24,29 +21,29 @@ export default function Patients() {
         const fetchData = async () => {
             try {
                 const doctorInfo = await getDoctorsWithIdApi(userId, token);
-                const fetchedDoctorId = doctorInfo.id; // Store doctorId in a local variable
+                const fetchedDoctorId = doctorInfo.id;
                 const data = await getPatientsListForDoctor(fetchedDoctorId, token);
-                setPatients(data); // Set the fetched patients to the state
-                setFilteredPatients(data); // Initially set filtered patients same as all patients
+                setPatients(data);
+                setFilteredPatients(data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching patients:', error);
                 setLoading(false);
             }
         };
-
         fetchData();
+        // eslint-disable-next-line
     }, []);
 
     const handleSearch = (e) => {
         const keyword = e.target.value.toLowerCase();
         const filteredData = patients.filter((patient) =>
-            patient.id == keyword ||
+            patient.id === keyword ||
             patient.name.toLowerCase().includes(keyword) ||
             patient.user.email.toLowerCase().includes(keyword) ||
             patient.address.toLowerCase().includes(keyword)
         );
-        setFilteredPatients(filteredData); 
+        setFilteredPatients(filteredData);
     };
 
     const columns = [
@@ -68,7 +65,7 @@ export default function Patients() {
                             <div className="col">
                                 <div className="row">
                                     <div className="col mb-3">
-                                        <div className="card border-0 mb-3 shadow  bg-white rounded"> 
+                                        <div className="card border-0 mb-3 shadow  bg-white rounded">
                                             <div className="card-body">
                                                 <div className="row">
                                                     <>

@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { getPatientApi } from "../Api";
-import { format } from 'date-fns'; // Import format function from date-fns
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faPencilAlt, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { updatePatientProfileApi } from '../Api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 export default function PatientProfile() {
   const userId = Cookies.get("userId");
-  const roleCookie = Cookies.get('role');
   const authToken = Cookies.get('authToken');
   const totalSteps = 3;
   const [step, setStep] = useState(1);
@@ -21,12 +20,11 @@ export default function PatientProfile() {
   const [gender, setGender] = useState('');
   const [address, setAddress] = useState("");
   const [role, setRole] = useState("");
-  const [weight,setWeight]=useState("");
-  const [height,setHeight]=useState("");
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
   const [patientId, setPatientId] = useState("");
-  const [editMode, setEditMode] = useState(false); // State to track whether fields are in edit mode
+  const [editMode, setEditMode] = useState(false);
 
-  const [passwordFromDatabase, setPasswordFromDatabase] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -64,12 +62,11 @@ export default function PatientProfile() {
 
     async function fetchData() {
       try {
-        const userData = await getPatientApi(userId,authToken);
+        const userData = await getPatientApi(userId, authToken);
         setEmail(userData.user.email);
         setPatientId(userData.id);
         setName(userData.name);
         setRole(userData.user.role);
-        setPasswordFromDatabase(userData.user.password);
         setContact(userData.contact);
         const formattedDate = new Date(userData.dateOfBirth).toISOString().substr(0, 10);
         setDob(formattedDate);
@@ -83,14 +80,14 @@ export default function PatientProfile() {
       }
     }
     fetchData();
+    // eslint-disable-next-line
   }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await updatePatientProfileApi(patientId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age, weight, height);    
+      await updatePatientProfileApi(patientId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age, weight, height);
       toast.success('Profile updated successfully');
-      //window.location.reload();
     } catch (error) {
       toast.error('Failed to update profile');
     }
@@ -105,14 +102,14 @@ export default function PatientProfile() {
                 <div className="card border-0 mb-3 shadow  bg-white rounded">
                   <div className="card-body">
                     <div className="">
-                      <div className="row">                 
+                      <div className="row">
                         <div className="col d-flex flex-column flex-sm-row justify-content-between mb-3">
                           <div className="text-center text-sm-left mb-2 mb-sm-0">
                             <h4 className="pt-sm-2 pb-1 mb-0 updateProfileHeading"><b className='contentHeadings' style={{ color: 'black' }}>Patient Profile</b></h4>
                           </div>
                           <div className="text-center text-sm-right profileHead">
                             <span className="badge badge-secondary">{role}</span>
-                            
+
                           </div>
                         </div>
                       </div>
@@ -120,8 +117,8 @@ export default function PatientProfile() {
                       <div className="d-flex align-items-center justify-content-between">
                         <ul className="nav nav-tabs flex-grow-1">
                           <li className="nav-item">
-                            <a className="active nav-link profileTab">
-                              <i class="bi bi-person"></i> Profile
+                            <a href='#' className="active nav-link profileTab">
+                              <i className="bi bi-person"></i> Profile
                             </a>
                           </li>
                         </ul>
@@ -149,7 +146,7 @@ export default function PatientProfile() {
                                           <input
                                             id="name"
                                             type="text"
-                                            className="form-control input-field form-control-lg bg-light "                                            
+                                            className="form-control input-field form-control-lg bg-light "
                                             placeholder="Name"
                                             value={capitalizeName(name)}
                                             onChange={(event) => {
@@ -157,7 +154,7 @@ export default function PatientProfile() {
                                             }}
                                             readOnly={!editMode}
                                           />
-                                          
+
 
                                         </div>
 
@@ -167,7 +164,7 @@ export default function PatientProfile() {
                                           <input
                                             id="phone"
                                             type="number"
-                                            className="form-control input-field form-control-lg bg-light "                                            
+                                            className="form-control input-field form-control-lg bg-light "
                                             placeholder="Phone Number"
                                             value={contact}
                                             onChange={(event) => {
@@ -184,10 +181,10 @@ export default function PatientProfile() {
                                             id="dateOfBirth"
                                             type="date"
                                             value={dateOfBirth}
-                                            className="form-control input-field form-control-lg bg-light "                                            
+                                            className="form-control input-field form-control-lg bg-light "
                                             onChange={(event) => {
                                               setDob(event.target.value);
-                                              setAge(calculateAge(event.target.value)); // Calculate age
+                                              setAge(calculateAge(event.target.value)); 
 
                                             }}
                                             readOnly={!editMode}
@@ -203,7 +200,7 @@ export default function PatientProfile() {
                                             className="form-control input-field form-control-lg bg-light "
                                             placeholder="Age"
                                             value={age}
-                                            readOnly // Prevent user input
+                                            readOnly
                                           />
                                         </div>
 
@@ -213,7 +210,7 @@ export default function PatientProfile() {
                                           <input
                                             id="weight"
                                             type="text"
-                                            className="form-control input-field form-control-lg bg-light "                                            
+                                            className="form-control input-field form-control-lg bg-light "
                                             placeholder="Weight"
                                             value={weight}
                                             onChange={(event) => {
@@ -293,14 +290,14 @@ export default function PatientProfile() {
                                           <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                           <textarea
                                             id="address"
-                                            className="form-control input-field form-control-lg bg-light "                                            placeholder="Address"
+                                            className="form-control input-field form-control-lg bg-light " placeholder="Address"
                                             value={address}
                                             onChange={(event) => {
                                               setAddress(event.target.value);
                                             }}
                                             readOnly={!editMode}
                                           />
-                                       </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -317,7 +314,7 @@ export default function PatientProfile() {
                                             <input
                                               id="email"
                                               type="email"
-                                              className="form-control input-field form-control-lg bg-light "                                              placeholder="Email"
+                                              className="form-control input-field form-control-lg bg-light " placeholder="Email"
                                               value={email}
                                               onChange={(event) => {
                                                 setEmail(event.target.value);
@@ -332,7 +329,7 @@ export default function PatientProfile() {
                                             <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                             <input
                                               id="current-password"
-                                              className="form-control input-field form-control-lg bg-light "                                              type={currentPasswordVisibility ? 'password' : 'text'}
+                                              className="form-control input-field form-control-lg bg-light " type={currentPasswordVisibility ? 'password' : 'text'}
                                               value={currentPassword}
                                               placeholder="••••••"
                                               onChange={(event) => {
@@ -357,7 +354,7 @@ export default function PatientProfile() {
                                           <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                           <input
                                             id="new-password"
-                                            className="form-control input-field form-control-lg bg-light "                                            type={newPasswordVisibility ? 'password' : 'text'}
+                                            className="form-control input-field form-control-lg bg-light " type={newPasswordVisibility ? 'password' : 'text'}
                                             placeholder="••••••"
                                             value={password}
                                             onChange={(event) => {
@@ -381,7 +378,7 @@ export default function PatientProfile() {
                                             <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
                                             <input
                                               id="confirm-password"
-                                              className="form-control input-field form-control-lg bg-light "                                              type={confirmPasswordVisibility ? 'password' : 'text'}
+                                              className="form-control input-field form-control-lg bg-light " type={confirmPasswordVisibility ? 'password' : 'text'}
                                               placeholder="••••••"
                                               value={confirmPassword}
                                               onChange={(event) => {
@@ -404,13 +401,13 @@ export default function PatientProfile() {
                                   </div>
                                   <br />
                                 </>
-                                <>                  
+                                <>
                                   {editMode && (
                                     <div className="row">
                                       <div className="col">
                                         <div className="col-12 mt-3">
                                           <button type="submit" onClick={handleSubmit} className="btn btn-primary float-end" style={{ backgroundColor: '#1977cc' }}>Update</button>
-                                          
+
                                         </div>
                                       </div>
                                     </div>
@@ -431,7 +428,7 @@ export default function PatientProfile() {
           </div>
         </div>
       </div>
-      <ToastContainer position="bottom-right"/>
+      <ToastContainer position="bottom-right" />
     </div>
   )
 }

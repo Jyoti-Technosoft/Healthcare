@@ -9,7 +9,6 @@ import Cookies from 'js-cookie';
 export default function UserList() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [filteredUsers, setFilteredUsers] = useState([]);
     const token = Cookies.get('authToken');
     const activeTab = useSelector((state) => state.submenu.activeTab);
     const dispatch = useDispatch();
@@ -18,7 +17,6 @@ export default function UserList() {
             try {
                 const response = await getAllUsers(token);
                 setUsers(response); 
-                setFilteredUsers(response); 
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching users:', error);
@@ -26,6 +24,7 @@ export default function UserList() {
             }
         };
         fetchData();
+         // eslint-disable-next-line
     }, []);
     const setMenu = (submenu) => {
         if(activeTab==='usersList'){
@@ -50,15 +49,14 @@ export default function UserList() {
                                     <div className="card-body">
                                         <div className="row">
                                             <>
-                                                
                                                 <div className="col-12 d-flex justify-content-between align-items-center mb-3">
                                                 <h6> {users.length} Users</h6>
-                                                    <button type="submit" className={`btn btn-primary float-end ${activeTab === 'registerPatient' ? '' : ''}`} style={{ backgroundColor: '#1977cc' }} onClick={() => setMenu('registerUsers')}><i class="bi bi-plus" style={{ color: 'white' }}></i>Add</button>
+                                                    <button type="submit" className={`btn btn-primary float-end ${activeTab === 'registerPatient' ? '' : ''}`} style={{ backgroundColor: '#1977cc' }} onClick={() => setMenu('registerUsers')}><i className="bi bi-plus" style={{ color: 'white' }}></i>Add</button>
                                                 </div>
                                                 <hr style={{ color: 'grey' }} />
                                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                                     <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Users List</b></h3>
-                                                    <input type="text" className='form-control input-field w-25' placeholder="Search..." /*onChange={handleSearch}*/ />
+                                                    <input type="text" className='form-control input-field w-25' placeholder="Search..."  />
                                                 </div>
                                                 {loading ? (
                                                     <p>Loading...</p>

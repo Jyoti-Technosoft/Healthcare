@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { format } from 'date-fns'; // Import format function from date-fns
+import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faPencilAlt, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { updateDoctorProfileApi, getDoctorsWithIdApi } from '../Api';
-import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireGender, validateRequireAddress, validateRequireWorkingDays, validateRequireShiftTime, validateRequireJoiningDate } from '../Validations';
+import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireAddress } from '../Validations';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 export default function DoctorProfile() {
     const userId = Cookies.get("userId");
     const authToken = Cookies.get('authToken');
@@ -19,13 +20,10 @@ export default function DoctorProfile() {
     const [age, setAge] = useState("");
     const [gender, setGender] = useState('');
     const [address, setAddress] = useState("");
-
     const [role, setRole] = useState("");
     const [joiningDate, setJoiningDate] = useState("");
     const [doctorId, setDoctorId] = useState("");
-    const [editMode, setEditMode] = useState(false); // State to track whether fields are in edit mode
-
-    const [passwordFromDatabase, setPasswordFromDatabase] = useState("");
+    const [editMode, setEditMode] = useState(false);
     const [currentPassword, setCurrentPassword] = useState("");
     const [password, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -39,8 +37,6 @@ export default function DoctorProfile() {
     const [morningTime, setMorningTime] = useState("");
     const [eveningTiming, setEveningTiming] = useState("");
     const [visitingDays, setVisitingDays] = useState("");
-
-
     const [emailError, setEmailError] = useState("");
     const [currentPasswordError, setCurrentPasswordError] = useState("");
     const [passwordError, setPasswordError] = useState("");
@@ -82,13 +78,10 @@ export default function DoctorProfile() {
         async function fetchData() {
             try {
                 const userData = await getDoctorsWithIdApi(userId, authToken);
-                //console.log(userData.user.password);
-                // console.log(userData);
                 setEmail(userData.user.email);
                 setDoctorId(userData.id);
                 setName(userData.name);
                 setRole(userData.user.role);
-                setPasswordFromDatabase(userData.user.password);
                 setContact(userData.contact);
                 const formattedJoiningDate = format(new Date(userData.joiningDate), 'dd MMM yyyy');
                 setJoiningDate(formattedJoiningDate);
@@ -108,6 +101,7 @@ export default function DoctorProfile() {
             }
         }
         fetchData();
+        // eslint-disable-next-line
     }, []);
 
     const handleSubmit = async (event) => {
@@ -128,7 +122,6 @@ export default function DoctorProfile() {
         const nameRequireValidation = validateRequireName(name);
         const contactRequireValidation = validateRequireContact(contact);
         const dobRequireValidation = validateRequireDob(dateOfBirth);
-        const genderRequireValidation = validateRequireGender(gender);
         const addressRequireValidation = validateRequireAddress(address);
         if (emailRequireValidation) {
             setEmailError(emailRequireValidation);
@@ -173,12 +166,12 @@ export default function DoctorProfile() {
             await updateDoctorProfileApi(doctorId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age);
             toast.success('Profile updated successfully');
         } catch (error) {
-            toast.error('Failed to update profile'); 
+            toast.error('Failed to update profile');
         }
     };
 
     return (
-        <div className='background_part mt-3'> 
+        <div className='background_part mt-3'>
             <div className="container">
                 <div className="row flex-lg-nowrap">
                     <div className="col">
@@ -188,58 +181,35 @@ export default function DoctorProfile() {
                                     <div className="card-body">
                                         <div className="">
                                             <div className="row">
-                                                {/* <div className="col-12 col-sm-auto mb-3">
-                            <div className="mx-auto" style={{ width: '140px' }}>
-                              <div className="d-flex justify-content-center align-items-center rounded" style={{ height: '140px', backgroundColor: 'rgb(233, 236, 239)' }}>
-                                <span style={{ color: 'rgb(166, 168, 170)', font: 'bold 8pt Arial' }}>140x140</span>
-                              </div>
-                            </div>
-                          </div> */}
                                                 <div className="col d-flex flex-column flex-sm-row justify-content-between mb-3">
                                                     <div className="text-center text-sm-left mb-2 mb-sm-0">
                                                         <h4 className="pt-sm-2 pb-1 mb-0 updateProfileHeading"><b className='contentHeadings' style={{ color: 'black' }}>Update profile</b></h4>
-
-                                                        {/* <div className="mt-2">
-                                <button className="btn btn-primary" style={{ width: '125px', fontSize: '12px' }} type="button">
-                                  <i className="fa fa-fw fa-camera"></i> &nbsp;
-                                  <span>Change Photo</span>
-                                </button>
-                              </div> */}
                                                     </div>
                                                     <div className="text-center text-sm-right profileHead">
                                                         <span className="badge badge-secondary">{role}</span>
                                                         <div className="text-muted"><small>Joined on {joiningDate}</small></div>
-
-
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div className="d-flex align-items-center justify-content-between">
                                                 <ul className="nav nav-tabs flex-grow-1">
                                                     <li className="nav-item">
-                                                        <a className="active nav-link profileTab">
-                                                            <i class="bi bi-person"></i> Profile
+                                                        <a href='#' className="active nav-link profileTab">
+                                                            <i className="bi bi-person"></i> Profile
                                                         </a>
                                                     </li>
                                                 </ul>
-
                                                 <div className="">
                                                     <button className="btn" style={{ width: '70px', fontSize: '13px' }} type="button" onClick={() => setEditMode(true)} >
                                                         <FontAwesomeIcon icon={faPencilAlt} /> Edit
                                                     </button>
                                                 </div>
                                             </div>
-
-
-
-
                                             <div className="tab-content pt-3">
                                                 {[...Array(totalSteps).keys()].map((index) => (
                                                     <div className={`tab-pane ${step === index + 1 ? 'active' : ''}`} key={index + 1}>
                                                         {step === index + 1 && (
                                                             <form className="form" onSubmit={handleSubmit}>
-
                                                                 <>
                                                                     <br />
                                                                     <div className="row">
@@ -291,7 +261,7 @@ export default function DoctorProfile() {
                                                                                         className={`form-control input-field form-control-lg bg-light  ${dobError && 'is-invalid'} `}
                                                                                         onChange={(event) => {
                                                                                             setDob(event.target.value);
-                                                                                            setAge(calculateAge(event.target.value)); // Calculate age
+                                                                                            setAge(calculateAge(event.target.value)); 
 
                                                                                         }}
                                                                                         readOnly={!editMode}
@@ -308,7 +278,7 @@ export default function DoctorProfile() {
                                                                                         className="form-control input-field form-control-lg bg-light "
                                                                                         placeholder="Age"
                                                                                         value={age}
-                                                                                        readOnly // Prevent user input
+                                                                                        readOnly
                                                                                     />
                                                                                 </div>
 

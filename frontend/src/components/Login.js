@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Header from './Header'
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { validateRequireEmail, validateRequirePassword } from './Validations';
 import { handleAdminLogin } from './AdminAuthHelper';
-import Cookies from 'js-cookie';
 import ForgotPassword from './ForgotPassword';
-import OTP_Verification from './OTP_Verification';
+import OTPVerification from './OTPVerification';
 import ResetPassword from './ResetPassword';
 
 function Login() {
@@ -17,8 +16,6 @@ function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [activePage, setActivePage] = useState(1);
   const navigate = useNavigate();
-  // const authToken = Cookies.get('authToken');
-  // const userId = Cookies.get('userId');
 
   useEffect(() => {
     const rememberedEmail = localStorage.getItem('rememberedEmail');
@@ -57,7 +54,6 @@ function Login() {
       localStorage.removeItem('rememberedEmail');
       localStorage.removeItem('rememberedPassword');
     }
-
   }
 
   const fortgotPassword = (e) => {
@@ -76,20 +72,15 @@ function Login() {
   return (
     <>
       <Header />
-      {/* <!----------------------- Main Container --------------------------> */}
       <div className='banner_part'>
         <div className="container d-flex justify-content-center align-items-center min-vh-100 loginBox">
-          {/* <!----------------------- Login Container --------------------------> */}
           <div className="row border-0 rounded-5 p-3 bg-white shadow box-area">
-            {/* <!--------------------------- Left Box -----------------------------> */}
             <div className="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style={{ background: '#1977cc ' }}>
               <div className="featured-image mb-3">
-                <img src="img/ability_img.png" className="img-fluid" style={{ width: '220px' }} />
+                <img alt="card2" src="img/ability_img.png" className="img-fluid" style={{ width: '220px' }} />
               </div>
               <p className="text-white fs-2" style={{ fontFamily: 'Courier New, Courier, monospace', fontWeight: '600' }}>Be Verified</p>
-              {/* <small className="text-white text-wrap text-center" style={{width: '17rem', fontFamily: 'Courier New, Courier, monospace'}}>Join experienced Designers on this platform.</small> */}
             </div>
-            {/* <!-------------------- ------ Right Box ----------------------------> */}
             {activePage === 1 ? (
               <div className="col-md-6 right-box">
                 <div className="row align-items-center">
@@ -138,7 +129,7 @@ function Login() {
                       <label htmlFor="formCheck" className="form-check-label text-secondary"><small>Remember Me</small></label>
                     </div>
                     <div className="forgot">
-                      <small><a href='#' onClick={fortgotPassword}>Forgot Password?</a></small>
+                      <small><button  onClick={fortgotPassword}>Forgot Password?</button></small>
                     </div>
                   </div>
                   <div>
@@ -149,12 +140,11 @@ function Login() {
                     <button style={{ background: '#1977cc ' }} className="btn btn-lg btn-primary w-100 fs-6" onClick={login}> Login </button>
                   </div>
                   <div className="input-group mb-3">
-                    <button className="btn btn-lg btn-light w-100 fs-6"><img src="img/google.png" style={{ width: '20px' }} className="me-2" /><small>Sign In with Google</small></button>
+                    <button className="btn btn-lg btn-light w-100 fs-6"><img alt='google-png' src="img/google.png" style={{ width: '20px' }} className="me-2" /><small>Sign In with Google</small></button>
                   </div>
                   <div className="row text-center">
-                    <small>Don't have account? <a className="nav-link" to="/registration">Sign Up</a></small>
+                    <small>Don't have account? <p className="nav-link">Sign Up</p></small>
                   </div>
-
                 </div>
               </div>
             ) : activePage === 2 ? (
@@ -164,7 +154,7 @@ function Login() {
                 backToLogin={backToLogin}
               />
             ) : activePage === 3 ? (
-              <OTP_Verification
+              <OTPVerification
                 email={email}
                 verifyOTPCompo={verifyOTPCompo}
                 backToLogin={backToLogin}

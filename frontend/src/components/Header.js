@@ -9,7 +9,6 @@ export default function Header() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Remove the cookie
         Cookies.remove('email');
         Cookies.remove('authToken');
         Cookies.remove('userId');
@@ -18,68 +17,66 @@ export default function Header() {
     };
     return (
         <>
-            {/* header part start:: */}
-            <header class="main_menu home_menu">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-12">
-                            <nav class="navbar navbar-expand-lg navbar-light">
+            <header className="main_menu home_menu">
+                <div className="container">
+                    <div className="row align-items-center">
+                        <div className="col-lg-12">
+                            <nav className="navbar navbar-expand-lg navbar-light">
                                 <Link className="nav-link" to="/"> <img src="img/logo.png" alt="logo" /> </Link>
 
-                                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                                <button className="navbar-toggler" type="button" data-toggle="collapse"
                                     data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                                     aria-expanded="false" aria-label="Toggle navigation">
-                                    <span class="navbar-toggler-icon"></span> 
+                                    <span className="navbar-toggler-icon"></span> 
                                 </button>
 
-                                <div class="collapse navbar-collapse main-menu-item justify-content-center"
+                                <div className="collapse navbar-collapse main-menu-item justify-content-center"
                                     id="navbarSupportedContent">
-                                    <ul class="navbar-nav align-items-center">
-                                        <li class="nav-item active">
+                                    <ul className="navbar-nav align-items-center">
+                                        <li className="nav-item active">
                                             <Link className="nav-link" to="/">Home</Link>
                                         </li>
 
-                                        <li class="nav-item">
+                                        <li className="nav-item">
                                             <Link className="nav-link" to="/findDoctors">Doctors</Link>
                                         </li>
 
-                                        <li class="nav-item dropdown">
-                                            <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown"
+                                        <li className="nav-item dropdown">
+                                            <a className="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown"
                                                 role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 Pages
                                             </a>
-                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <a class="dropdown-item" href="services.html">services</a>
-                                                <a class="dropdown-item" href="dep.html">depertments</a>
-                                                <a class="dropdown-item" href="elements.html">Elements</a>
+                                            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <a className="dropdown-item" href="services.html">services</a>
+                                                <a className="dropdown-item" href="dep.html">depertments</a>
+                                                <a className="dropdown-item" href="elements.html">Elements</a>
                                             </div>
                                         </li>
-                                        <li class="nav-item dropdown">
-                                            <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_1"
+                                        <li className="nav-item dropdown">
+                                            <a className="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_1"
                                                 role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 blog
                                             </a>
-                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown_1">
-                                                <a class="dropdown-item" href="blog.html">blog</a>
-                                                <a class="dropdown-item" href="single-blog.html">Single blog</a>
+                                            <div className="dropdown-menu" aria-labelledby="navbarDropdown_1">
+                                                <a className="dropdown-item" href="blog.html">blog</a>
+                                                <a className="dropdown-item" href="single-blog.html">Single blog</a>
                                             </div>
                                         </li>
 
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="about.html">about</a>
+                                        <li className="nav-item">
+                                            <a className="nav-link" href="about.html">about</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="contact.html">Contact</a>
+                                        <li className="nav-item">
+                                            <a className="nav-link" href="contact.html">Contact</a>
                                         </li>
                                         {userEmail ? (
                                             <li className="nav-item dropdown">
-                                                <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_1"
+                                                <a className="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_1"
                                                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     {userEmail}
                                                 </a>
-                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown_1">
-                                                    <a class="dropdown-item" style={{ cursor: 'pointer' }} onClick={handleLogout}>Logout</a>
-
+                                                <div className="dropdown-menu" aria-labelledby="navbarDropdown_1">
+                                                    <a href='#' className="dropdown-item" style={{ cursor: 'pointer' }} onClick={handleLogout}>Logout</a>
                                                 </div>
                                             </li>
                                         ) : (
@@ -89,13 +86,12 @@ export default function Header() {
                                         )}
                                     </ul>
                                 </div>
-                                <a class="btn_2 d-none d-lg-block" href="#">HOT LINE- 09856</a>
+                                <p  className="btn_2 d-none d-lg-block" >HOT LINE- 09856</p>
                             </nav>
                         </div>
                     </div>
                 </div>
             </header>
-            {/* Header part end */}
         </>
     );
 }

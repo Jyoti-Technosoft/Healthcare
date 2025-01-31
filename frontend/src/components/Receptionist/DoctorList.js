@@ -5,31 +5,26 @@ import Pagination from 'react-bootstrap/Pagination';
 
 export default function DoctorList() {
   const [doctors, setDoctors] = useState([]);
-  const [isGridView, setIsGridView] = useState(false); // Set default view mode to list view
+  const [isGridView, setIsGridView] = useState(false);
   const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [activeIcon, setActiveIcon] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(8); // Number of doctors per page
+  const [rowsPerPage, setRowsPerPage] = useState(8);
 
   useEffect(() => {
-    // Fetch doctors data from API
     const fetchDoctors = async () => {
       try {
         const response = await getDoctorsApi();
-        console.log(response); // Log the entire response for debugging
         if (response) {
           setDoctors(response);
           setFilteredDoctors(response);
         } else {
-          console.error('Empty response from the API');
         }
       } catch (error) {
-        console.error('Error fetching doctors:', error);
       }
     };
     fetchDoctors();
-
     setIsGridView(false);
     setActiveIcon(false);
   }, []);
@@ -86,7 +81,6 @@ export default function DoctorList() {
 
   const handleReadMoreClick = (doctor) => {
     setSelectedDoctor(doctor);
-    // Show the modal using Bootstrap's modal API
     const modal = new window.bootstrap.Modal(document.getElementById('doctorModal'));
     modal.show();
   };
@@ -110,7 +104,7 @@ export default function DoctorList() {
                             <button
                               className={`btn btn-link border-0 ${activeIcon === false ? 'activeIcon' : ''}`}
                               onClick={() => handleIconClick(false)}
-                              style={{borderColor:'white'}}
+                              style={{ borderColor: 'white' }}
                             >
                               <i className="bi bi-list-task"></i>
                             </button>
@@ -118,7 +112,7 @@ export default function DoctorList() {
                             <button
                               className={`btn btn-link border-0 ${activeIcon === true ? 'activeIcon' : ''}`}
                               onClick={() => handleIconClick(true)}
-                              style={{borderColor:'white'}}
+                              style={{ borderColor: 'white' }}
                             >
                               <i className="bi bi-grid-1x2"></i>
                             </button>
@@ -135,17 +129,14 @@ export default function DoctorList() {
                                       className="img-fluid"
                                       alt={doctor.name}
                                       style={{ objectFit: "cover", height: "80%" }}
-                                    /> 
+                                    />
                                     <div className="member-info" style={{ flex: 1 }}>
                                       <h4>{doctor.name}</h4>
                                       <span className="specialties-label">Specialties: {doctor.specialities}</span>
-                                      {/* <p className="specialties-label">Designation: {doctor.designation}</p> */}
                                       <div className=''><button onClick={() => handleReadMoreClick(doctor)} className='read-more  mt-3'>Read more</button></div>
-
                                     </div>
-
                                   </div>
-                                </div> 
+                                </div>
                               ))}
                             </div>
                             <hr />
@@ -177,10 +168,9 @@ export default function DoctorList() {
                             <DataTable
                               columns={columns}
                               data={filteredDoctors}
-                              keyField="id" // Assuming each doctor object has a unique "id" field
-
+                              keyField="id"
                               highlightOnHover
-                              noHeader // Hide table header
+                              noHeader
                               className="border"
                             />
                             <hr />

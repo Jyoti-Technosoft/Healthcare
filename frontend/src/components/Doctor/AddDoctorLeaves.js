@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import Calendar from 'react-calendar';
-import { calculateTotalDays, highlightDateRange, getCurrentDate, convertTo12HourFormat, getDayIndex, getDayName } from '../Validations';
+import { calculateTotalDays, highlightDateRange, getCurrentDate, getDayIndex, getDayName } from '../Validations';
 import { startOfDay } from 'date-fns';
 import { doctorLeaveRequest, getDoctorsWithIdApi, getDoctorLeaveRequest, getDoctorsApi } from '../Api';
 import { ToastContainer, toast } from 'react-toastify';
 import Cookies from 'js-cookie';
-import DataTable from 'react-data-table-component';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
     setActiveTab,
 } from '../../actions/submenuActions';
@@ -16,7 +15,6 @@ export default function AddDoctorLeaves() {
     const [toDate, setToDate] = useState('');
     const [fromTime, setFromTime] = useState('');
     const [toTime, setToTime] = useState('');
-    const [totalDays, setTotalDays] = useState(0);
     const [reason, setReason] = useState('');
     const [date, setDate] = useState(new Date());
     const [highlightedDates, setHighlightedDates] = useState([]);
@@ -28,7 +26,7 @@ export default function AddDoctorLeaves() {
     const userId = Cookies.get('userId');
     const [doctors, setDoctors] = useState([]);
     const [leaveRequests, setLeaveRequests] = useState([]);
-    const [loading, setLoading] = useState(true);
+
     const onChange = (newDate) => {
         setDate(newDate);
     };
@@ -45,14 +43,14 @@ export default function AddDoctorLeaves() {
         const selectedDate = event.target.value;
         setFromDate(selectedDate);
         setToDate(selectedDate);
-        calculateTotalDays(selectedDate, toDate, setTotalDays);
+        calculateTotalDays(selectedDate, toDate);
         highlightDateRange(selectedDate, toDate, setHighlightedDates);
     };
 
     const handleToDateChange = (event) => {
         const selectedDate = event.target.value;
         setToDate(selectedDate);
-        calculateTotalDays(fromDate, selectedDate, setTotalDays);
+        calculateTotalDays(fromDate, selectedDate);
         highlightDateRange(fromDate, selectedDate, setHighlightedDates);
     };
     const handleSubmit = async (event) => {
@@ -71,20 +69,16 @@ export default function AddDoctorLeaves() {
                 const doctorInfo = await getDoctorsWithIdApi(userId, token);
                 const fetchedDoctorId = doctorInfo.id;
                 setDoctorId(fetchedDoctorId);
-                //console.log("Doctor id::::>>> " +doctorId);
                 const data = await getDoctorLeaveRequest(fetchedDoctorId, token);
                 setPastLeaves(data);
-                setLoading(false);
             } catch (error) {
                 console.error('Error fetching appointments:', error);
-                setLoading(false);
             }
         };
 
         fetchData();
     }, [userId, token]);
     useEffect(() => {
-
         const fetchDoctors = async () => {
             try {
                 const response = await getDoctorsApi();
@@ -93,9 +87,6 @@ export default function AddDoctorLeaves() {
                 } else {
                     console.error('Empty response from the API');
                 }
-                // const fetchedLeaveRequests = await getDoctorLeaveRequest(doctorId, token);
-                // setLeaveRequests(fetchedLeaveRequests);
-                // console.log('Leave Requests:', fetchedLeaveRequests);
             } catch (error) {
                 console.error('Error fetching doctors:', error);
             }
@@ -110,6 +101,11 @@ export default function AddDoctorLeaves() {
             setToTime('');
         }
     };
+
+    useEffect(()=>{
+        setLeaveRequests([])
+    },[])
+    
     return (
         <div className='background_part mt-3'>
             <div className="container ">
@@ -137,17 +133,15 @@ export default function AddDoctorLeaves() {
                                                         tileClassName={({ date, view }) => {
 
                                                             const isHighlighted = highlightedDates.includes(date.toLocaleDateString('en-GB'));
-                                                            const isBetween = date > fromDate && date < toDate; // Check if date is between from and to dates
+                                                            const isBetween = date > fromDate && date < toDate; 
                                                             const isToday = date.getDate() === new Date().getDate() && date.getMonth() === new Date().getMonth() && date.getFullYear() === new Date().getFullYear();
 
                                                             const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(doctorId));
 
-                                                            // Check if the selected doctor is available on this date
                                                             if (selectedDoc && view === 'month' && selectedDoc.visitingDays) {
                                                                 const day = date.getDay();
                                                                 const visitingDaysArray = selectedDoc.visitingDays.split(',');
 
-                                                                // Check if the day is not included in visiting days
                                                                 let isAvailable = false;
                                                                 for (let visitingDaysString of visitingDaysArray) {
                                                                     const visitingDays = visitingDaysString.split('-');
@@ -167,37 +161,32 @@ export default function AddDoctorLeaves() {
                                                                     }
                                                                 }
 
-                                                                const isDateWithinLeavePeriod = leaveRequests.some(request => {
+                                                                const isDateWithinLeavePeriod = leaveRequests?.some(request => {
                                                                     let fromTime = new Date(request.fromDate);
                                                                     let endTime = new Date(request.toDate);
                                                                     fromTime.setHours(0, 0, 0);
                                                                     endTime.setHours(23, 59, 59);
 
-                                                                    return request.doctor.id == doctorId &&
+                                                                    return request.doctor.id === doctorId &&
                                                                         date >= fromTime && date <= endTime;
                                                                 });
 
-                                                                // Return the appropriate class based on availability and leave period
                                                                 if (isDateWithinLeavePeriod) {
-                                                                    return 'custom-tile-leave'; // Add CSS class for leave period
+                                                                    return 'custom-tile-leave'; 
                                                                 } else if (isAvailable) {
-                                                                    return 'custom-tile-green'; // Add CSS class for available dates
+                                                                    return 'custom-tile-green'; 
                                                                 } else {
-                                                                    return 'custom-tile-red'; // Add CSS class for unavailable dates
+                                                                    return 'custom-tile-red'; 
                                                                 }
                                                             }
                                                             return isHighlighted ? 'highlighted-date' : isBetween ? 'between-date' : isToday ? 'today-date' : null;
                                                         }}
                                                         tileDisabled={({ date, view }) => {
-                                                            // Find the selected doctor object
                                                             const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(doctorId));
                                                             const isPastDate = date < startOfDay(new Date());
-                                                            // Check if the selected doctor is available on this date
                                                             if (selectedDoc && view === 'month' && selectedDoc.visitingDays) {
                                                                 const day = date.getDay();
                                                                 const visitingDaysArray = selectedDoc.visitingDays.split(',');
-
-                                                                // Check if the day is not included in visiting days
                                                                 let isAvailable = false;
                                                                 for (let visitingDaysString of visitingDaysArray) {
                                                                     const visitingDays = visitingDaysString.split('-');
@@ -219,16 +208,13 @@ export default function AddDoctorLeaves() {
 
                                                                 const isDateWithinLeavePeriod = pastLeaves.some(request => {
                                                                     let fromTime = new Date(request.fromDate);
-                                                                    let endTime = new Date(request.toDate);
                                                                     fromTime.setHours(0, 0, 0);
-                                                                    // endTime.setHours(0,) // Commented out as it might not be necessary
 
-                                                                    return request.doctor.id == doctorId &&
+                                                                    return request.doctor.id === doctorId &&
                                                                         date.getTime() >= fromTime.getTime() && date.getTime() <= new Date(request.toDate).getTime() &&
                                                                         !(request.fromDate === request.toDate && request.fromTime !== null && request.toTime !== null && request.fromTime !== request.toTime); // Check if fromTime and toTime are equal
                                                                 });
 
-                                                                // Disable the tile if it's not available or within a leave request period, but not if fromTime and toTime are equal
                                                                 return (!isAvailable || isPastDate || isDateWithinLeavePeriod);
                                                             }
                                                             return false;
@@ -255,12 +241,7 @@ export default function AddDoctorLeaves() {
                                                             <input type="date" name="toDate" id="toDate" className="form-control input-field form-control-lg bg-light mb-2" value={toDate} placeholder="To date" onChange={handleToDateChange} min={getCurrentDate()} />
                                                         </div>
                                                     </div>
-                                                    {/* <div className="">
-                                                        <div className="form-group">
-                                                            <label htmlFor="totalDays" className="form-label">Total days</label>
-                                                            <input type="text" name="totalDays" id="totalDays" className="form-control input-field form-control-lg bg-light mb-2" placeholder="Total Days" value={totalDays} disabled />
-                                                        </div>
-                                                    </div> */}
+    
                                                 </div>
                                                 <div className='row mt-3 ml-1'>
                                                     {fromDate && toDate && isSameDate && (

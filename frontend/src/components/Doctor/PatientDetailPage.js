@@ -19,8 +19,8 @@ const PatientDetailPage = ({ patient }) => {
       try {
         const patientId = patient.id;
         const data = await getAllAppointmentsForPatient(patientId, authToken);
-        setAppointments(data); // Set the fetched patients to the state
-        setFilteredAppointments(data); // Initially set filtered patients same as all patients
+        setAppointments(data);
+        setFilteredAppointments(data);
         setLoading(false);
 
       } catch (error) {
@@ -29,6 +29,7 @@ const PatientDetailPage = ({ patient }) => {
       }
     };
     fetchData();
+    // eslint-disable-next-line
   }, []);
 
   const setBackMenu = () => {
@@ -41,7 +42,7 @@ const PatientDetailPage = ({ patient }) => {
   function formatAppointmentDate(dateString) {
     return dateFormatter(dateString);
   }
-  const columns = [  
+  const columns = [
     { name: 'Index', selector: (row, index) => index + 1, sortable: true, maxWidth: '150px', center: true },
     { name: 'Appointment ID', selector: (row) => row.id, sortable: true, minWidth: '200px', center: true },
     { name: 'Appointment Date', selector: (row) => formatAppointmentDate(row.appointmentDate), sortable: true, minWidth: '250px', center: true },

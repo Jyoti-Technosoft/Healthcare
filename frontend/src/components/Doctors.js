@@ -5,27 +5,9 @@ import { getDoctorsApi } from "./Api";
 export default function Doctors() {
     const [doctors, setDoctors] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
-    useEffect(() => {
-        // Fetch doctors data from API
-        const fetchDoctors = async () => {
-            try {
-                const response = await getDoctorsApi();
-                console.log(response); // Log the entire response for debugging
-                if (response) {
-                    setDoctors(response);
-                } else {
-                    console.error('Empty response from the API');
-                }
-            } catch (error) {
-                console.error('Error fetching doctors:', error);
-            }
-        };
-        fetchDoctors();
-    }, []);
 
     const handleReadMoreClick = (doctor) => {
         setSelectedDoctor(doctor);
-        // Show the modal using Bootstrap's modal API
         const modal = new window.bootstrap.Modal(document.getElementById('doctorModal'));
         modal.show();
     };
@@ -34,15 +16,30 @@ export default function Doctors() {
         return `data:image/png;base64,${base64String}`;
     };
 
+    useEffect(() => {
+        const fetchDoctors = async () => {
+            try {
+                const response = await getDoctorsApi();
+                console.log(response); 
+                if (response) {
+                    setDoctors(response);
+                } else {
+                }
+            } catch (error) {
+            }
+        };
+        fetchDoctors();
+    }, []);
+  
     return (
         <>
             <Header />
-            <section class="breadcrumb_part breadcrumb_bg doctorStartingPart">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="breadcrumb_iner">
-                                <div class="breadcrumb_iner_item">
+            <section className="breadcrumb_part breadcrumb_bg doctorStartingPart">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-12">
+                            <div className="breadcrumb_iner">
+                                <div className="breadcrumb_iner_item">
                                     <h2>doctors</h2>
                                 </div>
                             </div>
@@ -50,16 +47,12 @@ export default function Doctors() {
                     </div>
                 </div>
             </section>
-
-
-
-            <section id="doctors" class="doctors">
-                <div class="container">
-                    <div class="section-title">
+            <section id="doctors" className="doctors">
+                <div className="container">
+                    <div className="section-title">
                         <h2>Doctors</h2>
                         <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
                     </div>
-
                     {doctors && doctors.length > 0 ? (
                         <div className="row">
                             {doctors.map((doctor, index) => (
@@ -86,15 +79,12 @@ export default function Doctors() {
                     ) : (
                         <p>Loading...</p>
                     )}
-
-
                 </div>
             </section>
             <div className="modal" id="doctorModal" tabIndex="-1">
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
-
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body d-flex justify-content-center">

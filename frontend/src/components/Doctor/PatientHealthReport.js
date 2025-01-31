@@ -17,7 +17,7 @@ const PatientHealthReport = ({ appointment, patient }) => {
             try {
                 const appointmentId = appointment.id;
                 const data = await getHealthreportsByAppointmentId(appointmentId, authToken);
-                setHealthReport(data); // Set the fetched patients to the state
+                setHealthReport(data); 
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching patients:', error);
@@ -25,6 +25,7 @@ const PatientHealthReport = ({ appointment, patient }) => {
             }
         };
         fetchData();
+        // eslint-disable-next-line
     }, []);
     function formatAppointmentDate(dateString) {
         return dateFormatter(dateString);
@@ -95,7 +96,6 @@ const PatientHealthReport = ({ appointment, patient }) => {
                                                     <hr style={{ color: 'grey' }} />
                                                     <div className="d-flex justify-content-between align-items-center mb-3">
                                                         <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>HealthReport</b></h3>
-                                                        {/* <input type="text" className='form-control input-field w-25' placeholder="Search..." onChange={handleSearch} /> */}
                                                     </div>
                                                     {loading ? (
                                                         <p>Loading...</p>

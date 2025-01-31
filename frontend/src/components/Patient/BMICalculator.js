@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import { calculateBMI, getClassificationFromBMI } from '../Validations';
-import CloseIcon from '@mui/icons-material/Close'; // Import the CloseIcon component from Material-UI
+import CloseIcon from '@mui/icons-material/Close'; 
+
 const BMICalculator = ({ toggleForm }) => {
     const [height, setHeight] = useState('');
     const [weight, setWeight] = useState('');
     const [bmi, setBMI] = useState(null);
 
     const handleCalculateBMI = () => {
-        const bmiValue = calculateBMI(height, weight); // Use calculateBMI function
+        const bmiValue = calculateBMI(height, weight);
         setBMI(bmiValue);
     };
 
@@ -32,7 +33,6 @@ const BMICalculator = ({ toggleForm }) => {
                 <CloseIcon onClick={toggleForm} style={{ cursor: 'pointer', color: 'grey' }} />
             </div>
             <hr style={{ color: 'grey' }} />
-
             <div className="row flex-lg-nowrap">
                 <div className="col">
                     <div className="row">

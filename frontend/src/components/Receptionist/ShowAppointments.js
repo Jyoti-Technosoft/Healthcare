@@ -4,16 +4,14 @@ import { getAllAppointments } from '../Api';
 import Cookies from 'js-cookie';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-    setBookAppointmentMenu,
-    setShowAppointmentsMenu,
     setActiveTab,
 } from '../../actions/submenuActions';
 import { convertTo12Hour } from '../Validations';
+
 export default function ShowAppointments() {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filteredAppointments, setFilteredAppointments] = useState([]);
-    const userId = Cookies.get('userId');
     const token = Cookies.get('authToken');
 
     const activeBookAppointmentMenu = useSelector((state) => state.submenu.activeBookAppointmentMenu);
@@ -25,31 +23,29 @@ export default function ShowAppointments() {
         }
     };
 
-
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getAllAppointments(token);
-                setAppointments(data); // Set the fetched patients to the state
-                setFilteredAppointments(data); // Initially set filtered patients same as all patients
+                setAppointments(data);
+                setFilteredAppointments(data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching patients:', error);
                 setLoading(false);
             }
         };
-
         fetchData();
+        // eslint-disable-next-line
     }, []);
 
     const handleSearch = (e) => {
         const keyword = e.target.value.toLowerCase();
         const filteredData = appointments.filter((appointment) =>
-            appointment.id == keyword ||
+            appointment.id === keyword ||
             appointment.patient.name.toLowerCase().includes(keyword) ||
             appointment.patient.contact.toLowerCase().includes(keyword) ||
             appointment.patient.user.email.toLowerCase().includes(keyword)
-
         );
         setFilteredAppointments(filteredData); 
     };
@@ -87,12 +83,11 @@ export default function ShowAppointments() {
                                                 <div className="col">
                                                     <div className="col-12 d-flex justify-content-between align-items-center mb-3">
                                                         <h6> {appointments.length} Appointments</h6>
-                                                        <button type="submit" className={`btn btn-primary float-end ${activeBookAppointmentMenu === 'bookAppointment' ? '' : ''}`} style={{ backgroundColor: '#1977cc' }} onClick={() => setMenu('bookAppointment')}><i class="bi bi-plus" style={{ color: 'white' }}></i>Add</button>
+                                                        <button type="submit" className={`btn btn-primary float-end ${activeBookAppointmentMenu === 'bookAppointment' ? '' : ''}`} style={{ backgroundColor: '#1977cc' }} onClick={() => setMenu('bookAppointment')}><i className="bi bi-plus" style={{ color: 'white' }}></i>Add</button>
                                                     </div>
                                                 </div>
                                             </div>
                                             <hr style={{ color: 'grey' }} />
-
                                             <>
                                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                                     <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Appointments</b></h3>
@@ -110,7 +105,6 @@ export default function ShowAppointments() {
                                                     />
                                                 )}
                                             </>
-
                                         </div>
                                     </div>
                                 </div>
@@ -118,10 +112,7 @@ export default function ShowAppointments() {
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </>
-
     )
 }

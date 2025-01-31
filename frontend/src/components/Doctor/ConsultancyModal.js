@@ -4,7 +4,8 @@ import { submitConsultationReport } from '../Api';
 import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCloseButton, setShowCloseButton, handleAddPrescription, handleCloseButtonClick }) => {
+
+const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCloseButton, setShowCloseButton}) => {
   const [prescriptionFields, setPrescriptionFields] = useState([{ medicineNameInput: '', medicineDosage: '', timing: '1-1-1' }]);
   const [medicineNameSuggestions, setMedicineNameSuggestions] = useState([]);
   const [activeFieldIndex, setActiveFieldIndex] = useState(-1);
@@ -40,7 +41,7 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
       const suggestionsData = response.data.results;
       const activeIngredientsSuggestions = suggestionsData.map(result => ({
         name: result.products[0].active_ingredients[0].name,
-        strength: result.products[0].active_ingredients[0].strength // Optionally, include strength if needed
+        strength: result.products[0].active_ingredients[0].strength 
       }));
       setSuggestions(activeIngredientsSuggestions);
     } catch (error) {
@@ -85,7 +86,7 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
       <div className="modal-dialog modal-lg ">
         <div className="modal-content prescriptionModal">
           <div className="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Consultancy Form</h5>
+            <h5 className="modal-title" id="exampleModalLabel">Consultancy Form</h5>
             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div className="modal-body d-flex justify-content-center" style={{ maxHeight: '85vh', overflowY: 'auto', padding: '20px' }}>
@@ -154,7 +155,6 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
                           type="text"
                           className="form-control input-field form-control-lg bg-light"
                           placeholder="Disease "
-
                         />
                       </div>
                     </div>
@@ -166,24 +166,6 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
                         <div key={index} className="mb-3 mt-3 ">
                           <label htmlFor="prescriptions" className="form-label">Prescription {index + 1}</label>
                           <div className="row g-3 ">
-                            {/* <div className="col-md-4">
-                              <input
-                                type="text"
-                                className="form-control input-field form-control-lg bg-light"
-                                placeholder="Brand Name"
-                                value={prescription.brandNameInput}
-                                onChange={(e) => handleBrandNameInputChange(e, index)}
-                              />
-                              {brandNameSuggestions.length > 0 && (
-                                <ul className="suggestions-list">
-                                  {activeFieldIndex === index && brandNameSuggestions.map((medicine, idx) => (
-                                    <li key={idx} onClick={() => handleBrandNameSelect(medicine, index)}>
-                                      {medicine.products?.[0]?.brand_name}
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
-                            </div> */}
                             <div className="col-md-3">
                               <input
                                 type="text"
@@ -196,7 +178,7 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
                                 <ul className="suggestions-list" style={{ maxHeight: '200px', overflowY: 'auto' }}>
                                   {activeFieldIndex === index && medicineNameSuggestions.map((medicine, idx) => (
                                     <li key={idx} onClick={() => handleMedicineNameSelect(medicine, index)}>
-                                      {medicine.name} - {medicine.strength} {/* Adjust according to your data structure */}
+                                      {medicine.name} - {medicine.strength}
                                     </li>
                                   ))}
                                 </ul>
@@ -222,11 +204,9 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
                                 type="text"
                                 className="form-control input-field form-control-lg bg-light"
                                 placeholder="Timing"
-                                value={prescription.timing} // Use prescription.timing for the value
+                                value={prescription.timing} 
                                 onChange={(e) => {
-                                  // Allow only digits in the input
                                   const inputValue = e.target.value.replace(/[^\d-]/g, '');
-                                  // Update the timing for the specific prescription
                                   const updatedFields = [...prescriptionFields];
                                   updatedFields[index].timing = inputValue;
                                   setPrescriptionFields(updatedFields);
@@ -288,7 +268,6 @@ const ConsultancyModal = ({ appointment, prescriptions, setPrescriptions, showCl
                       style={{ backgroundColor: '#1977cc', borderColor: '#1977cc' }}
                       onClick={handleSubmit}
                     >
-
                       Submit
                     </button>
                   </div>

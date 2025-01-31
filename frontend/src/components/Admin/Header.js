@@ -9,14 +9,13 @@ import Cookies from 'js-cookie';
 export default function Header() {
     const userRole = Cookies.get('role');
     const userId = Cookies.get('userId');
-    const [name, setName] = useState('');
     const [gender, setGender] = useState('');
     const activeTab = useSelector((state) => state.submenu.activeTab);
     const dispatch = useDispatch();
     const [showLogoutCard, setShowLogoutCard] = useState(false);
     const navigate = useNavigate();
     const logoutRef = useRef(null);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth); // Define windowWidth state
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth); 
 
     const setMenu = (menu) => {
         if (activeTab !== menu) {
@@ -28,37 +27,29 @@ export default function Header() {
         async function fetchData() {
             try {
                 const userData = await getReceptionistApi(userId);
-                setName(userData.name);
                 setGender(userData.gender);
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
         }
         fetchData();
-    }, []);
+    }, [userId]);
 
-    // Inside your Header component
     useEffect(() => {
-        // Define a function to update window width
-        const updateWindowWidth = () => {
+       const updateWindowWidth = () => {
             setWindowWidth(window.innerWidth);
         };
-        // Call the function once when the component mounts to set the initial window width
         updateWindowWidth();
 
-        // Add event listener to update window width whenever the window is resized
         window.addEventListener('resize', updateWindowWidth);
 
-        // Function to close logout card when clicked outside
         function handleClickOutside(event) {
             if (logoutRef.current && !logoutRef.current.contains(event.target)) {
                 setShowLogoutCard(false);
             }
         }
-        // Adding event listener to the document
         document.addEventListener("mousedown", handleClickOutside);
 
-        // Cleanup function to remove event listener when the component unmounts
         return () => {
             window.removeEventListener('resize', updateWindowWidth);
             document.removeEventListener("mousedown", handleClickOutside);
@@ -147,9 +138,9 @@ export default function Header() {
                                     </>
                                 )}
                             </nav>
-                            <div class="collapse navbar-collapse main-menu-item justify-content-center" id="navbarSupportedContent">
-                                <ul class="navbar-nav d-flex flex-column bd-highlight mb-3">
-                                    <li class="nav-item ">
+                            <div className="collapse navbar-collapse main-menu-item justify-content-center" id="navbarSupportedContent">
+                                <ul className="navbar-nav d-flex flex-column bd-highlight mb-3">
+                                    <li className="nav-item ">
                                         <Link className="nav-link dashboardLink" to="/adminDashboard">Dashboard</Link>
                                     </li>
                                     {userRole === 'SuperAdmin' && (

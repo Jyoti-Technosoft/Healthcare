@@ -1,55 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { getAllPatientsApi } from '../Api';
-
 import { useSelector, useDispatch } from 'react-redux'; 
 import {
     setActiveTab,
 } from '../../actions/submenuActions';
 import Cookies from 'js-cookie';
+
 export default function PatientList() {
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filteredPatients, setFilteredPatients] = useState([]); 
 
     const activeTab = useSelector((state) => state.submenu.activeTab);
-    //const activePatientMenu = useSelector((state) => state.submenu.activePatientMenu);
     const dispatch = useDispatch();
     const token = Cookies.get('authToken');
     const setMenu = (submenu) => {
-        // if (submenu === 'registerPatient') {
-        //     // If the submenu is registerPatient, dispatch actions to reset the previous state to null
-            
-        //     dispatch(setActiveTab('registerPatient'));
-        // } else {
-        //     // If the submenu is not registerPatient, set the activePatientMenu state
-        //     dispatch(setActivePatientMenu(submenu));
-        // }
-
         if(activeTab==='patientsList'){
             dispatch(setActiveTab(submenu));
         }
     };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getAllPatientsApi(token);
-                setPatients(data); // Set the fetched patients to the state
-                setFilteredPatients(data); // Initially set filtered patients same as all patients
+                setPatients(data);
+                setFilteredPatients(data); 
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching patients:', error);
                 setLoading(false);
             }
         };
-
         fetchData();
+        // eslint-disable-next-line
     }, []);
 
     const handleSearch = (e) => {
         const keyword = e.target.value.toLowerCase();
         const filteredData = patients.filter((patient) =>
-            patient.id == keyword ||
+            patient.id === keyword ||
             patient.name.toLowerCase().includes(keyword) ||
             patient.user.email.toLowerCase().includes(keyword) ||
             patient.contact.toLowerCase().includes(keyword) ||
@@ -70,7 +61,6 @@ export default function PatientList() {
         { name: 'Address', selector: (row) => row.address, sortable: true, minWidth: '250px' },
     ];
 
-
     return (
         <div className='background_part mt-3'> 
             <div className="container patintListContainer">
@@ -84,7 +74,7 @@ export default function PatientList() {
                                             <div className="col">
                                                 <div className="col-12 d-flex justify-content-between align-items-center mb-3">
                                                     <h6> {patients.length} Patients</h6>
-                                                    <button type="submit" className={`btn btn-primary float-end ${activeTab === 'registerPatient' ? '' : ''}`} style={{ backgroundColor: '#1977cc' }} onClick={() => setMenu('registerPatient')}><i class="bi bi-plus" style={{ color: 'white' }}></i>Add</button>
+                                                    <button type="submit" className={`btn btn-primary float-end ${activeTab === 'registerPatient' ? '' : ''}`} style={{ backgroundColor: '#1977cc' }} onClick={() => setMenu('registerPatient')}><i className="bi bi-plus" style={{ color: 'white' }}></i>Add</button>
                                                 </div>
                                             </div>
                                         </div>

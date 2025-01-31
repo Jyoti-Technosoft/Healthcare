@@ -143,10 +143,8 @@ export async function updatePatientProfileApi(patientId,email,currentPassword,pa
                 Authorization: `Bearer ${token}`,
             },
         });
-        //alert("Profile updated Successfully");
         return response.data;
     } catch (error) {
-        //alert(error);
         throw error;
     }
 }
@@ -175,10 +173,8 @@ export async function updateDoctorProfileApi(userId,email,currentPassword,passwo
                 Authorization: `Bearer ${token}`,
             },
         });
-        //alert("Profile updated Successfully");
         return response.data;
     } catch (error) {
-        //alert(error);
         throw error;
     }
 }

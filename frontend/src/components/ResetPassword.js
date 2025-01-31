@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BsEye, BsEyeSlash } from 'react-icons/bs'; 
 import { changePassword } from './Api';
 import { ToastContainer, toast } from 'react-toastify';
+
 function ResetPassword({ email, backToLogin }) {
     const [newPassword,setNewPassword] = useState("");
     const [showPassword1, setShowPassword1] = useState(false); 
@@ -35,7 +36,6 @@ function ResetPassword({ email, backToLogin }) {
                     <h2 className='text-center'>Create New Password</h2>
                     <p className='text-center'>This password should be different from the previous password</p>
                 </div>
-                {/* New Password */}
                 <div className="input-group mb-3">
                     <input
                         id="newPassword1"
@@ -56,7 +56,6 @@ function ResetPassword({ email, backToLogin }) {
                         {showPassword1 ? <BsEyeSlash /> : <BsEye />}
                     </button>
                 </div>
-                {/* Confirm Password */}
                 <div className="input-group mb-3">
                     <input
                         id="newPassword2"
@@ -73,11 +72,9 @@ function ResetPassword({ email, backToLogin }) {
                         {showPassword2 ? <BsEyeSlash /> : <BsEye />}
                     </button>
                 </div>
-                {/* Send OTP Button */}
                 <div className="input-group mb-3">
                     <button style={{ background: '#1977cc ', borderColor: 'white' }} onClick={handlePasswordChange} className="btn btn-lg btn-primary w-100 fs-6"> Change Password </button>
                 </div>
-                {/* Back to Login */}
                 <div>
                     <p className='text-center' style={{ color: '#1977cc', cursor: 'pointer' }} onClick={backToLogin}><i className="bi bi-chevron-left"></i>&nbsp;Back to Login</p>
                 </div>

@@ -3,8 +3,8 @@ import { Slide, Box } from '@mui/material';
 import BMICalculator from './BMICalculator';
 import IdealWeight from './IdealWeight';
 import AgeCalculator from './AgeCalculator';
+
 const SlidePanel = ({ showForm, toggleForm, activePanel }) => {
-    
     return (
         <Slide direction="left" in={showForm} mountOnEnter unmountOnExit>
             <Box
@@ -26,17 +26,17 @@ const SlidePanel = ({ showForm, toggleForm, activePanel }) => {
                     <div className="container ">
                         {activePanel === 'BMI' && (
                             <>
-                                <BMICalculator toggleForm={toggleForm(null)}/>
+                                <BMICalculator toggleForm={toggleForm(null)} />
                             </>
                         )}
                         {activePanel === 'IdealWeight' && (
                             <>
-                                <IdealWeight toggleForm={toggleForm(null)}/>
+                                <IdealWeight toggleForm={toggleForm(null)} />
                             </>
                         )}
                         {activePanel === 'Age' && (
                             <>
-                                <AgeCalculator toggleForm={toggleForm(null)}/>
+                                <AgeCalculator toggleForm={toggleForm(null)} />
                             </>
                         )}
                     </div>

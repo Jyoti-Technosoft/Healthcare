@@ -10,31 +10,19 @@ export const SET_DOCTOR_APPOINTMENTS = 'SET_DOCTOR_APPOINTMENTS';
 export const SET_SHOW_APPOINTMENTS = 'SET_SHOW_APPOINTMENTS'; 
 export const SET_CONSULTANCY_PAGE = 'SET_CONSULTANCY_PAGE'; 
 
-
 export const ACTIVE_TAB = 'ACTIVE_TAB';
-// export const RESET_PREVIOUS_TAB = 'RESET_PREVIOUS_TAB';
 
 export const MIDDLE_COMPO = 'MIDDLE_COMPO';
-
 
 export const setActiveTab = (submenu) => ({
   type: ACTIVE_TAB, 
   payload: submenu,
 });
-// export const setResetPreviousTab = (submenu) => ({
-//   type: RESET_PREVIOUS_TAB, 
-//   payload: submenu,
-// });
 
 export const setMiddleCompo = (submenu) => ({
   type: MIDDLE_COMPO, 
   payload: submenu,
 });
-
-
-
-
-
 export const setActiveDashboard = (submenu) => ({
   type: SET_ACTIVE_DASHBOARD,
   payload: submenu,

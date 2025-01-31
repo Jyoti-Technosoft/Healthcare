@@ -1,5 +1,4 @@
 const TRANSITION_EVENTS = ['transitionend', 'webkitTransitionEnd', 'oTransitionEnd']
-// const TRANSITION_PROPERTIES = ['transition', 'MozTransition', 'webkitTransition', 'WebkitTransition', 'OTransition']
 
 class Menu {
   constructor(el, config = {}, _PS = null) {
@@ -35,7 +34,6 @@ class Menu {
       el.querySelector('.menu-inner').classList.add('overflow-auto')
     }
 
-    // Add data attribute for bg color class of menu
     const menuClassList = el.classList
 
     for (let i = 0; i < menuClassList.length; i++) {
@@ -47,18 +45,14 @@ class Menu {
 
     this._bindEvents()
 
-    // Link menu instance to element
     el.menuInstance = this
   }
 
   _bindEvents() {
-    // Click Event
     this._evntElClick = e => {
-      // Find top parent element
       if (e.target.closest('ul') && e.target.closest('ul').classList.contains('menu-inner')) {
         const menuItem = Menu._findParent(e.target, 'menu-item', false)
 
-        // eslint-disable-next-line prefer-destructuring
         if (menuItem) this._topParent = menuItem.childNodes[0]
       }
 
@@ -90,7 +84,6 @@ class Menu {
   }
 
   static childOf(/* child node */ c, /* parent node */ p) {
-    // returns boolean
     if (c.parentNode) {
       while ((c = c.parentNode) && c !== p);
       return !!c
@@ -186,7 +179,6 @@ class Menu {
     return menu
   }
 
-  // Has class
   static _hasClass(cls, el = window.Helpers.ROOT_EL) {
     let result = false
 
@@ -211,16 +203,13 @@ class Menu {
             window.requestAnimationFrame(() => this._toggleAnimation(true, item, false))
             if (this._accordion) this._closeOther(item, closeChildren)
           } else if (this._animate) {
-            // eslint-disable-next-line no-unused-expressions
             this._onOpened && this._onOpened(this, item, toggleLink, Menu._findMenu(item))
           } else {
             item.classList.add('open')
-            // eslint-disable-next-line no-unused-expressions
             this._onOpened && this._onOpened(this, item, toggleLink, Menu._findMenu(item))
             if (this._accordion) this._closeOther(item, closeChildren)
           }
         } else {
-          // eslint-disable-next-line no-unused-expressions
           this._onOpened && this._onOpened(this, item, toggleLink, Menu._findMenu(item))
         }
       })
@@ -246,11 +235,9 @@ class Menu {
               for (let i = 0, l = opened.length; i < l; i++) opened[i].classList.remove('open')
             }
 
-            // eslint-disable-next-line no-unused-expressions
             this._onClosed && this._onClosed(this, item, toggleLink, Menu._findMenu(item))
           }
         } else {
-          // eslint-disable-next-line no-unused-expressions
           this._onClosed && this._onClosed(this, item, toggleLink, Menu._findMenu(item))
         }
       })
@@ -267,7 +254,6 @@ class Menu {
 
   toggle(el, closeChildren = this._closeChildren) {
     const item = Menu._getItem(el, true)
-    // const toggleLink = Menu._getLink(el, true)
 
     if (item.classList.contains('open')) this.close(item, closeChildren)
     else this.open(item, closeChildren)
@@ -516,7 +502,6 @@ class Menu {
 
     if (window.innerWidth < window.Helpers.LAYOUT_BREAKPOINT) {
       if (this._scrollbar !== null) {
-        // window.Helpers.menuPsScroll.destroy()
         this._scrollbar.destroy()
         this._scrollbar = null
       }

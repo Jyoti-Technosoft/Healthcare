@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import Cookies from 'js-cookie';
-import { getAllAppointmentsApi, getDoctorsWithIdApi, getAppointmentWithoutHealthReport } from '../Api';
+import { getDoctorsWithIdApi, getAppointmentWithoutHealthReport } from '../Api';
 import ConsultancyModal from './ConsultancyModal';
 import { dateFormatter } from '../Validations';
 import {
@@ -12,14 +12,11 @@ import { useSelector, useDispatch } from 'react-redux';
 export default function DoctorDashboard() {
 
     const [appointment, setAppointment] = useState([]);
-    const [doctors, setDoctors] = useState([]);
-    const [patients, setPatients] = useState([]);
     const userId = Cookies.get("userId");
     const token = Cookies.get("authToken");
     const [prescriptions, setPrescriptions] = useState([]);
     const [showCloseButton, setShowCloseButton] = useState(false);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
-    const [paginationPerPage, setPaginationPerPage] = useState(5); // Default rows per page
 
     const activeTab = useSelector((state) => state.submenu.activeTab);
     const dispatch = useDispatch();
@@ -54,29 +51,24 @@ export default function DoctorDashboard() {
     };
     const todaysAppointments = () => {
         const today = new Date().toISOString().slice(0, 10);
-        const arrivedAppointments = appointment.filter(appointment => appointment.appointmentDate === today && appointment.arrive == 1);
-        const notArrivedAppointments = appointment.filter(appointment => appointment.appointmentDate === today && appointment.arrive != 1);
-
-        // Sort arrived appointments by appointment time
+        const arrivedAppointments = appointment.filter(appointment => appointment.appointmentDate === today && appointment.arrive === 1);
+        const notArrivedAppointments = appointment.filter(appointment => appointment.appointmentDate === today && appointment.arrive !== 1);
         const sortedArrivedAppointments = arrivedAppointments.sort((a, b) => new Date(a.appointmentTime) - new Date(b.appointmentTime));
-
-        // Concatenate sorted arrived appointments with not arrived appointments
         return [...sortedArrivedAppointments, ...notArrivedAppointments];
     };
 
-
     const upcomingAppointments = appointment
         .filter(appointment => new Date(appointment.appointmentDate) >= new Date())
-        .sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate)) // Sort appointments in ascending order of the date
-        .slice(0, 10); // Take the first 10 appointments
+        .sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate))
+        .slice(0, 10);
 
 
     const handleToggleModal = (appointment) => {
-        setSelectedAppointment(appointment); // Set selected appointment
-        // Show the modal using Bootstrap's modal API
+        setSelectedAppointment(appointment);
         const modal = new window.bootstrap.Modal(document.getElementById('consultancyModal'));
         modal.show();
     };
+
     const handleAddPrescription = () => {
         const newPrescription = { medicineName: '', dosage: '', timing: '' };
         setPrescriptions([...prescriptions, newPrescription]);
@@ -86,16 +78,16 @@ export default function DoctorDashboard() {
         const updatedPrescriptions = prescriptions.filter((_, index) => index !== indexToRemove);
         setPrescriptions(updatedPrescriptions);
     };
+
     const handleCloseButtonClick = () => {
         setShowCloseButton(false);
         setPrescriptions([]);
     };
 
-    // Define columns for the data table
     const columns = [
         {
             cell: (row) => {
-                if (row.arrive == 1) {
+                if (row.arrive === 1) {
                     return <div style={{ width: '8px', height: '8px', backgroundColor: '#77dd77', borderRadius: '50%', display: 'inline-block' }}></div>;
                 }
             },
@@ -147,7 +139,6 @@ export default function DoctorDashboard() {
                             <div className="col mb-4">
                                 <div className="card h-100  rounded border-0 justify-content-center" >
                                     <div className="card-body p-1">
-                                        <h1 className='text-center'>{doctors.length}</h1>
                                         <p className='text-center'>Top Doctors</p>
                                     </div>
                                 </div>
@@ -155,7 +146,6 @@ export default function DoctorDashboard() {
                             <div className="col mb-4">
                                 <div className="card h-100  rounded border-0 justify-content-center" >
                                     <div className="card-body p-1">
-                                        <h1 className='text-center'>{patients.length}</h1>
                                         <p className='text-center'>Total Patients</p>
                                     </div>
                                 </div>
@@ -167,34 +157,38 @@ export default function DoctorDashboard() {
                 <div className="d-flex justify-content-center align-items-center ">
                     <div className="container">
                         <div className="row">
-                            <div className="col-md-7 "> 
+                            <div className="col-md-7 ">
                                 <div className="card todayAppointmentCard  mb-4 rounded border-0 justify-content-end">
                                     <div className="card-body" style={{ height: '500px', overflowY: 'auto' }}>
                                         <h6><b className='contentHeadings' style={{ color: 'black' }}> Todays Appointments</b> </h6>
                                         <br />
                                         <DataTable
-
                                             columns={columns}
                                             data={todaysAppointments()}
                                             pagination
                                             highlightOnHover
                                             noDataComponent="No todays appointments found"
-                                            paginationPerPage={paginationPerPage}
-                                            paginationRowsPerPageOptions={[5]} 
-
+                                            paginationRowsPerPageOptions={[5]}
                                         />
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-5"> 
+                            <div className="col-md-5">
                                 <div className="card upcoming-appointments  mb-4 rounded border-0 justify-content-end">
                                     <div className="card-body" style={{ height: '500px', overflowY: 'auto' }}>
                                         <div className="d-flex justify-content-between align-items-center">
                                             <h6 className=''><b className='contentHeadings' style={{ color: 'black' }}> Upcoming Appointments</b> </h6>
-                                            <a style={{ cursor: 'pointer', fontSize: '12px' }} onClick={() => setMenu('doctorAppointments')}>See all<i class="bi bi-chevron-right" style={{ fontSize: '10px' }}></i></a>
+                                            <a
+                                                href="#"
+                                                role="button"
+                                                style={{ cursor: 'pointer', fontSize: '12px' }}
+                                                onClick={() => setMenu('doctorAppointments')}
+                                            >
+                                                See all
+                                                <i className="bi bi-chevron-right" style={{ fontSize: '10px' }}></i>
+                                            </a>
                                         </div>
                                         <div className=" mt-3">
-
                                             {upcomingAppointments.slice(0, 5).map(appointment => (
                                                 <>
                                                     <div key={appointment.id} className="d-flex align-items-center" >
