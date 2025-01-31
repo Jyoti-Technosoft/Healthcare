@@ -20,6 +20,39 @@ public class User {
     private String password;
     private String role;
 
+    @Column(name = "otp")
+    private String otp;
+
+    @Column(name = "otp_creation_time")
+    private LocalDateTime otpCreationTime;
+
+    @Column(name = "otp_expiration_time")
+    private LocalDateTime otpExpirationTime;
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public LocalDateTime getOtpCreationTime() {
+        return otpCreationTime;
+    }
+
+    public void setOtpCreationTime(LocalDateTime otpCreationTime) {
+        this.otpCreationTime = otpCreationTime;
+    }
+
+    public LocalDateTime getOtpExpirationTime() {
+        return otpExpirationTime;
+    }
+
+    public void setOtpExpirationTime(LocalDateTime otpExpirationTime) {
+        this.otpExpirationTime = otpExpirationTime;
+    }
+
     @OneToOne(mappedBy = "user")
     @JsonBackReference
     private Receptionist receptionist;

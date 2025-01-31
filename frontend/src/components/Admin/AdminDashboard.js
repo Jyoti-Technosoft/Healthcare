@@ -30,7 +30,7 @@ export default function AdminDashboard() {
             <div className="d-flex justify-content-center align-items-center ">
                 <div className="container ">
                     <div className="row row-cols-1 row-cols-md-4">
-                        <div className="col mb-4"> {/* Adjusted column size */}
+                        <div className="col mb-4">
                             <div className="card   rounded border-0 justify-content-center" style={{height:'185px'}}>
                                 <div className="card-body p-4">
                                     <h1 className='text-center'>{users.length}</h1>
@@ -38,7 +38,7 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col mb-4"> {/* Adjusted column size */}
+                        <div className="col mb-4">
                             <div className="card   rounded border-0 justify-content-center" style={{height:'185px'}}>
                                 <div className="card-body p-4">
                                     <h1 className='text-center'>{todayUsersCount()}</h1>
@@ -46,7 +46,7 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col mb-4"> {/* Adjusted column size */}
+                        <div className="col mb-4">
                             <div className="card   rounded border-0 justify-content-center" style={{height:'185px'}} >
                                 <div className="card-body p-4">
                                     <h1 className='text-center'>{receptionist.length}</h1>
@@ -54,7 +54,7 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col mb-4"> {/* Adjusted column size */}
+                        <div className="col mb-4">
                             <div className="card   rounded border-0 justify-content-center" style={{height:'185px'}}>
                                 <div className="card-body p-4">
                                     <h1 className='text-center'>{doctor.length}</h1>

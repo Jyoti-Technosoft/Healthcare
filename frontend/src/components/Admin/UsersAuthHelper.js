@@ -26,7 +26,7 @@ export async function UsersAuthHelper(email,password,roles,name,contact,dateOfBi
             weight,
             height,
         };
-        await registerUserApi(userData); 
+        await registerUserApi(userData,token); 
         //alert("User Registration Successfully");
     } catch (error) {
         //alert("Registration failed! Please try again.");

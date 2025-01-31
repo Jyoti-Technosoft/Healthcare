@@ -274,8 +274,8 @@ export default function RegisterUsers() {
       }
       // Clear form inputs
       clearFormInputs();
-      toast.success('User register successfully');      
-      setStep(1);      
+      toast.success('User register successfully');
+      setStep(1);
     } catch (error) {
       toast.error('Failed to register user!');
     }

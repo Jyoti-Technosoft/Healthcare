@@ -6,6 +6,8 @@ import Calendar from 'react-calendar'; // Import react-calendar
 import { FaTimes } from 'react-icons/fa'; // Import the close icon or any other icon library you prefer
 import Cookies from 'js-cookie';
 import { useSelector, useDispatch } from 'react-redux';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 import {
     setActiveTab,
 } from '../../actions/submenuActions';
@@ -50,16 +52,16 @@ export default function BookAppointment() {
     };
 
     const handleInputChange = async (event) => {
-        const { value } = event.target;
-        setSearchQuery(value); // Update search query state
+        const value = event?.target?.value;
 
         try {
-            // Call API to fetch suggestions based on the search query
-            const data = await getSearchPatientsApi(value, authToken);
             if (value.trim() === '') {
                 // If search query is empty, reset suggestions
                 setSuggestions([]);
+
             } else {
+                // Call API to fetch suggestions based on the search query
+                const data = await getSearchPatientsApi(value, authToken);
                 setSuggestions(data); // Update suggestions state with the fetched data
             }
         } catch (error) {
@@ -89,7 +91,7 @@ export default function BookAppointment() {
     const handleSuggestionClick = (patient) => {
         // Handle click on a suggestion item
         setClickedPatient(patient);
-        setClickedPatientId(patient.id);
+        //setClickedPatientId(patient.id);
         setSuggestions([]);
         setCurrentStep(2); // Move to the next step after clicking on a suggestion
     };
@@ -98,7 +100,7 @@ export default function BookAppointment() {
         setSelectedDoctor(doctorId);
         setDoctorSelected(true);
         try {
-            const response = await fetchConsultationChargeApi(clickedPatientId, doctorId, selectedDate, authToken);
+            const response = await fetchConsultationChargeApi(clickedPatient.id, doctorId, selectedDate, authToken);
             setConsultationCharge(response); // Update consultation charge state with the fetched value
         } catch (error) {
             console.error('Error fetching consultation charge:', error);
@@ -110,7 +112,7 @@ export default function BookAppointment() {
             console.log('Available Slots Response:', response);
             setAvailableSlots(response); // Assuming the response is in the format { data: { timeSlot1: slotsCount1, timeSlot2: slotsCount2, ... } }
 
-            const response1 = await fetchConsultationChargeApi(clickedPatientId, doctorId, selectedDate, authToken);
+            const response1 = await fetchConsultationChargeApi(clickedPatient.id, doctorId, selectedDate, authToken);
             setConsultationCharge(response1); // Update consultation charge state with the fetched value
         } catch (error) {
             console.error('Error fetching:', error);
@@ -163,7 +165,7 @@ export default function BookAppointment() {
             // console.log('Available Slots Response:', response);
             setAvailableSlots(response); // Assuming the response is in the format { data: { timeSlot1: slotsCount1, timeSlot2: slotsCount2, ... } }
 
-            const response1 = await fetchConsultationChargeApi(clickedPatientId, selectedDoctor, selectedDateUTC, authToken);
+            const response1 = await fetchConsultationChargeApi(clickedPatient.id, selectedDoctor, selectedDateUTC, authToken);
             setConsultationCharge(response1); // Update consultation charge state with the fetched value
         } catch (error) {
             console.error('Error fetching:', error);
@@ -213,7 +215,7 @@ export default function BookAppointment() {
         try {
             // Ensure selectedTimeSlot is a string, not an event object
             const slot = selectedTimeSlot.target.value;
-            console.log("Selected slot: " + slot);           
+            console.log("Selected slot: " + slot);
 
             const year = selectedDate.getFullYear();
             // Add 1 to month because months are zero-indexed (January is 0, February is 1, etc.)
@@ -223,12 +225,12 @@ export default function BookAppointment() {
 
             // Log the data being passed to bookAppointmentApi for debugging
             console.log('Selected Doctor:', selectedDoctor);
-            console.log('Clicked Patient ID:', clickedPatientId);
+            console.log('Clicked Patient ID:', clickedPatient.id);
             console.log('Selected Date:', formattedDate);
             console.log('Selected Time Slot:', slot);
 
             // Call bookAppointmentApi with the extracted slot value
-            await bookAppointmentApi(selectedDoctor, clickedPatientId, formattedDate, slot, authToken);
+            await bookAppointmentApi(selectedDoctor, clickedPatient.id, formattedDate, slot, authToken);
             setAvailableSlots([]);
             setSelectedTimeSlot('');
             setConsultationCharge('');
@@ -265,47 +267,46 @@ export default function BookAppointment() {
                                                     onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                                                 ></i>
                                                 <div class="section-title">
-
                                                     <label className='contentHeadings appointmentHeading' style={{ color: 'black' }}>Make an Appointment</label>
                                                 </div>
-
-                                                <div id="search" style={{ marginTop: '-20px' }}>
-                                                    <div class="search-top">
-                                                        <div>
-                                                            <div style={{ position: 'relative' }} className="col-lg-4 col-md-6 search-section">
-                                                                <form action="" method="post">
-                                                                    <div style={{ position: 'relative' }}>
-                                                                        <input
-                                                                            type="text"
-                                                                            name="search"
-                                                                            placeholder='Search by patient id, name & contact'
-                                                                            value={searchQuery}
-                                                                            onChange={handleInputChange}
-                                                                            style={{ fontSize: '13px' }}
-                                                                            autoComplete='off'
-                                                                        />
-                                                                        <i style={{ position: 'absolute', right: '5px', bottom: '7px', zIndex: '1', fontSize: '14px', color: '#1977cc' }} className="fas fa-search"></i>
-                                                                    </div>
-                                                                </form>
-                                                                <ul className='suggestion-list'>
-                                                                    {suggestions.map((patient, index) => (
-                                                                        <li key={index} onClick={() => handleSuggestionClick(patient)}>
-                                                                            <div>{patient.id}</div>
-                                                                            <div> {patient.name}</div>
-                                                                            <div>{patient.contact}</div>
-                                                                            {/* Render other fields as needed */}
-                                                                        </li>
-                                                                    ))}
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
                                                 <>
                                                     <div className='regervation_content'>
+                                                        <div id="search" >
+                                                            <div class="search-top">
+                                                                <div className='row'>
+                                                                    <div style={{ position: 'relative' }} className="col-lg-4 col-md-6 search-section">
+                                                                        <Autocomplete
+                                                                            value={searchQuery}
+                                                                            onChange={(event, newValue) => {
+                                                                                setSearchQuery(newValue);
+                                                                                handleSuggestionClick(newValue); // Call handleSuggestionClick when a suggestion is selected
+                                                                            }}
+                                                                            onInputChange={handleInputChange}
+                                                                            options={suggestions}
+                                                                            getOptionLabel={(option) => option ? option.name : ''}
+                                                                            renderInput={(params) => (
+                                                                                <TextField
+                                                                                    {...params}
+                                                                                    label="Search patient"
+                                                                                    variant="outlined"
+                                                                                    InputProps={{
+                                                                                        ...params.InputProps,
+                                                                                        endAdornment: (
+                                                                                            <>
+                                                                                                {params.InputProps.endAdornment}
+                                                                                                {/* <i className="fas fa-search" style={{ marginRight: '10px', cursor: 'pointer' }} /> */}
+                                                                                            </>
+                                                                                        ),
+                                                                                    }}
+                                                                                />
+                                                                            )}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         {clickedPatient ? (
-                                                            <fieldset className="regervation_content">
+                                                            <>
                                                                 <label className='mt-2'><b className='contentHeadings' style={{ fontWeight: 'bold', color: '#1977cc' }} > Patient Details </b></label>
                                                                 <div className="row">
                                                                     <div className="col-md-4 form-group mt-3">
@@ -321,9 +322,9 @@ export default function BookAppointment() {
                                                                         <input type="text" name="contact" className="form-control input-field" value={clickedPatient.contact} disabled id="contact" placeholder="Patient id" />
                                                                     </div>
                                                                 </div>
-                                                            </fieldset>
+                                                            </>
                                                         ) : (
-                                                            <fieldset className="regervation_content">
+                                                            <>
                                                                 <label className='mt-2'><b className='contentHeadings' style={{ fontWeight: 'bold', color: '#1977cc' }} > Patient Details </b></label>
                                                                 <div className="row">
                                                                     <div className="col-md-4 form-group mt-3">
@@ -342,7 +343,7 @@ export default function BookAppointment() {
                                                                         {contactError && <div className="invalid-feedback">{contactError}</div>}
                                                                     </div>
                                                                 </div>
-                                                            </fieldset>
+                                                            </>
                                                         )}
 
                                                         <label className='mt-4'><b className='contentHeadings ' style={{ fontWeight: 'bold', color: '#1977cc' }} >Appointments </b></label>
@@ -396,8 +397,8 @@ export default function BookAppointment() {
                                                                 <>
                                                                     <div className="row">
                                                                         <div className="col-md-6 form-group mt-3 ">
-                                                                            <label className='form-label'>Appointment Date</label> <br/>
-                                                                            <h6 className='text-center mt-4' style={{fontSize:'14px', color:'#1977cc'}}>Slots Available. Click on preferrable date to book slot</h6>
+                                                                            <label className='form-label'>Appointment Date</label> <br />
+                                                                            <h6 className='text-center mt-4' style={{ fontSize: '14px', color: '#1977cc' }}>Slots Available. Click on preferrable date to book slot</h6>
                                                                             <div className='card  border-0'>
                                                                                 <Calendar
                                                                                     onChange={handleDateSelect}
@@ -510,10 +511,10 @@ export default function BookAppointment() {
                                                                             </div>
                                                                         </div>
 
-                                                                        <div className="col-md-6 form-group mt-3" style={{fontSize:'13px'}}>
+                                                                        <div className="col-md-6 form-group mt-3" style={{ fontSize: '13px' }}>
                                                                             <label className='form-label'>Available Slots</label>
-                                                                            <h6 className='text-center mt-4' style={{fontSize:'16px' , color:'#1977cc'}}>Select the time slot and click Make an appointment button </h6>
-                                                                            {selectedDate && <h6 className='text-center mt-2' style={{fontSize:'14px'}}>Available time slots for <b style={{color:'black'}}> {selectedDate.getDate().toString().padStart(2, '0')}-{(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-{selectedDate.getFullYear()}</b></h6>}
+                                                                            <h6 className='text-center mt-4' style={{ fontSize: '16px', color: '#1977cc' }}>Select the time slot and click Make an appointment button </h6>
+                                                                            {selectedDate && <h6 className='text-center mt-2' style={{ fontSize: '14px' }}>Available time slots for <b style={{ color: 'black' }}> {selectedDate.getDate().toString().padStart(2, '0')}-{(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-{selectedDate.getFullYear()}</b></h6>}
                                                                             <table className=" custom-table-new">
                                                                                 <thead>
                                                                                     <tr>
@@ -533,7 +534,7 @@ export default function BookAppointment() {
                                                                                                 const isOnSelectedDate = selectedDate.toISOString().split('T')[0] === requestFromDate && selectedDate.toISOString().split('T')[0] === requestToDate;
                                                                                                 // Convert time slot string to start and end times
                                                                                                 const [slotStartTime, slotEndTime] = timeSlot.split(' to ');
-                                                                                                                                                                                                
+
                                                                                                 const isTimeSlotOverlap = isOnSelectedDate && requestFromTime && requestToTime &&
                                                                                                     slotStartTime >= requestFromTime &&
                                                                                                     slotEndTime <= requestToTime;

@@ -15,6 +15,29 @@
   background-image: -o-linear-gradient(to right, #fff, #fff, #fff);
   background-image: linear-gradient(to right, #fff, #fff, #fff);
 }
+.form-control{
+  border-radius: 30px !important;
+}
+.input-group-new {
+  display: flex;
+}
+
+.spacer {
+  width: 10px; /* Adjust the width of the space between input blocks */
+}
+
+.otp-input {
+  flex: 1;
+  background-color: #EFEFEF !important;
+}
+.reset-button-border {
+  border: 1px solid #1977cc !important;
+  border-radius: 20px !important;
+  color: #1977cc !important;
+  font-size: 11px !important;
+}
+/* Add any additional styling as needed */
+
 
 
 /* Custom css start */
@@ -391,7 +414,7 @@
   }
 
   .regervation_content {
-    border: 1px solid #ccc;
+    border: 1px solid silver;
     padding: 30px;
     margin-bottom: 20px;
   }

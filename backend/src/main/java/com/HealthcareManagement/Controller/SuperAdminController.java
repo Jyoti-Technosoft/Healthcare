@@ -16,10 +16,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -55,6 +57,10 @@ public class SuperAdminController {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
 
     @PostMapping(value="/auth/registerUsers")
     @PreAuthorize("hasAnyAuthority('SuperAdmin', 'Receptionist')")
@@ -190,7 +196,66 @@ public class SuperAdminController {
         }
     }
 
+    @PostMapping("/forgotPassword/SendOTP/{emailId}")
+    public String sendOtp(@PathVariable String emailId){
+        Optional<User> userOptional = userService.getUserByEmail(emailId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            String otp = generateOTP();
+
+            // Set OTP and expiration time
+            user.setOtp(otp);
+            LocalDateTime now = LocalDateTime.now();
+            user.setOtpCreationTime(now);
+            user.setOtpExpirationTime(now.plusMinutes(10)); // OTP valid for 10 minutes
+
+            userService.saveOTP(user); // Save the user with the new OTP details
+
+            Mail mail = new Mail();
+            mail.setTo(emailId);
+            mail.setSubject("Your OTP for password reset");
+            mail.setMessage("Your OTP is: " + otp);
+            superAdminService.sendMail(emailId,mail);
+            return "OTP sent successfully!!!";
+        } else {
+            return "User with email ID " + emailId + " does not exist!";
+        }
+    }
+
+    @PostMapping("/forgotPassword/verifyOTP")
+    public String verifyOtp(@RequestParam String emailId, @RequestParam String otp) {
+        Optional<User> userOptional = userService.getUserByEmail(emailId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (user.getOtp().equals(otp) && LocalDateTime.now().isBefore(user.getOtpExpirationTime())) {
+                // OTP is correct and not expired
+                return "OTP verified successfully!";
+            } else {
+                return "Invalid or expired OTP!";
+            }
+        } else {
+            return "User with email ID " + emailId + " does not exist!";
+        }
+    }
+    @PutMapping("/forgotPassword/changePassword")
+    public String updatePassword(@RequestParam String emailId, @RequestParam String newPassword) {
+        Optional<User> userOptional = userService.getUserByEmail(emailId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            // Encrypt the new password before saving it
+            String encryptedPassword = passwordEncoder.encode(newPassword);
+            user.setPassword(encryptedPassword);
+            userService.saveUser(user);
+            return "Password updated successfully!";
+        } else {
+            return "User with email ID " + emailId + " does not exist!";
+        }
+    }
 
 
-
+    private String generateOTP() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+        return String.valueOf(otp);
+    }
 }

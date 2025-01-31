@@ -3,6 +3,7 @@ import Header from './Header'
 import { useNavigate, Link } from 'react-router-dom';
 import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword } from './Validations';
 import { handleAdminRegistration } from './AdminAuthHelper';
+import Cookies from 'js-cookie';
 
 function Registration() {
   const [email, setEmail] = useState("");
@@ -39,8 +40,9 @@ function Registration() {
       setPasswordError(passwordPatternValidation);
       return;
     }
- 
-    await handleAdminRegistration(email, password, navigate, setRegistrationError);
+    const token = Cookies.get('authToken');
+    // const token1 = localStorage.getItem('authToken');
+    await handleAdminRegistration(email, password, navigate, setRegistrationError,token);
 
   }
 

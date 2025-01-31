@@ -485,5 +485,38 @@ export async function getAllDoctorsLeaveRequest(token){
         throw error;
     }
 }
-
+export async function sendOTP(emailId){
+    try{
+        const response = await axios.post(`http://localhost:8080/superAdmin/forgotPassword/SendOTP/${emailId}`);
+        return response.data;
+    }catch(error){
+        throw error;
+    }
+}
+export async function verifyOTP(emailId, otp){
+    try{
+        const response = await axios.post('http://localhost:8080/superAdmin/forgotPassword/verifyOTP',null,{
+            params: {
+                emailId,
+                otp
+            }
+        });
+        return response.data;
+    }catch(error){
+        throw error;
+    }
+}
+export async function changePassword(emailId, newPassword){
+    try{
+        const response = await axios.put('http://localhost:8080/superAdmin/forgotPassword/changePassword',null,{
+            params: {
+                emailId,
+                newPassword
+            }
+        });
+        return response.data;
+    }catch(error){
+        throw error;
+    }
+}
 

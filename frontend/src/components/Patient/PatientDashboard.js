@@ -28,7 +28,7 @@ export default function PatientDashboard() {
                 const response = await getPatientApi(userId, authToken);
                 const patientId = response.id;
                 const data = await getAllAppointmentsForPatient(patientId, authToken);
-                setAppointments(data);
+                setAppointments(Array.isArray(data) ? data : []);
 
                 const doctor = await getAllDoctors(authToken);
                 setDoctors(doctor);

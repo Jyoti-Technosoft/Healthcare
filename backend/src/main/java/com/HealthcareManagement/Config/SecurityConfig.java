@@ -44,14 +44,16 @@ public class SecurityConfig implements WebMvcConfigurer {
         http.csrf().disable()
                 .cors().and()
                         .authorizeHttpRequests(requests -> requests
+                                .requestMatchers("/pdf/**").permitAll()
                                 .requestMatchers("/superAdmin/loginAdmin").permitAll()
+                                .requestMatchers("/superAdmin/forgotPassword/**").permitAll()
                                 .requestMatchers("/superAdmin/getReceptionist/**").permitAll()
+                                .requestMatchers("/superAdmin/auth/registerUsers").permitAll()
                                 .requestMatchers("/superAdmin/getPatient/**").authenticated()
                                 .requestMatchers("/superAdmin/getDoctors").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll() // Allow all access to /swagger-ui/**
                                 .requestMatchers("/v2/api-docs/**", "/swagger-ui.html", "/swagger-resources/**").permitAll() // Additional paths for Swagger
                                 .requestMatchers("/superAdmin/getAllDoctorsWithImages").permitAll()
-                                .requestMatchers("/superAdmin/auth/registerUsers").authenticated()
                                 .requestMatchers("/superAdmin/auth/registerPatient").authenticated()
                                 .requestMatchers("/doctor/auth/**").authenticated()
                                 .requestMatchers("/patient/auth/**").authenticated()
@@ -75,7 +77,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }

@@ -305,3 +305,9 @@ export const getDayName = (dayIndex) => {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     return days[dayIndex];
 };
+
+export const focusNextInput = (index, inputs) => {
+    if (index < inputs.current.length - 1) {
+        inputs.current[index + 1].focus();
+    }
+};
