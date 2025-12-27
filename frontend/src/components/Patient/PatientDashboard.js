@@ -1,163 +1,213 @@
-import React, { useEffect, useState } from 'react';
-import DataTable from 'react-data-table-component';
-import { getAllAppointmentsForPatient, getPatientApi, getAllDoctors } from '../Api';
-import Cookies from 'js-cookie';
-import { dateFormatter } from '../Validations';
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import {
-    setActiveTab,
-} from '../../actions/submenuActions';
-import { useSelector, useDispatch } from 'react-redux';
+  getAllAppointmentsForPatient,
+  getPatientApi,
+  getAllDoctors,
+} from "../Api";
+import { dateFormatter } from "../Validations";
+import "../../assets/css/Patient/patientDashboard.css";
+import { useSelector, useDispatch } from "react-redux";
+import { setActiveTab } from "../../actions/submenuActions";
+//fontawesome 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendarCheck,
+  faCalendarDay,
+  faClock,
+  faUserDoctor, // Alternative: faStethoscope
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function PatientDashboard() {
-    const [appointments, setAppointments] = useState([]);
-    const userId = Cookies.get("userId");
-    const authToken = Cookies.get("authToken");
-    const [doctors, setDoctors] = useState([]);
-    const activeTab = useSelector((state) => state.submenu.activeTab);
-    const dispatch = useDispatch();
-    const setMenu = (menu) => {
-        if (activeTab !== menu) {
-            dispatch(setActiveTab(menu));
-        }
+  const [appointments, setAppointments] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 5;
+
+  const userId = Cookies.get("userId");
+  const token = Cookies.get("authToken");
+
+  const dispatch = useDispatch();
+  const activeTab = useSelector((state) => state.submenu.activeTab);
+
+  const setMenu = (menu) => {
+    if (activeTab !== menu) dispatch(setActiveTab(menu));
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const patientInfo = await getPatientApi(userId, token);
+        const pid = patientInfo.id;
+
+        const appts = await getAllAppointmentsForPatient(pid, token);
+        setAppointments(appts || []);
+
+        const docs = await getAllDoctors(token);
+        setDoctors(docs || []);
+      } catch (err) {
+        console.error("Failed to load patient dashboard:", err);
+      }
     };
-    function formatAppointmentDate(dateString) {
-        return dateFormatter(dateString);
-    }
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await getPatientApi(userId, authToken);
-                const patientId = response.id;
-                const data = await getAllAppointmentsForPatient(patientId, authToken);
-                setAppointments(Array.isArray(data) ? data : []);
+    loadData();
+  }, [userId, token]);
 
-                const doctor = await getAllDoctors(authToken);
-                setDoctors(doctor);
-            } catch (error) {
-                console.error('Error fetching appointments:', error);
-            }
-        };
+  const today = new Date().toISOString().slice(0, 10);
 
-        fetchData();
-    }, [userId, authToken]);
+  const todaysAppointments = appointments
+    .filter((a) => a.appointmentDate === today)
+    .sort(
+      (a, b) =>
+        new Date("1970/01/01 " + a.appointmentTime) -
+        new Date("1970/01/01 " + b.appointmentTime)
+    );
 
-    const upcomingAppointments = appointments
-        .filter(appointment => new Date(appointment.appointmentDate) >= new Date());
+  const upcomingAppointments = appointments
+    .filter((a) => new Date(a.appointmentDate) > new Date(today))
+    .sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
 
-    const todaysAppointments = () => {
-        const today = new Date().toISOString().slice(0, 10);
-        return appointments.filter(appointment => appointment.appointmentDate === today);
-    };
+  const totalPages = Math.ceil(todaysAppointments.length / rowsPerPage);
+  const paginatedData = todaysAppointments.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage
+  );
 
-    const columns = [
-        { name: 'SR.NO', selector: (row, index) => index + 1, sortable: true, maxWidth: '20px' },
-        { name: 'Appointment Id', selector: row => row.id, sortable: true, maxWidth: '110px' },
-        { name: 'Patient Id', selector: row => row.patient.id, sortable: true, maxWidth: '100px' },
-        { name: 'Patient Name', selector: row => row.patient.name, sortable: true, maxWidth: '125px' },
-        { name: 'Appointment Date', selector: row => formatAppointmentDate(row.appointmentDate), sortable: true },
-        { name: 'Appointment Time', selector: row => row.appointmentTime, sortable: true },
-        { name: 'Doctor Name', selector: row => row.doctor.name, sortable: true },
-    ];
-    return (
-        <div>
-            <div className="d-flex justify-content-center align-items-center ">
-                <div className="container">
-                    <div className="row row-cols-1 row-cols-md-4">
-                        <div className="col mb-4"> 
-                            <div className="card  h-100 rounded border-0 justify-content-center" >
-                                <div className="card-body p-1 ">
-                                    <h1 className='text-center'>{appointments.length}</h1>
-                                    <p className='text-center'>Total Appointments</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col mb-4"> 
-                            <div className="card  h-100 rounded border-0 justify-content-center" >
-                                <div className="card-body p-1">
-                                    <h1 className='text-center'>{todaysAppointments().length}</h1>
-                                    <p className='text-center'>Todays Appointments</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col mb-4"> 
-                            <div className="card  h-100 rounded border-0 justify-content-center" >
-                                <div className="card-body p-1">
-                                    <h1 className='text-center'>{upcomingAppointments.length}</h1>
-                                    <p className='text-center'>Upcoming Appointments</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col mb-4"> 
-                            <div className="card  h-100 rounded border-0 justify-content-center" >
-                                <div className="card-body p-1">
-                                    <h1 className='text-center'>{doctors.length}</h1>
-                                    <p className='text-center'>Total Doctors</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  return (
+    <div className="patient-dash-container">
+      {/* TOP CARDS USING FONTAWESOME ICONS */}
+      <div className="pd-top-grid">
+        {[
+          {
+            title: "Total Appointments",
+            value: appointments.length,
+            color: "#6F42C1",
+            icon: faCalendarCheck,
+          },
+          {
+            title: "Today's Appointments",
+            value: todaysAppointments.length,
+            color: "#4CAF50",
+            icon: faCalendarDay,
+          },
+          {
+            title: "Upcoming Appointments",
+            value: upcomingAppointments.length,
+            color: "#2196F3",
+            icon: faClock,
+          },
+          {
+            title: "Total Doctors",
+            value: doctors.length,
+            color: "#FD7E14",
+            icon: faUserDoctor,
+          },
+        ].map((card, index) => (
+          <div key={index} className="flat-card">
+            <div className="flat-card-icon" style={{ background: card.color }}>
+              <FontAwesomeIcon icon={card.icon} size="2x" color="#fff" />
             </div>
-            <div className="d-flex justify-content-center align-items-center ">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-md-7 ">
-                            <div className="card todayAppointmentCard  mb-4 rounded border-0 justify-content-end">
-                                <div className="card-body" style={{ height: '500px', overflowY: 'auto' }}>
-                                    <h6><b className='contentHeadings' style={{ color: 'black' }}> Todays Appointments</b> </h6>
-                                    <br />
-                                    <DataTable
-                                        columns={columns}
-                                        data={todaysAppointments()}
-                                        pagination
-                                        highlightOnHover
-                                        noDataComponent="No todays appointments found"
-                                        paginationRowsPerPageOptions={[5]} 
-
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-5">
-                            <div className="card upcoming-appointments  mb-4 rounded border-0 justify-content-end">
-                                <div className="card-body" style={{ height: '500px', overflowY: 'auto' }}>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <h6 className=''><b className='contentHeadings' style={{ color: 'black' }}> Upcoming Appointments</b> </h6>
-                                        <a href='#' style={{ cursor: 'pointer', fontSize: '12px' }} onClick={() => setMenu('patientAppointments')}>See all<i className="bi bi-chevron-right" style={{ fontSize: '10px' }}></i></a>
-                                    </div>
-                                    <div className=" mt-3">
-
-                                        {upcomingAppointments.slice(0, 5).map(appointment => (
-                                            <>
-                                                <div key={appointment.id} className="d-flex align-items-center" >
-                                                    <div className='dashboardPatientImg'>
-                                                        {appointment.patient.gender.toLowerCase() === 'female' && (
-                                                            <img src="img/female2.png" alt="femaleProfile" />
-                                                        )}
-                                                        {appointment.patient.gender.toLowerCase() !== 'female' && (
-                                                            <img src="img/maleRecep.png" alt="maleProfile" />
-                                                        )}
-                                                    </div>
-                                                    <div className='ml-3'>
-                                                        <span style={{ fontSize: '14px' }}><strong>{appointment.patient.name}</strong></span>
-                                                        <p style={{ fontSize: '12px', fontFamily: 'Arial, Helvetica, sans-serif' }}>{appointment.patient.gender}, {appointment.patient.age} <span className='ml-2'>{appointment.doctor.name}</span>  <span className='ml-2'>  {formatAppointmentDate(appointment.appointmentDate)}, {appointment.appointmentTime}</span></p>
-
-                                                    </div>
-                                                    
-                                                </div>
-                                                <hr style={{ color: 'grey' }} />
-                                            </>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div className="flat-card-info">
+              <h2>{card.value}</h2>
+              <p>{card.title}</p>
             </div>
+          </div>
+        ))}
+      </div>
 
+      {/* ---------------- MIDDLE GRID ---------------- */}
+      <div className="pd-middle-grid">
+        <div className="pd-box">
+          <div className="pd-header">
+            <h3>Today's Appointments</h3>
+            <a href="#" onClick={() => setMenu("patientAppointments")}>
+              Show all
+            </a>
+          </div>
+
+          <div className="pd-table-wrapper">
+            <table className="pd-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Appointment ID</th>
+                  <th>Doctor</th>
+                  <th>Date & Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedData.length > 0 ? (
+                  paginatedData.map((a, i) => (
+                    <tr key={a.id}>
+                      <td>{(page - 1) * rowsPerPage + (i + 1)}</td>
+                      <td>{a.id}</td>
+                      <td>{a.doctor?.name}</td>
+                      <td>
+                        {dateFormatter(a.appointmentDate)} | {a.appointmentTime}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="pd-no-data">
+                      No appointments for today
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {totalPages > 1 && (
+            <div className="pd-pagination">
+              <button onClick={() => setPage(1)}>&laquo;</button>
+              <button onClick={() => setPage((p) => Math.max(1, p - 1))}>
+                &lsaquo;
+              </button>
+              <span>{page}</span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              >
+                &rsaquo;
+              </button>
+              <button onClick={() => setPage(totalPages)}>&raquo;</button>
+            </div>
+          )}
         </div>
 
+        <div className="pd-box">
+          <div className="pd-header">
+            <h3>Upcoming</h3>
+            <a href="#" onClick={() => setMenu("patientAppointments")}>
+              Show all
+            </a>
+          </div>
 
-    )
+          <div className="upcoming-list">
+            {upcomingAppointments.length > 0 ? (
+              upcomingAppointments.map((a) => (
+                <div className="up-item" key={a.id}>
+                  <img
+                    src={
+                      a.patient?.gender?.toLowerCase() === "female"
+                        ? "img/female2.png"
+                        : "img/maleRecep.png"
+                    }
+                    alt="profile"
+                  />
+                  <div>
+                    <h4>{a.patient?.name}</h4>
+                    <p>
+                      {dateFormatter(a.appointmentDate)} | {a.appointmentTime}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-upcoming">No upcoming appointments</div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

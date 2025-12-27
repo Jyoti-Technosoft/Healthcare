@@ -1,0 +1,164 @@
+/* ---------------- GLOBAL ---------------- */
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+  overflow-x: hidden;
+}
+
+/* ---------------- SIDEBAR DEFAULT (Desktop: >= 993px) ---------------- */
+/* Defines the standard desktop appearance and position */
+.sidebar {
+  /* This width MUST match the 266px offset/width used in Header.js's style prop */
+  width: 266px; 
+  min-height: 100vh;
+  background: #FDFDFD;
+  box-shadow: 0px 4px 7px 0px #C7DBE940;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease-in-out;
+  z-index: 2000;
+  overflow-y: auto; /* Allow scrolling */
+}
+
+/* Hide scrollbar for sleek look */
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 5px;
+}
+
+/* ---------------- LOGO ---------------- */
+.logo img {
+  width: 182px;
+  height: 71px;
+  object-fit: contain;
+  margin-bottom: 20px;
+}
+
+/* ---------------- PROFILE ---------------- */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-img {
+  width: 135px; /* Using the smaller desktop size */
+  height: 135px;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+.profile-info {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.profile-info h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: #0150B5;
+  margin: 0;
+}
+
+.profile-info p {
+  font-weight: 500;
+  font-size: 13px;
+  color: #373737;
+  margin-top: 3px;
+}
+
+
+.profile-info small {
+    display: block;                /* Ensures it sits on its own line */
+    margin-top: 0px;               /* Removes top space from designation */
+    line-height: 1.2;
+}
+
+/* Divider */
+.divider {
+  width: 80%;
+  height: 1px;
+  background-color:  #1977CC;
+  margin: 10px 0;
+}
+
+/* ---------------- MENU ---------------- */
+.menu {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 30px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #373737;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.menu li img {
+  width: 22px;
+  height: 22px;
+}
+
+.menu li:hover,
+.menu li.active {
+  color: #0150B5;
+  background: #f0f4f8;
+  border-right: 3px solid #0150B5;
+}
+
+/* ---------------- MOBILE HAMBURGER & BACKDROP (Hidden on Desktop) ---------------- */
+/* Keeping for if you decide to implement a hamburger for desktop */
+.hamburger {
+  display: none;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1900;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =====================================================
+    RESPONSIVE BREAKPOINTS
+===================================================== */
+
+/* 1. MOBILE (<= 992px) - The crucial fix: Hide the LEFT desktop sidebar. */
+@media (max-width: 992px) {
+  .sidebar {
+    /* Hide the main, left-aligned sidebar completely */
+    display: none !important; 
+    visibility: hidden;
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  
+  /* The mobile drawer functionality is handled by .mobile-sidebar in header.css */
+}

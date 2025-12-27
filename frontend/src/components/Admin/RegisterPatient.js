@@ -1,15 +1,32 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import { UsersAuthHelper } from './UsersAuthHelper';
-import { validateRequireEmail, validatePatternEmail, validateRequirePassword, validatePatternPassword, validateRequireName, validateRequireContact, validateRequireDob, validateRequireAddress, validateRequireWeight, validateRequireHeight, calculateAge } from '../Validations';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons';
-import {  useDispatch } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { UsersAuthHelper } from "./UsersAuthHelper";
+
 import {
-  setActiveTab,
-} from '../../actions/submenuActions';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+  validateRequireEmail,
+  validatePatternEmail,
+  validateRequirePassword,
+  validatePatternPassword,
+  validateRequireName,
+  validateRequireContact,
+  validateRequireDob,
+  validateRequireAddress,
+  validateRequireWeight,
+  validateRequireHeight,
+  calculateAge
+} from "../Validations";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
+import { useDispatch } from "react-redux";
+import { setActiveTab } from "../../actions/submenuActions";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import "../../assets/css/Admin/RegisterPatient.css";
+import BackArrow from "../../assets/img/back-arrow.png";
 
 export default function RegisterPatient() {
   const [name, setName] = useState("");
@@ -19,27 +36,25 @@ export default function RegisterPatient() {
   const [email, setEmail] = useState("");
   const [dateOfBirth, setDob] = useState("");
   const [age, setAge] = useState("");
-  const [gender, setGender] = useState('');
+  const [gender, setGender] = useState("");
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [address, setAddress] = useState("");
-  const [step, setStep] = useState(1);
-  const stepLabels = ["Register Patient"];
-  const [passwordVisibility, setPasswordVisibility] = useState(true); 
-  const [confirmpasswordVisibility, setConfirmPasswordVisibility] = useState(true); 
 
-  const totalSteps = 1;
+  const [passwordVisibility, setPasswordVisibility] = useState(true);
+  const [confirmVisibility, setConfirmVisibility] = useState(true);
+
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
-  const setMenu = (submenu) => {
 
-    if (submenu === 'patientsList') {
-      dispatch(setActiveTab('patientsList'));
-    }
-  };
+useEffect(() => {
+  dispatch(setActiveTab("registerPatient"));
+}, [dispatch]);
 
+
+
+  /* VALIDATION STATES */
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState("");
@@ -51,29 +66,21 @@ export default function RegisterPatient() {
   const [weightError, setWeightError] = useState("");
   const [heightError, setHeightError] = useState("");
 
-  const handleGenderChange = (event) => {
-    setGender(event.target.value);
+  const capitalizeName = (val) =>
+    val.toLowerCase().replace(/(^|\s)\S/g, (s) => s.toUpperCase());
+
+  const handleDateChange = (e) => {
+    setDob(e.target.value);
+    setAge(calculateAge(e.target.value));
   };
 
-  const capitalizeName = (name) => {
-    return name.toLowerCase().replace(/(^|\s)\S/g, (firstLetter) => firstLetter.toUpperCase());
-  };
+  const togglePassword = () => setPasswordVisibility(!passwordVisibility);
+  const toggleConfirmPassword = () =>
+    setConfirmVisibility(!confirmVisibility);
 
-  const handleDateOfBirthChange = (event) => {
-    const dob = event.target.value;
-    setDob(dob); 
-    setAge(calculateAge(dob));
-  };
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisibility(!passwordVisibility);
-  };
-
-  const toggleConfirmPasswordVisibility = () => {
-    setConfirmPasswordVisibility(!confirmpasswordVisibility);
-  };
-
-  async function handleSubmit(event) {
     setEmailError("");
     setPasswordError("");
     setPasswordMatchError("");
@@ -84,75 +91,59 @@ export default function RegisterPatient() {
     setAddressError("");
     setWeightError("");
     setHeightError("");
-    event.preventDefault();
 
-    const emailRequireValidation = validateRequireEmail(email);
-    const emailPatternValidation = validatePatternEmail(email);
-    const passwordRequireValidation = validateRequirePassword(password);
-    const passwordPatternValidation = validatePatternPassword(password);
-    const nameRequireValidation = validateRequireName(name);
-    const contactRequireValidation = validateRequireContact(contact);
-    const dobRequireValidation = validateRequireDob(dateOfBirth);
-    const addressRequireValidation = validateRequireAddress(address);
-    const weightRequireValidation = validateRequireWeight(weight);
-    const heightRequireValidation = validateRequireHeight(height);
+    const emailRequired = validateRequireEmail(email);
+    const emailPattern = validatePatternEmail(email);
+    const passwordRequired = validateRequirePassword(password);
+    const passwordPattern = validatePatternPassword(password);
+    const nameRequired = validateRequireName(name);
+    const contactRequired = validateRequireContact(contact);
+    const dobRequired = validateRequireDob(dateOfBirth);
+    const addressRequired = validateRequireAddress(address);
+    const weightRequired = validateRequireWeight(weight);
+    const heightRequired = validateRequireHeight(height);
 
-    if (emailRequireValidation) {
-      setEmailError(emailRequireValidation);
-      return;
-    } else if (emailPatternValidation) {
-      setEmailError(emailPatternValidation);
-      return;
-    }
-    if (passwordRequireValidation) {
-      setPasswordError(passwordRequireValidation);
-      return;
-    } else if (passwordPatternValidation) {
-      setPasswordError(passwordPatternValidation);
-      return;
-    }
-    if (password !== confirmPassword) {
-      setPasswordMatchError("Passwords does not match");
-      return;
-    }
+    if (emailRequired) return setEmailError(emailRequired);
+    if (emailPattern) return setEmailError(emailPattern);
+    if (passwordRequired) return setPasswordError(passwordRequired);
+    if (passwordPattern) return setPasswordError(passwordPattern);
+    if (password !== confirmPassword)
+      return setPasswordMatchError("Passwords do not match");
+    if (nameRequired) return setNameError(nameRequired);
+    if (contactRequired) return setContactError(contactRequired);
+    if (dobRequired) return setDobError(dobRequired);
+    if (!gender) return setGenderError("Please select a gender");
+    if (addressRequired) return setAddressError(addressRequired);
+    if (weightRequired) return setWeightError(weightRequired);
+    if (heightRequired) return setHeightError(heightRequired);
 
-    if (nameRequireValidation) {
-      setNameError(nameRequireValidation);
-      return;
-    }
-    if (contactRequireValidation) {
-      setContactError(contactRequireValidation);
-      return;
-    }
-    if (dobRequireValidation) {
-      setDobError(dobRequireValidation);
-      return;
-    }
-    if (!gender) {
-      setGenderError('Please select a gender');
-      return;
-    }
-    if (addressRequireValidation) {
-      setAddressError(addressRequireValidation);
-      return;
-    }
-    if (weightRequireValidation) {
-      setWeightError(weightRequireValidation);
-      return;
-    }
-    if (heightRequireValidation) {
-      setHeightError(heightRequireValidation);
-      return;
-    }
     try {
-      await UsersAuthHelper(email, password, 'Patient', name, contact, dateOfBirth, age, gender, address, '', '', '', weight, height, navigate);
-      toast.success('Patient register successfully'); 
-      handleClear(); 
-    } catch (error) {
-      toast.error('Failed to register patient!');
+      await UsersAuthHelper(
+        email,
+        password,
+        "Patient",
+        name,
+        contact,
+        dateOfBirth,
+        age,
+        gender,
+        address,
+        "",
+        "",
+        "",
+        weight,
+        height,
+        navigate
+      );
+
+      toast.success("Patient registered successfully");
+      handleClear();
+    } catch (err) {
+      toast.error("Failed to register patient!");
     }
-  };
-  function handleClear() {
+  }
+
+  const handleClear = () => {
     setName("");
     setPassword("");
     setConfirmPassword("");
@@ -160,288 +151,258 @@ export default function RegisterPatient() {
     setEmail("");
     setDob("");
     setAge("");
-    setGender('');
+    setGender("");
     setWeight("");
     setHeight("");
     setAddress("");
-  }
+  };
+
   return (
-    <div className='background_part mt-3'>
-      <div className="container ">
-        <div className="row flex-lg-nowrap">
-          <div className="col">
-            <div className="row">
-              <div className="col mb-3">
-                <div className="card border-0 mb-3 shadow  bg-white rounded">
-                  <div className="card-body">
-                    <div className="col ">
-                      <i className="bi bi-arrow-left"
-                        style={{ fontSize: '25px', cursor: 'pointer', color: 'grey', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s', marginLeft:'-22px' }}
-                        onClick={() => setMenu('patientsList')}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = '#E5E4E2'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                      ></i>
-                    </div>
-                    <ul className="nav nav-tabs mt-3 mb-4">
-                      {[...Array(totalSteps).keys()].map((index) => (
-                        <li className="nav-item" key={index + 1}>
-                          <button
-                            className={`nav-link btn ${step === index + 1 ? 'active' : ''}`}
-                            onClick={() => {
-                              if (index === 0) {
-                                setStep(index + 1);
-                              }
-                            }}
-                            disabled={index !== 0}
-                          >
-                            <FontAwesomeIcon icon={faUser} className="me-1" aria-hidden="true" />  {stepLabels[index]}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
+    <div className="background_part">
+      <div className="register-card">
+        <img
+          src={BackArrow}
+          className="register-back-btn"
+          alt="back"
+          onClick={() => dispatch(setActiveTab("patientsList"))}
+        />
 
-                    <form className="form" onSubmit={handleSubmit}>
-                      <div className="row g-3">
-                        <div className="row g-3">
-                          <div className="col-12">
-                            <label htmlFor="email" className="form-label">Email</label>
-                            <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                            <input
-                              id="email"
-                              type="email"
-                              className={`form-control input-field form-control-lg bg-light  ${emailError && 'is-invalid'} `}
-                              placeholder="Email"
-                              value={email}
-                              onChange={(event) => {
-                                setEmail(event.target.value);
-                              }}
-                            />
-                            {emailError && <div className="invalid-feedback">{emailError}</div>}
-                          </div>
-                          <div className="col-md-6">
-                            <label htmlFor="password" className="form-label">Password</label>
-                            <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                            <input
-                              id="password"
-                              type={passwordVisibility ? 'password' : 'text'}
-                              className={`form-control input-field form-control-lg bg-light  ${passwordError && 'is-invalid'} `}
-                              placeholder="••••••"
-                              value={password}
-                              onChange={(event) => {
-                                setPassword(event.target.value);
-                              }}
-                            />
-                            <button
-                              className="btn btn-password-toggle1 mt-2"
-                              type="button"
-                              onClick={togglePasswordVisibility}
-                            >
-                              <FontAwesomeIcon icon={passwordVisibility ? faEyeSlash : faEye} />
-                            </button>
-                            {passwordError && <div className="invalid-feedback">{passwordError}</div>}
+        <h3 className="register-title">Register Patient</h3>
 
-                          </div>
-
-                          <div className="col-md-6">
-                            <label htmlFor="confirmpassword" className="form-label">Confirm Password</label>
-                            <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                            <input
-                              id="confirmpassword"
-                              type={confirmpasswordVisibility ? 'password' : 'text'}
-                              className={`form-control input-field form-control-lg bg-light  ${passwordMatchError && 'is-invalid'} `}
-                              placeholder="••••••"
-                              value={confirmPassword}
-                              onChange={(event) => {
-                                setConfirmPassword(event.target.value);
-                              }}
-                            />
-                            <button
-                              className="btn btn-password-toggle1 mt-2"
-                              type="button"
-                              onClick={toggleConfirmPasswordVisibility}
-                            >
-                              <FontAwesomeIcon icon={confirmpasswordVisibility ? faEyeSlash : faEye} />
-                            </button>
-
-                            {passwordMatchError && <div className="text-danger">{passwordMatchError}</div>}
-
-                          </div>
-                        </div>
-
-                        <div className="col-md-6">
-                          <label htmlFor="name" className="form-label">Name</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <input
-                            id="name"
-                            type="text"
-                            className={`form-control input-field form-control-lg bg-light  ${nameError && 'is-invalid'} `}
-                            placeholder="Name"
-                            value={capitalizeName(name)}
-                            onChange={(event) => {
-                              setName(event.target.value);
-                            }}
-                          />
-                          {nameError && <div className="text-danger">{nameError}</div>}
-
-                        </div>
-
-                        <div className="col-md-6">
-                          <label htmlFor="phone" className="form-label">Contact</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <input
-                            id="phone"
-                            type="number"
-                            className={`form-control input-field form-control-lg bg-light  ${contactError && 'is-invalid'} `}
-                            placeholder="Phone Number"
-                            value={contact}
-                            onChange={(event) => {
-                              setContact(event.target.value);
-                            }}
-                          />
-                          {contactError && <div className="text-danger">{contactError}</div>}
-
-                        </div>
-
-                        <div className="col-md-6">
-                          <label htmlFor="dateOfBirth" className="form-label">Date of Birth</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <input
-                            id="dateOfBirth"
-                            type="date"
-                            value={dateOfBirth}
-                            className={`form-control input-field form-control-lg bg-light  ${dobError && 'is-invalid'} `}
-                            onChange={handleDateOfBirthChange}
-                          />
-                          {dobError && <div className="text-danger">{dobError}</div>}
-                        </div>
-
-                        <div className="col-md-6">
-                          <label htmlFor="age" className="form-label">Age</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <input
-                            id="age"
-                            type="number"
-                            className="form-control input-field "
-                            placeholder="Age"
-                            value={age}
-                            readOnly 
-                          />
-                        </div>
-
-                        <div className="col-md-12 ">
-                          <label className="form-label" htmlFor="gender">
-                            Gender
-                          </label>
-                          <span style={{ color: 'red', marginLeft: '3px' }}>*</span> &nbsp;
-                          <div className="form-check me-3">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="gender"
-                              id="male"
-                              value="male"
-                              checked={gender === "male"}
-                              onChange={handleGenderChange}
-                            />
-                            <label className="form-check-label" htmlFor="male">
-                              Male
-                            </label>
-                          </div>
-                          <div className="form-check me-3">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="gender"
-                              id="female"
-                              value="female"
-                              checked={gender === "female"}
-                              onChange={handleGenderChange}
-                            />
-                            <label className="form-check-label" htmlFor="female">
-                              Female
-                            </label>
-                          </div>
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="gender"
-                              id="other"
-                              value="other"
-                              checked={gender === "other"}
-                              onChange={handleGenderChange}
-                            />
-                            <label className="form-check-label" htmlFor="other">
-                              Other
-                            </label>
-                          </div>
-                        </div>
-                        {genderError && <div className="text-danger">{genderError}</div>}
-
-                        <div className="col-md-6">
-                          <label htmlFor="weight" className="form-label">Weight</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <input
-                            id="weight"
-                            type="number"
-                            className={`form-control input-field form-control-lg bg-light ${weightError && 'is-invalid'} `}
-                            placeholder="Weight"
-                            value={weight}
-                            onChange={(event) => {
-                              setWeight(event.target.value);
-                            }}
-                          />
-                          {weightError && <div className="text-danger">{weightError}</div>}
-
-                        </div>
-                        <div className="col-md-6">
-                          <label htmlFor="height" className="form-label">Height</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <input
-                            id="height"
-                            type="text"
-                            className={`form-control input-field form-control-lg bg-light ${heightError && 'is-invalid'} `}
-                            placeholder="Height"
-                            value={height}
-                            onChange={(event) => {
-                              setHeight(event.target.value);
-                            }}
-                          />
-                          {heightError && <div className="text-danger">{heightError}</div>}
-
-                        </div>
-
-
-                        <div className="col-12">
-                          <label htmlFor="address" className="form-label">Address</label>
-                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                          <textarea
-                            id="weight"
-                            className={`form-control input-field form-control-lg bg-light ${addressError && 'is-invalid'} `}
-                            placeholder="Address"
-                            value={address}
-                            onChange={(event) => {
-                              setAddress(event.target.value);
-                            }}
-                          />
-                          {addressError && <div className="text-danger">{addressError}</div>}
-
-                        </div>
-                        <div className="col-12 mt-5">
-                          <button type="submit" className="btn btn-primary float-end" style={{ backgroundColor: '#1977cc' }}>Register</button>
-                          <button type="button" className="btn btn-outline-secondary float-end me-2" onClick={handleClear}>Clear</button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <form onSubmit={handleSubmit} className="form-grid">
+          {/* EMAIL */}
+          <div className="form-grid-full">
+            <label className="form-label">
+              Email <span className="req">*</span>
+            </label>
+            <input
+              type="email"
+              className={`form-control input-field ${
+                emailError ? "is-invalid" : ""
+              }`}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {emailError && <div className="text-danger">{emailError}</div>}
           </div>
-        </div>
+
+          {/* PASSWORD */}
+          <div className="input-wrapper">
+            <label className="form-label">
+              Password <span className="req">*</span>
+            </label>
+            <input
+              type={passwordVisibility ? "password" : "text"}
+              className={`form-control input-field ${
+                passwordError ? "is-invalid" : ""
+              }`}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              className="password-eye"
+              onClick={togglePassword}
+            >
+              <FontAwesomeIcon icon={passwordVisibility ? faEyeSlash : faEye} />
+            </button>
+            {passwordError && (
+              <div className="text-danger">{passwordError}</div>
+            )}
+          </div>
+
+          {/* CONFIRM PASSWORD */}
+          <div className="input-wrapper">
+            <label className="form-label">
+              Confirm Password <span className="req">*</span>
+            </label>
+            <input
+              type={confirmVisibility ? "password" : "text"}
+              className={`form-control input-field ${
+                passwordMatchError ? "is-invalid" : ""
+              }`}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              className="password-eye"
+              onClick={toggleConfirmPassword}
+            >
+              <FontAwesomeIcon icon={confirmVisibility ? faEyeSlash : faEye} />
+            </button>
+            {passwordMatchError && (
+              <div className="text-danger">{passwordMatchError}</div>
+            )}
+          </div>
+
+          {/* NAME */}
+          <div>
+            <label className="form-label">
+              Name <span className="req">*</span>
+            </label>
+            <input
+              type="text"
+              className={`form-control input-field ${
+                nameError ? "is-invalid" : ""
+              }`}
+              value={capitalizeName(name)}
+              onChange={(e) => setName(e.target.value)}
+            />
+            {nameError && <div className="text-danger">{nameError}</div>}
+          </div>
+
+          {/* CONTACT */}
+          <div>
+            <label className="form-label">
+              Contact <span className="req">*</span>
+            </label>
+            <input
+              type="number"
+              className={`form-control input-field ${
+                contactError ? "is-invalid" : ""
+              }`}
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
+            />
+            {contactError && <div className="text-danger">{contactError}</div>}
+          </div>
+
+          {/* DOB */}
+          <div>
+            <label className="form-label">
+              Date of Birth <span className="req">*</span>
+            </label>
+            <input
+              type="date"
+              className={`form-control input-field ${
+                dobError ? "is-invalid" : ""
+              }`}
+              value={dateOfBirth}
+              onChange={handleDateChange}
+            />
+            {dobError && <div className="text-danger">{dobError}</div>}
+          </div>
+
+          {/* AGE */}
+          <div>
+            <label className="form-label">
+              Age <span className="req">*</span>
+            </label>
+            <input
+              type="number"
+              readOnly
+              value={age}
+              className="form-control input-field"
+            />
+          </div>
+
+          {/* GENDER */}
+          <div className="form-grid-full gender-row">
+            <label className="form-label gender-label">
+              Gender <span className="req">*</span>
+            </label>
+
+            <div className="gender-group">
+              <label className="gender-option">
+                <input
+                  type="radio"
+                  value="male"
+                  checked={gender === "male"}
+                  onChange={(e) => setGender(e.target.value)}
+                />
+                <span className="custom-radio"></span>
+                Male
+              </label>
+
+              <label className="gender-option">
+                <input
+                  type="radio"
+                  value="female"
+                  checked={gender === "female"}
+                  onChange={(e) => setGender(e.target.value)}
+                />
+                <span className="custom-radio"></span>
+                Female
+              </label>
+
+              <label className="gender-option">
+                <input
+                  type="radio"
+                  value="other"
+                  checked={gender === "other"}
+                  onChange={(e) => setGender(e.target.value)}
+                />
+                <span className="custom-radio"></span>
+                Other
+              </label>
+            </div>
+
+            {genderError && (
+              <div className="text-danger gender-error">{genderError}</div>
+            )}
+          </div>
+
+          {/* WEIGHT */}
+          <div>
+            <label className="form-label">
+              Weight <span className="req">*</span>
+            </label>
+            <input
+              type="number"
+              className={`form-control input-field ${
+                weightError ? "is-invalid" : ""
+              }`}
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+            />
+            {weightError && <div className="text-danger">{weightError}</div>}
+          </div>
+
+          {/* HEIGHT */}
+          <div>
+            <label className="form-label">
+              Height <span className="req">*</span>
+            </label>
+            <input
+              type="text"
+              className={`form-control input-field ${
+                heightError ? "is-invalid" : ""
+              }`}
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+            />
+            {heightError && <div className="text-danger">{heightError}</div>}
+          </div>
+
+          {/* ADDRESS */}
+          <div className="form-grid-full">
+            <label className="form-label">
+              Address <span className="req">*</span>
+            </label>
+            <textarea
+              className={`form-control input-field ${
+                addressError ? "is-invalid" : ""
+              }`}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+            {addressError && <div className="text-danger">{addressError}</div>}
+          </div>
+
+          {/* BUTTON ROW */}
+          <div className="button-row">
+            <button type="submit" className="register-btn">
+              Register
+            </button>
+            <button type="button" className="clear-btn" onClick={handleClear}>
+              Clear
+            </button>
+          </div>
+        </form>
       </div>
+
       <ToastContainer position="bottom-right" />
     </div>
-
-  )
+  );
 }

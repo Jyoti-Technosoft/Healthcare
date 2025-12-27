@@ -1,96 +1,186 @@
-import React, { useState, useEffect } from 'react';
-import 'react-calendar/dist/Calendar.css';
-import {  convertTo12HourFormat } from '../Validations';
-import {  getDoctorsWithIdApi, getDoctorLeaveRequest } from '../Api';
-import Cookies from 'js-cookie';
-import DataTable from 'react-data-table-component';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-    setActiveTab,
-} from '../../actions/submenuActions';
+import React, { useState, useEffect } from "react";
+import "react-calendar/dist/Calendar.css";
+import { convertTo12HourFormat } from "../Validations";
+import { getDoctorsWithIdApi, getDoctorLeaveRequest } from "../Api";
+import Cookies from "js-cookie";
+// REMOVED: import DataTable from "react-data-table-component";
+import { useSelector, useDispatch } from "react-redux";
+import { setActiveTab } from "../../actions/submenuActions";
+import "../../assets/css/Doctor/DoctorLeaves.css";
+import AddDoctorLeaves from "./AddDoctorLeaves";
 
 export default function DoctorLeaves() {
-    const activeTab = useSelector((state) => state.submenu.activeTab);
-    const dispatch = useDispatch();
-    const [pastLeaves, setPastLeaves] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const token = Cookies.get('authToken');
-    const userId = Cookies.get('userId');
-    const setMenu = (submenu) => {
+  const activeTab = useSelector((state) => state.submenu.activeTab);
+  const dispatch = useDispatch();
+  const [pastLeaves, setPastLeaves] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const token = Cookies.get("authToken");
+  const userId = Cookies.get("userId");
 
-        if (activeTab === 'doctorLeaves') {
-            dispatch(setActiveTab(submenu));
-        }
+  // --- PAGINATION STATE ---
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const setMenu = (submenu) => {
+    dispatch(setActiveTab(submenu));
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const doctorInfo = await getDoctorsWithIdApi(userId, token);
+        const fetchedDoctorId = doctorInfo.id;
+        const data = await getDoctorLeaveRequest(fetchedDoctorId, token);
+        setPastLeaves(data || []);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching leaves:", error);
+        setLoading(false);
+      }
     };
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const doctorInfo = await getDoctorsWithIdApi(userId, token);
-                const fetchedDoctorId = doctorInfo.id;
-                const data = await getDoctorLeaveRequest(fetchedDoctorId, token);
-                setPastLeaves(data);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching appointments:', error);
-                setLoading(false);
-            }
-        };
 
-        fetchData();
-    }, [userId, token]);
+    fetchData();
+  }, [userId, token]);
 
-    const columns = [
-        { name: 'Index', selector: (row, index) => index + 1, maxWidth: '20px', sortable: true },
-        { name: 'From date', selector: (row) => row.fromDate, sortable: true, maxWidth: '150px' },
-        { name: 'To date', selector: (row) => row.toDate, sortable: true, maxWidth: '150px' },
-        { name: 'From time', selector: (row) => row.fromTime ? convertTo12HourFormat(row.fromTime) : '-', sortable: true, maxWidth: '150px' },
-        { name: 'To time', selector: (row) => row.toTime ? convertTo12HourFormat(row.toTime) : '-', sortable: true, maxWidth: '150px' },
-        { name: 'Reason', selector: (row) => row.reason, sortable: true },
+  // --- PAGINATION LOGIC ---
+  const totalPages = Math.ceil(pastLeaves.length / rowsPerPage);
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedData = pastLeaves.slice(startIndex, endIndex);
 
-    ];
-    return (
-        <>
-            <div className='background_part mt-3'>
-                <div className="container patintListContainer">
-                    <div className="row flex-lg-nowrap">
-                        <div className="col">
-                            <div className="row">
-                                <div className="col mb-5">
-                                    <div className="card border-0 rounded">
-                                        <div className="card-body">
-                                            <div className="row">
-                                                <div className="col">
-                                                    <div className="col-12 d-flex justify-content-between align-items-center mb-3">
-                                                        <h6> {pastLeaves.length} leaves</h6>
-                                                        <button type="submit" className={`btn btn-primary float-end ${activeTab === 'addDoctorLeaves' ? '' : ''}`} style={{ backgroundColor: '#1977cc' }} onClick={() => setMenu('addDoctorLeaves')}><i className="bi bi-plus" style={{ color: 'white' }}></i>Add</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <hr style={{ color: 'grey' }} />
-                                            <>
-                                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                                    <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>Past leaves</b></h3>
-                                                </div>
-                                                {loading ? (
-                                                    <p>Loading...</p>
-                                                ) : (
-                                                    <DataTable
-                                                        columns={columns}
-                                                        data={pastLeaves}
-                                                        pagination
-                                                        highlightOnHover
-                                                        noDataComponent="No past leave found"
-                                                    />
-                                                )}
-                                            </>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  if (activeTab === "addDoctorLeaves") {
+    return <AddDoctorLeaves />;
+  }
+
+  return (
+    <div className="background_part">
+      <div className="register-card">
+        {/* TOP HEADER: Total Count + Add Button */}
+        <div className="top-header">
+          <p className="total-count">
+            Total Leaves: <strong>{pastLeaves.length}</strong>
+          </p>
+
+          <button
+            type="button"
+            className="btn-add"
+            onClick={() => setMenu("addDoctorLeaves")}
+          >
+            <i className="bi bi-plus"></i> Apply Leave
+          </button>
+        </div>
+
+        <hr className="divider-line" />
+
+        {/* TITLE ROW */}
+        <div className="title-row">
+          <h3 className="register-title">Past Leaves</h3>
+        </div>
+
+        {/* --- STANDARD HTML TABLE --- */}
+        <div className="table-responsive doctor-table-container mt-3">
+          {loading ? (
+            <p className="text-center text-muted py-3">Loading...</p>
+          ) : (
+            <table className="doctor-table">
+              <thead>
+                <tr>
+                  <th>Index</th>
+                  <th>From Date</th>
+                  <th>To Date</th>
+                  <th>From Time</th>
+                  <th>To Time</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedData.length > 0 ? (
+                  paginatedData.map((row, index) => (
+                    <tr key={index}>
+                      {/* Index */}
+                      <td>{startIndex + index + 1}</td>
+
+                      {/* From Date */}
+                      <td>{row.fromDate}</td>
+
+                      {/* To Date */}
+                      <td>{row.toDate}</td>
+
+                      {/* From Time */}
+                      <td>
+                        {row.fromTime
+                          ? convertTo12HourFormat(row.fromTime)
+                          : "-"}
+                      </td>
+
+                      {/* To Time */}
+                      <td>
+                        {row.toTime ? convertTo12HourFormat(row.toTime) : "-"}
+                      </td>
+
+                      {/* Reason */}
+                      <td title={row.reason}>{row.reason}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="no-data">
+                      No past leave found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* CUSTOM PAGINATION FOOTER */}
+        {!loading && pastLeaves.length > 0 && (
+          <div className="pagination-footer">
+            <label>Rows per page: </label>
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setPage(1);
+              }}
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={30}>30</option>
+            </select>
+
+            <span>
+              {startIndex + 1}-{Math.min(endIndex, pastLeaves.length)} of{" "}
+              {pastLeaves.length}
+            </span>
+
+            <div className="pagination-controls">
+              <button onClick={() => setPage(1)} disabled={page === 1}>
+                |&lt;
+              </button>
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+              >
+                &lt;
+              </button>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+              >
+                &gt;
+              </button>
+              <button
+                onClick={() => setPage(totalPages)}
+                disabled={page === totalPages}
+              >
+                &gt;|
+              </button>
             </div>
-        </>
-    );
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

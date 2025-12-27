@@ -1,0 +1,291 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+
+/* ============================================================
+   MAIN CONTAINER & LAYOUT
+============================================================ */
+.background_part {
+  background: #f5f8fa;
+  min-height: 100vh;
+  margin-left: 266px;
+  /* Adjusted top padding to match other dashboards visually */
+  padding: 120px 30px 35px; 
+  width: calc(100% - 266px);
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  transition: margin-left 0.3s ease;
+}
+
+/* CARD CONTAINER */
+.register-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px 30px 30px;
+  width: 100%;
+  box-shadow: 0px 4px 4px #C7DBE940,
+              0px -3px 4px #C7DBE940,
+              4px 0px 4px #C7DBE940,
+              -3px 0px 4px #C7DBE940;
+}
+
+/* ============================================================
+   HEADER & BUTTONS
+============================================================ */
+.top-header {
+  display: flex;
+  justify-content: space-between; /* Pushes them to edges */
+  align-items: center;
+  flex-wrap: nowrap; /* IMPORTANT: Forces them to stay on one line */
+  gap: 10px; /* Adds a small safety gap so they don't touch */
+}
+
+.total-count {
+  font-size: 16px;
+  color: #373737;
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+}
+
+/* Add Button */
+.btn-add {
+  
+  background: #0150b5;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s;
+  
+  /* --- THE CRITICAL FIXES --- */
+  padding: 8px 16px;       /* Default padding */
+  font-size: 14px;         /* Default font size */
+  width: max-content;      /* Never stretch wider than text */
+  white-space: nowrap;     /* Keep text on one line */
+  flex-shrink: 0;          /* Prevent button from getting crushed */
+}
+.btn-add:hover {
+    background: #013f8e;
+}
+
+.btn-add i {
+  font-size: 18px;
+}
+
+/* Divider */
+.divider-line {
+  width: 100%;
+  height: 1px;
+  background: #d9d9d9;
+  margin: 15px 0;
+  border: none;
+}
+
+/* Title */
+.title-row {
+  margin-bottom: 20px;
+}
+
+.register-title {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: #373737;
+  margin: 0;
+}
+
+/* ============================================================
+   PERFECTLY ALIGNED HTML TABLE (REPLACING DATA-TABLE)
+============================================================ */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto; /* Enables scroll on small screens */
+  -webkit-overflow-scrolling: touch;
+  margin-top: 15px;
+}
+
+.doctor-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 14px;
+  table-layout: fixed; /* Locks column widths */
+  min-width: 900px; /* FORCE SCROLL: Prevents crushing on mobile */
+}
+
+/* Header Styles */
+.doctor-table thead tr {
+  background: #F0F8FF;
+  border-bottom: 1px solid #e6edf5;
+  height: 50px;
+}
+
+.doctor-table th {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: #373737;
+  padding: 0 16px;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Body Styles */
+.doctor-table td {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #333;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f2f5;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- LEAVES TABLE COLUMN WIDTHS (Total: 6 Cols) --- */
+
+/* 1. Index */
+.doctor-table th:nth-child(1), .doctor-table td:nth-child(1) { 
+  width: 10%; text-align: left; 
+}
+/* 2. From Date */
+.doctor-table th:nth-child(2), .doctor-table td:nth-child(2) { 
+  width: 20%; text-align: left; 
+}
+/* 3. To Date */
+.doctor-table th:nth-child(3), .doctor-table td:nth-child(3) { 
+  width: 20%; text-align: left; 
+}
+/* 4. From Time */
+.doctor-table th:nth-child(4), .doctor-table td:nth-child(4) { 
+  width: 20%; text-align: left; 
+}
+/* 5. To Time */
+.doctor-table th:nth-child(5), .doctor-table td:nth-child(5) { 
+  width: 20%; text-align: left; 
+}
+/* 6. Reason (Takes remaining space) */
+.doctor-table th:nth-child(6), .doctor-table td:nth-child(6) { 
+  width: 20%; text-align: left; 
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-style: italic;
+}
+
+/* ============================================================
+   PAGINATION FOOTER
+============================================================ */
+.pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 12px 0;
+  background: transparent;
+  border-top: 1px solid #f9f9f9;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.pagination-footer label,
+.pagination-footer span,
+.pagination-footer select,
+.pagination-footer button {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #9E9E9E;
+}
+
+.pagination-footer select {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.pagination-footer button {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  color: #9E9E9E;
+}
+
+.pagination-footer button:hover:not(:disabled) {
+  background: #eee;
+  border-radius: 4px;
+  color: #555;
+}
+
+.pagination-footer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ============================================================
+   RESPONSIVE MEDIA QUERIES
+============================================================ */
+
+/* 1. TABLET LANDSCAPE (Max 1024px) */
+@media (max-width: 1024px) {
+  .background_part {
+    margin-left: 0;
+    width: 100%;
+    padding: 110px 25px 35px;
+  }
+  .register-card {
+    padding: 25px;
+  }
+    .top-header {
+      flex-direction: row !important; 
+      align-items: center !important;
+  }
+}
+
+/* TABLET & MOBILE OVERRIDES */
+@media (max-width: 768px) {
+  /* 1. Ensure background padding is correct */
+  .background_part {
+    padding: 95px 20px 30px;
+  }
+
+  /* 2. FORCE ROW LAYOUT (Undo previous column stacking) */
+  .top-header {
+      flex-direction: row !important; 
+      align-items: center !important;
+  }
+}
+
+/* SMALL MOBILE (Max 480px) - "Decrease Size" Logic */
+@media (max-width: 480px) {
+  /* Shrink the Title Text */
+  .total-count {
+      font-size: 13px; 
+  }
+
+  /* Shrink the Button Size & Text */
+  .btn-add {
+      padding: 6px 10px; /* Smaller padding */
+      font-size: 12px;   /* Smaller text */
+      gap: 4px;          /* Closer icon gap */
+  }
+
+  /* Shrink the Plus Icon inside the button */
+  .btn-add i {
+      font-size: 14px;
+  }
+}

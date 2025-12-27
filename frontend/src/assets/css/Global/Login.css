@@ -1,0 +1,186 @@
+/* =========================================================
+   LOGIN.CSS 
+======================================================== */
+
+/* 0. Global Reset */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  /* Change height to min-height: 100vh to force it to fill screen */
+  min-height: 100vh; 
+  font-family: 'Roboto', sans-serif;
+  
+  /* ADD THIS: Backup background color so user never sees white */
+  background-color: #f5f8fa; 
+}
+
+
+.banner_part {
+  width: 100%;
+  
+  /* CHANGE THIS: from height: 100% to min-height: 100vh */
+  min-height: 100vh; 
+  
+  background-color: #f5f8fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  
+  /* OPTIONAL: You might want to remove overflow: hidden if content gets cut off on small screens */
+  /* overflow: hidden; */ 
+}
+/* 2. Main Login Container */
+.loginBox {
+  width: 100%;
+  max-width: 1000px; /* Slightly smaller for a tighter look */
+  margin: 0 auto;
+  padding: 20px; /* Padding inside the flex container */
+
+}
+
+/* 3. The Card (White Box) */
+.box-area {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  height: 650px; /* Fixed height for the card to ensure alignment */
+}
+
+/* 4. Left Side (Blue Section) */
+.left-box {
+  padding: 40px;
+  background: #1977cc;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50%; 
+  text-align: center;
+  position: relative;
+  height: 100%; /* Fill the card height */
+}
+
+/* --- Responsive Image Handling --- */
+.featured-image {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.featured-image img {
+  width: 100%;          
+  max-width: 250px;      
+  height: auto;          
+  object-fit: contain;
+}
+
+.left-box p {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 600;
+  font-size: 28px;
+  margin: 0;
+}
+
+/* 5. Right Side (Form Section) */
+.right-box {
+  padding: 40px 60px; 
+  width: 50%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%; /* Fill the card height */
+  overflow-y: auto; /* Internal scroll if form is too long */
+}
+
+.header-text h2 {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.form-control {
+  background: #f9fafb;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 16px;
+  padding: 12px 15px;
+}
+
+.form-control:focus {
+  background: #fff;
+  border-color: #1977cc;
+  box-shadow: none;
+}
+
+/* Forgot Password Button Styling */
+.forgot button {
+  background: none;
+  border: none;
+  color: #1977cc;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.forgot button:hover {
+  color: #0d5b9e;
+  text-decoration: underline;
+}
+
+/* Nav Link styling (Sign Up) */
+.nav-link {
+  display: inline;
+  color: #1977cc;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+/* =========================================================
+   RESPONSIVE: MOBILE & TABLET (Max-width: 991px)
+======================================================== */
+@media (max-width: 991px) {
+  body, html {
+    overflow: auto; /* Allow scroll on mobile */
+    height: auto;
+  }
+
+  .banner_part {
+    height: auto;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .box-area {
+    flex-direction: column;
+    height: auto; /* Let it grow on mobile */
+  }
+
+  .left-box {
+    width: 100%;
+    padding: 40px 20px;
+    min-height: 300px; 
+  }
+
+  .featured-image img {
+    max-width: 150px; 
+  }
+
+  .right-box {
+    width: 100%;
+    padding: 40px 20px;
+    height: auto;
+  }
+}

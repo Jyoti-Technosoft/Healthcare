@@ -1,0 +1,207 @@
+/* =========================================================
+   1. MAIN CONTAINER & CARD LAYOUT
+   (Matches BookAppointment.js)
+========================================================= */
+
+.background_part {
+  background: #f5f8fa;
+  min-height: 100vh;
+  margin-left: 266px; 
+  padding: 120px 40px 35px 40px;
+  display: flex;
+  justify-content: flex-start;
+  width: calc(100% - 266px);
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+.register-card {
+  flex: 1;
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  padding: 40px 45px 35px 45px;
+  position: relative;
+  box-shadow: 0px 4px 4px #C7DBE940,
+              0px -3px 4px #C7DBE940,
+              4px 0px 4px #C7DBE940,
+              -3px 0px 4px #C7DBE940;
+}
+
+/* =========================================================
+   2. TYPOGRAPHY & ICONS
+========================================================= */
+
+/* Title */
+.register-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: #373737;
+  margin-top: 40px; 
+  margin-bottom: 20px;
+}
+
+/* Back Button Wrapper */
+.register-back-btn {
+  width: 36px;
+  height: 36px;
+  position: absolute;
+  top: 26px;
+  left: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.register-back-btn:hover {
+  background: #f0f0f0;
+}
+.register-title {
+  text-transform: none !important;
+}
+
+
+/* =========================================================
+   3. FORM INPUTS & LABELS
+========================================================= */
+
+/* Labels */
+.form-label {
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 15px !important;
+  color: #373737 !important;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Inputs (Text, Date, Time, Select) */
+.input-field,
+.form-control.input-field {
+  background: #FFFFFF !important;
+  border: 1px solid #D9D9D9 !important;
+  height: 44px !important; 
+  border-radius: 6px !important;
+  padding: 10px 12px !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  color: #373737 !important;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: none !important; 
+}
+
+/* Textarea specific override */
+textarea.input-field {
+  height: auto !important;
+  min-height: 80px;
+}
+
+/* Focus State */
+.input-field:focus {
+  border-color: #0150B5 !important;
+  outline: none;
+}
+
+/* =========================================================
+   4. GRID & LAYOUT HELPERS
+========================================================= */
+
+/* 2-Column Grid for Date Inputs */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+/* Full Width Row Wrapper */
+.form-grid-full {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+/* Radio Buttons (Leave Type) Styling */
+.form-check-input {
+  margin-top: 0.3em;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.form-check-label {
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  color: #373737;
+}
+
+/* =========================================================
+   5. BUTTONS
+========================================================= */
+
+.button-row {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end; /* Aligns button to the right */
+}
+
+.register-btn {
+  width: 190px !important;
+  height: 45px !important;
+  background: #0150B5 !important; /* The specific Blue from reference */
+  color: #fff !important;
+  border-radius: 6px !important;
+  border: none !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.register-btn:hover {
+  background: #013a82 !important;
+}
+
+/* =========================================================
+   6. RESPONSIVE MEDIA QUERIES
+========================================================= */
+
+/* Tablet / Small Laptop */
+@media (max-width: 1024px) {
+  .background_part {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 110px 32px 35px !important;
+  }
+}
+
+/* Mobile / Vertical Tablet */
+@media (max-width: 900px) {
+  /* Stack the form grid */
+  .form-grid {
+    grid-template-columns: 1fr !important; 
+  }
+
+  /* Make button full width on mobile */
+  .register-btn {
+    width: 100% !important;
+  }
+
+  /* Adjust padding */
+  .register-card {
+    padding: 30px 20px;
+  }
+  
+  .register-title {
+    margin-top: 40px;
+  }
+}

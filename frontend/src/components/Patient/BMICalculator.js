@@ -1,99 +1,167 @@
-import React, { useState } from 'react';
-import { TextField, Button } from '@mui/material';
-import { calculateBMI, getClassificationFromBMI } from '../Validations';
-import CloseIcon from '@mui/icons-material/Close'; 
+import React, { useState, useRef } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import { calculateBMI, getClassificationFromBMI } from "../Validations";
+import "../../assets/css/Patient/PanelGlobal.css";
 
 const BMICalculator = ({ toggleForm }) => {
-    const [height, setHeight] = useState('');
-    const [weight, setWeight] = useState('');
-    const [bmi, setBMI] = useState(null);
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [bmi, setBmi] = useState(null);
+  const [error, setError] = useState("");
+  const heightRef = useRef(null);
+  const weightRef = useRef(null);
 
-    const handleCalculateBMI = () => {
-        const bmiValue = calculateBMI(height, weight);
-        setBMI(bmiValue);
-    };
+  const table = [
+    { range: "< 16", classification: "Severe Thinness" },
+    { range: "16 - 17", classification: "Moderate Thinness" },
+    { range: "17 - 18.5", classification: "Mild Thinness" },
+    { range: "18.5 - 25", classification: "Normal" },
+    { range: "25 - 30", classification: "Overweight" },
+    { range: "30 - 35", classification: "Obese Class I" },
+    { range: "35 - 40", classification: "Obese Class II" },
+    { range: "> 40", classification: "Obese Class III" },
+  ];
 
-    const classificationTable = [
-        { range: "< 16", classification: "Severe Thinness" },
-        { range: "16 - 17", classification: "Moderate Thinness" },
-        { range: "17 - 18.5", classification: "Mild Thinness" },
-        { range: "18.5 - 25", classification: "Normal" },
-        { range: "25 - 30", classification: "Overweight" },
-        { range: "30 - 35", classification: "Obese Class I" },
-        { range: "35 - 40", classification: "Obese Class II" },
-        { range: "> 40", classification: "Obese Class III" }
-    ];
+  const handleInputChange = (e, setter) => {
+    const value = e.target.value;
+    if (/^\d*\.?\d*$/.test(value)) {
+      // Allow only numbers or decimal
+      setter(value);
+      setError(""); // Remove error while typing valid input
+    }
+  };
 
-    const bmiClassification = getClassificationFromBMI(bmi,classificationTable);
+  const handleCalculate = () => {
+    let h = parseFloat(height.trim());
+    let w = parseFloat(weight.trim());
 
-    return (
-        <div>
-            <div className="container mt-2 d-flex justify-content-between align-items-center">
-                <h2 style={{ color: '#1977cc' }}>BMI Calculator</h2>
-                <CloseIcon onClick={toggleForm} style={{ cursor: 'pointer', color: 'grey' }} />
-            </div>
-            <hr style={{ color: 'grey' }} />
-            <div className="row flex-lg-nowrap">
-                <div className="col">
-                    <div className="row">
-                        <div className="col">
-                            <div className="card border-0 mb-3 shadow bg-white rounded">
-                                <div className="card-body">
-                                    <TextField
-                                        label="Height (cm)"
-                                        variant="outlined"
-                                        fullWidth
-                                        value={height}
-                                        onChange={(e) => setHeight(e.target.value)}
-                                        type="number"
-                                        margin="normal"
-                                    />
-                                    <TextField
-                                        label="Weight (kg)"
-                                        variant="outlined"
-                                        fullWidth
-                                        value={weight}
-                                        onChange={(e) => setWeight(e.target.value)}
-                                        type="number"
-                                        margin="normal"
-                                    />
-                                    <Button variant="contained" color="primary" className='mt-2' onClick={handleCalculateBMI}>
-                                        Calculate BMI
-                                    </Button>
-                                    {bmi !== null && (
-                                        <p className='mt-3' style={{fontWeight:'bold'}}>Your BMI: {bmi}</p>
-                                    )}
-                                    <hr style={{ color: 'grey', marginTop: '30px' }} />
-                                    <div className='mt-5'>
-                                        <h5 style={{ color: '#1977cc', fontWeight:'bold' }}>BMI Table</h5>
-                                        <table className="table mt-4">
-                                            <thead>
-                                                <tr>
-                                                    <th>BMI Range (kg/m²)</th>
-                                                    <th>Classification</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {classificationTable.map(({ range, classification }) => {
-                                                    const backgroundColor = bmiClassification === classification ? '#ccffcc' : 'transparent';
-                                                    return (
-                                                        <tr key={classification}>
-                                                            <td style={{ backgroundColor }}>{range}</td>
-                                                            <td style={{ backgroundColor }}>{classification}</td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    if (isNaN(h)) {
+      setError("Please enter a valid height.");
+      heightRef.current.focus();
+      return;
+    }
+    if (isNaN(w)) {
+      setError("Please enter a valid weight.");
+      weightRef.current.focus();
+      return;
+    }
+
+    if (h < 50 || h > 300) {
+      setError("Height must be between 50cm and 300cm.");
+      heightRef.current.focus();
+      return;
+    }
+
+    if (w < 2 || w > 500) {
+      setError("Weight must be between 2kg and 500kg.");
+      weightRef.current.focus();
+      return;
+    }
+
+    setBmi(calculateBMI(h, w));
+  };
+
+  const handleReset = () => {
+    setHeight("");
+    setWeight("");
+    setBmi(null);
+    setError("");
+  };
+
+  const classification = getClassificationFromBMI(bmi, table);
+
+  return (
+    <div className={`panel-container ${error ? "shake" : ""}`}>
+      {/* HEADER */}
+      <div className="panel-header">
+        <h2>BMI Calculator</h2>
+        <CloseIcon className="panel-close" onClick={toggleForm} />
+      </div>
+
+      {/* FORM */}
+      <div className="panel-form">
+        <label className="panel-label">Height (cm)</label>
+        <input
+          ref={heightRef}
+          type="number"
+          min="50"
+          max="300"
+          className={`panel-input ${
+            error.includes("Height") ? "input-error" : ""
+          }`}
+          placeholder="Enter height in cm"
+          value={height}
+          onChange={(e) => handleInputChange(e, setHeight)}
+        />
+
+        <label className="panel-label mt-2">Weight (kg)</label>
+        <input
+          ref={weightRef}
+          type="number"
+          min="2"
+          max="500"
+          className={`panel-input ${
+            error.includes("Weight") ? "input-error" : ""
+          }`}
+          placeholder="Enter weight in kg"
+          value={weight}
+          onChange={(e) => handleInputChange(e, setWeight)}
+        />
+
+        {error && <p className="panel-error-text">{error}</p>}
+
+        <div className="panel-btn-group">
+          <button className="panel-btn-primary" onClick={handleCalculate}>
+            Calculate BMI
+          </button>
+          <button className="panel-btn-reset" onClick={handleReset}>
+            Reset
+          </button>
         </div>
-    );
+      </div>
+
+      {bmi !== null && <div className="panel-divider"></div>}
+
+      {/* RESULT */}
+      {bmi !== null && (
+        <div className="panel-result">
+          <h4>Your BMI</h4>
+          <p className="bmi-value">
+            <strong>{bmi}</strong>
+          </p>
+
+          <h5>Category</h5>
+          <p>
+            <strong>{classification}</strong>
+          </p>
+
+          <table className="bmi-table">
+            <thead>
+              <tr>
+                <th>Range</th>
+                <th>Classification</th>
+              </tr>
+            </thead>
+            <tbody>
+              {table.map((item) => (
+                <tr
+                  key={item.classification}
+                  className={
+                    classification === item.classification
+                      ? "highlight-row"
+                      : ""
+                  }
+                >
+                  <td>{item.range}</td>
+                  <td>{item.classification}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default BMICalculator;

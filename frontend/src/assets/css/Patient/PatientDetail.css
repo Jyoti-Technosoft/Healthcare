@@ -1,0 +1,334 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+
+/* ============================================================
+   MAIN CONTAINER & LAYOUT
+============================================================ */
+.patient-app-container {
+  margin-left: 266px;
+  margin-top: 80px;
+  padding: 40px 30px;
+  width: calc(100% - 266px);
+  background: #f5f8fa;
+  font-family: "Roboto", sans-serif;
+  min-height: 100vh;
+  box-sizing: border-box;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+/* CARD WRAPPER */
+.app-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px 30px 30px;
+  box-shadow: 4px 0 4px #c7dbe940, 0 -3px 4px #c7dbe940,
+              -3px 0 4px #c7dbe940, 0 4px 4px #c7dbe940;
+}
+
+/* ============================================================
+   PATIENT INFO CARD (Top Section)
+============================================================ */
+.patient-info-card {
+  background: #ffffff;
+  border: 1px solid #e4e8ef;
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+}
+
+.patient-info-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.patient-info-header .label {
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.patient-info-header .value.name {
+  font-weight: 700;
+  font-size: 18px;
+  color: #373737;
+}
+
+.patient-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 50px;
+  padding-top: 6px;
+}
+
+.patient-info-grid p {
+  margin: 4px 0;
+  font-size: 14.5px;
+}
+
+.patient-info-grid .label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.patient-info-grid .value {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* Divider inside patient card */
+.patient-info-card hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 12px 0;
+}
+
+/* ============================================================
+   TITLE + SEARCH
+============================================================ */
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.title-row h3 {
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #373737;
+  margin: 0;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  width: 212px;
+  height: 35px;
+  background: white;
+  border: 1px solid #c7dbe940;
+  padding: 0 40px 0 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  box-shadow: 0px 1px 2px #c7dbe940;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.search-box input:focus {
+    border-color: #0150b5;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #373737;
+}
+
+/* ============================================================
+   PERFECTLY ALIGNED HTML TABLE (REPLACING DATA-TABLE)
+============================================================ */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto; /* Enables scroll on mobile */
+  -webkit-overflow-scrolling: touch;
+}
+
+.patient-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 14px;
+  table-layout: fixed; /* Locks column widths */
+  min-width: 800px; /* Forces scroll on small screens */
+}
+
+/* Header Styles */
+.patient-table thead tr {
+  background: #F0F8FF;
+  border-bottom: 1px solid #e6edf5;
+  height: 50px;
+}
+
+.patient-table th {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: #373737;
+  padding: 0 16px;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Body Styles */
+.patient-table td {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #333;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f2f5;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- COLUMN WIDTHS (Total: 5 Cols) --- */
+
+/* 1. ID */
+.patient-table th:nth-child(1), .patient-table td:nth-child(1) { 
+  width: 15%; text-align: left; 
+}
+/* 2. Date */
+.patient-table th:nth-child(2), .patient-table td:nth-child(2) { 
+  width: 25%; text-align: left; 
+}
+/* 3. Time */
+.patient-table th:nth-child(3), .patient-table td:nth-child(3) { 
+  width: 25%; text-align: left; 
+}
+/* 4. Charge */
+.patient-table th:nth-child(4), .patient-table td:nth-child(4) { 
+  width: 20%; text-align: left; 
+}
+/* 5. Report (Action) */
+.patient-table th:nth-child(5), .patient-table td:nth-child(5) { 
+  width: 15%; text-align: left; 
+}
+
+
+/* REPORT ICON */
+.report-eye {
+  font-size: 20px;
+  cursor: pointer;
+  color: #0150b5;
+  transition: 0.25s ease;
+  display: inline-block;
+}
+
+.report-eye:hover {
+  color: #013f8c;
+  transform: scale(1.15);
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-style: italic;
+}
+
+/* ============================================================
+   PAGINATION FOOTER
+============================================================ */
+.pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 12px 0;
+  background: transparent;
+  border-top: 1px solid #f9f9f9;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.pagination-footer label,
+.pagination-footer span,
+.pagination-footer select,
+.pagination-footer button {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #9E9E9E;
+}
+
+.pagination-footer select {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.pagination-footer button {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  color: #9E9E9E;
+}
+
+.pagination-footer button:hover:not(:disabled) {
+  background: #eee;
+  border-radius: 4px;
+  color: #555;
+}
+
+.pagination-footer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ============================================================
+   RESPONSIVE MEDIA QUERIES
+============================================================ */
+
+/* Laptop (Max 1024px) */
+@media (max-width: 1024px) {
+  .patient-app-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 35px 25px;
+  }
+}
+
+/* Tablet (Max 768px) */
+@media (max-width: 768px) {
+  .patient-app-container {
+      padding: 30px 20px;
+  }
+
+  .patient-info-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .title-row {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+  .search-box, .search-box input {
+      width: 100%;
+  }
+
+  .pagination-footer {
+      justify-content: center;
+      flex-wrap: wrap;
+  }
+}
+
+/* Mobile (Max 480px) */
+@media (max-width: 480px) {
+  .patient-app-container {
+    padding: 25px 15px;
+  }
+  .app-card {
+    padding: 20px 15px;
+  }
+}

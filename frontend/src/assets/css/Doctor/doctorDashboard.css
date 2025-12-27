@@ -1,0 +1,296 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+
+/* =========================================================
+   GLOBAL LAYOUT
+========================================================= */
+.doctor-dashboard-container {
+  margin-left: 266px;
+  padding: 100px 30px 30px;
+  width: calc(100% - 266px);
+  background-color: #f5f8fa;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  color: #373737;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+/* =========================================================
+   TOP CARDS GRID
+========================================================= */
+.doctor-top-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.flat-card {
+  position: relative;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  height: 150px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flat-card-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flat-card-info {
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+  text-align: right;
+}
+
+.flat-card-info h2 {
+  font-size: 36px;
+    font-family: "Roboto";
+  margin: 0;
+  color: #333;
+  font-weight: 400;
+}
+
+.flat-card-info p {
+  color: #777;
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* =========================================================
+   MIDDLE SECTION
+========================================================= */
+.doctor-middle-grid {
+  display: flex;
+  gap: 25px;
+  align-items: flex-start; 
+}
+
+.doctor-today-box,
+.doctor-upcoming-box {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e9f2;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.doctor-today-box { 
+    flex: 2; 
+    /* This box dictates the height for the row */
+}
+
+.doctor-upcoming-box { 
+    flex: 1; 
+    /* Height is set via JS in the React Component */
+    /* Use flex column so the internal list can expand/scroll */
+    display: flex;
+    flex-direction: column;
+}
+
+.doctor-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f2f5;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.doctor-box-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.doctor-box-header a {
+  color: #5c6bc0;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* =========================================================
+   SCROLLBAR LOGIC & TABLE STYLE
+========================================================= */
+
+/* Fix for Table Headers Case */
+.rdt_TableCol {
+  text-transform: none !important; /* Prevents Uppercase Headers */
+  font-weight: 600 !important;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f9f9f9;
+}
+
+/* Upcoming List Scroll Logic */
+.doctor-upcoming-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  
+  /* KEY: This makes it fill the available height set by JS */
+  flex: 1; 
+  overflow-y: auto; 
+  
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc #f9f9f9;
+}
+
+.table-responsive::-webkit-scrollbar,
+.doctor-upcoming-list::-webkit-scrollbar { height: 6px; width: 6px; }
+
+.table-responsive::-webkit-scrollbar-track,
+.doctor-upcoming-list::-webkit-scrollbar-track { background: #f9f9f9; border-radius: 4px; }
+
+.table-responsive::-webkit-scrollbar-thumb,
+.doctor-upcoming-list::-webkit-scrollbar-thumb { background-color: #c1c1c1; border-radius: 4px; }
+
+.table-responsive::-webkit-scrollbar-thumb:hover,
+.doctor-upcoming-list::-webkit-scrollbar-thumb:hover { background-color: #a8a8a8; }
+
+/* =========================================================
+   PAGINATION FOOTER
+========================================================= */
+.pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #f9f9f9;
+  margin-top: auto;
+}
+
+.pagination-footer button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #9E9E9E;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.pagination-footer button:hover:not(:disabled) {
+  background: #eee;
+  color: #555;
+}
+
+.pagination-footer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.page-number {
+  font-size: 13px;
+  color: #777;
+  font-weight: 500;
+}
+
+/* =========================================================
+   UPCOMING ITEM STYLING
+========================================================= */
+.doctor-upcoming-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.doctor-upcoming-item:last-child { border-bottom: none; }
+
+.doctor-upcoming-item img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f0f2f5;
+}
+
+.doctor-upcoming-details h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 4px 0;
+}
+
+.doctor-upcoming-details p {
+  font-size: 12px;
+  margin: 0;
+  color: #666;
+}
+
+.doctor-no-upcoming {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+  font-style: italic;
+}
+
+.report-icon-btn:hover { background-color: #e0e7ff; border-radius: 50%; padding: 5px;}
+
+/* =========================================================
+   RESPONSIVE BREAKPOINTS
+========================================================= */
+
+/* 1. Laptop (Max 1200px) -> Top Cards 2 cols */
+@media (max-width: 1200px) {
+  .doctor-top-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 2. Tablet/Small Laptop (Max 1024px) */
+@media (max-width: 1024px) {
+  .doctor-dashboard-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 100px 25px 30px;
+  }
+  .doctor-middle-grid {
+    flex-direction: column;
+  }
+  .doctor-upcoming-box {
+    width: 100%;
+    height: auto !important; /* Override JS height on mobile */
+    max-height: 450px;
+  }
+}
+
+/* 3. Mobile (Max 576px) -> Top Cards 1 col */
+@media (max-width: 576px) {
+  .doctor-top-grid {
+    grid-template-columns: 1fr;
+  }
+  .doctor-dashboard-container {
+    padding: 90px 20px 20px;
+  }
+}

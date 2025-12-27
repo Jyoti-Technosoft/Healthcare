@@ -1,504 +1,436 @@
-import React, { useState, useEffect } from 'react';
-import { getSearchPatientsApi, getDoctorsApi, getAvailableSlots, bookAppointmentApi, fetchConsultationChargeApi, getDoctorLeaveRequest } from '../Api';
-import 'react-calendar/dist/Calendar.css';
-import Calendar from 'react-calendar';
-import Cookies from 'js-cookie';
-import { useDispatch } from 'react-redux';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
+import React, { useState, useEffect } from "react";
 import {
-    setActiveTab,
-} from '../../actions/submenuActions';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { startOfDay } from 'date-fns';
+  getSearchPatientsApi,
+  getDoctorsApi,
+  getAvailableSlots,
+  bookAppointmentApi,
+  fetchConsultationChargeApi,
+  getDoctorLeaveRequest,
+} from "../Api";
+import Cookies from "js-cookie";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setActiveTab } from "../../actions/submenuActions";
+
+import "../../assets/css/Receptionist/BookAppointment.css";
+import BackArrow from "../../assets/img/back-arrow.png";
+import LeaveCalendar from "../Doctor/LeaveCalendar";
 
 export default function BookAppointment() {
-    const [suggestions, setSuggestions] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [clickedPatient, setClickedPatient] = useState(null);
-    const [doctors, setDoctors] = useState([]);
-    const [selectedDoctor, setSelectedDoctor] = useState('');
-    const [selectedDepartment, setSelectedDepartment] = useState('');
-    const [consultationCharge, setConsultationCharge] = useState('');
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [availableSlots, setAvailableSlots] = useState([]);
-    const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
-    const [leaveRequests, setLeaveRequests] = useState([]);
-    const [doctorSelected, setDoctorSelected] = useState(false);
-    const authToken = Cookies.get('authToken');
-    const dispatch = useDispatch();
-    const [id, setId] = useState("");
-    const [name, setName] = useState("");
-    const [contact, setContact] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [clickedPatient, setClickedPatient] = useState(null);
+  const [doctors, setDoctors] = useState([]);
+  const [selectedDoctor, setSelectedDoctor] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [consultationCharge, setConsultationCharge] = useState("");
 
-    const [idError, setIdError] = useState("");
-    const [nameError, setNameError] = useState("");
-    const [contactError, setContactError] = useState("");
-    const [departmentError, setDepartmentError] = useState("");
-    const [doctorError, setDoctorError] = useState("");
-    const [availableSlotsError, setAvailableSlotsError] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+  const [leaveRequests, setLeaveRequests] = useState([]);
+  const [doctorSelected, setDoctorSelected] = useState(false);
 
-    const setMenu = (submenu) => {
-        if (submenu === 'showAppointments') {
-            dispatch(setActiveTab('showAppointments'));
-        }
-    };
+  const authToken = Cookies.get("authToken");
+  const dispatch = useDispatch();
 
-    const handleInputChange = async (event) => {
-        const value = event?.target?.value;
-        try {
-            if (value.trim() === '') {
-                setSuggestions([]);
+  // --- SEARCH & PATIENT ---
+  const handleInputChange = async (event) => {
+    const value = event?.target?.value;
+    try {
+      setSuggestions(
+        value?.trim() ? await getSearchPatientsApi(value, authToken) : []
+      );
+    } catch {}
+  };
 
-            } else {
-                const data = await getSearchPatientsApi(value, authToken);
-                setSuggestions(data);
-            }
-        } catch (error) {
-            console.error('Error fetching suggestions:', error);
-        }
-    };
+  const handleSuggestionClick = (patient) => {
+    setClickedPatient(patient);
+    setSuggestions([]);
+  };
 
-    const handleSuggestionClick = (patient) => {
-        setClickedPatient(patient);
-        setSuggestions([]);
-    };
+  // --- DOCTOR SELECTION ---
+  const handleDoctorSelect = async (doctorId) => {
+    const docIdInt = parseInt(doctorId);
+    setSelectedDoctor(docIdInt);
+    setDoctorSelected(true);
 
-    const handleDoctorSelect = async (doctorId) => {
-        setSelectedDoctor(doctorId);
-        setDoctorSelected(true);
-        try {
-            const response = await fetchConsultationChargeApi(clickedPatient.id, doctorId, selectedDate, authToken);
-            setConsultationCharge(response);
-        } catch (error) {
-            console.error('Error fetching consultation charge:', error);
-        }
-        try {
-            const response = await getAvailableSlots(doctorId, selectedDate, authToken);
-            setAvailableSlots(response);
-            const response1 = await fetchConsultationChargeApi(clickedPatient.id, doctorId, selectedDate, authToken);
-            setConsultationCharge(response1);
-        } catch (error) {
-        }
-        try {
-            const fetchedLeaveRequests = await getDoctorLeaveRequest(doctorId, authToken);
-            setLeaveRequests(fetchedLeaveRequests);
-        } catch (error) {
-        }
-    };
+    // Fetch Charge
+    try {
+      setConsultationCharge(
+        await fetchConsultationChargeApi(
+          clickedPatient?.id,
+          doctorId,
+          selectedDate,
+          authToken
+        )
+      );
+    } catch {}
 
-    const getDayIndex = (dayName) => {
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        return days.findIndex((day) => day.toLowerCase() === dayName.toLowerCase());
-    };
+    // Fetch Slots
+    try {
+      setAvailableSlots(
+        await getAvailableSlots(doctorId, selectedDate, authToken)
+      );
+    } catch {}
 
-    const getDayName = (dayIndex) => {
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        return days[dayIndex];
-    };
-
-    const handleTimeSlotSelect = (slot) => {
-        setSelectedTimeSlot(slot);
-    };
-
-    const handleDateSelect = async (date) => {
-        const selectedDateUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-        setSelectedDate(selectedDateUTC);
-        try {
-            const response = await getAvailableSlots(selectedDoctor, selectedDateUTC, authToken);
-            setAvailableSlots(response);
-
-            const response1 = await fetchConsultationChargeApi(clickedPatient.id, selectedDoctor, selectedDateUTC, authToken);
-            setConsultationCharge(response1);
-        } catch (error) {
-        }
-    };
-
-    const handleSubmit = async (event) => {
-        try {
-            const slot = selectedTimeSlot.target.value;
-            const year = selectedDate.getFullYear();
-            const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
-            const day = selectedDate.getDate().toString().padStart(2, '0');
-            const formattedDate = `${year}-${month}-${day}`;
-            await bookAppointmentApi(selectedDoctor, clickedPatient.id, formattedDate, slot, authToken);
-            setAvailableSlots([]);
-            setSelectedTimeSlot('');
-            setConsultationCharge('');
-            setDoctorSelected('');
-            setSelectedDepartment('');
-            setClickedPatient('');
-            setSearchQuery('');
-            toast.success('Appointment schedule!');
-        } catch (error) {
-            toast.error('Failed to schedule appointment!');
-        }
+    // Fetch Leaves for Calendar
+    try {
+      const leaves = await getDoctorLeaveRequest(doctorId, authToken);
+      setLeaveRequests(leaves || []);
+    } catch {
+      setLeaveRequests([]);
     }
+  };
 
-    useEffect(() => {
-        const fetchDoctors = async () => {
-            try {
-                const response = await getDoctorsApi();
-                if (response) {
-                    setDoctors(response);
-                } else {
-                    console.error('Empty response from the API');
-                }
-            } catch (error) {
-                console.error('Error fetching doctors:', error);
-            }
-        };
-        fetchDoctors();
-        setId("");
-        setName("");
-        setContact("");
-        setIdError("");
-        setNameError("");
-        setContactError("");
-        setDepartmentError("");
-        setDoctorError("");
-        setAvailableSlotsError("");
-    }, []);
-
-    return (
-        <div className='background_part mt-3'>
-            <div className="container ">
-                <div className="row flex-lg-nowrap">
-                    <div className="col">
-                        <div className="row">
-                            <div className="col mb-3">
-                                <div className="card border-0 mb-3 shadow  bg-white rounded">
-                                    <div className="card-body">
-                                        <section id="appointment" className="appointment">
-                                            <div className="container">
-                                                <i className="bi bi-arrow-left"
-                                                    style={{ fontSize: '25px', cursor: 'pointer', color: 'silver', fontWeight: 'bold', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s', marginLeft: '-10px' }}
-                                                    onClick={() => setMenu('showAppointments')}
-                                                    onMouseEnter={(e) => e.target.style.backgroundColor = '#E5E4E2'}
-                                                    onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                                                ></i>
-                                                <div className="section-title">
-                                                    <label className='contentHeadings appointmentHeading' style={{ color: 'black' }}>Make an Appointment</label>
-                                                </div>
-                                                <>
-                                                    <div className='regervation_content'>
-                                                        <div id="search" >
-                                                            <div className="search-top">
-                                                                <div className='row'>
-                                                                    <div style={{ position: 'relative' }} className="col-lg-4 col-md-6 search-section">
-                                                                        <Autocomplete
-                                                                            value={searchQuery}
-                                                                            onChange={(event, newValue) => {
-                                                                                setSearchQuery(newValue);
-                                                                                handleSuggestionClick(newValue);
-                                                                            }}
-                                                                            onInputChange={handleInputChange}
-                                                                            options={suggestions}
-                                                                            getOptionLabel={(option) => option ? option.name : ''}
-                                                                            renderInput={(params) => (
-                                                                                <TextField
-                                                                                    {...params}
-                                                                                    label="Search patient"
-                                                                                    variant="outlined"
-                                                                                    InputProps={{
-                                                                                        ...params.InputProps,
-                                                                                        endAdornment: (
-                                                                                            <>
-                                                                                                {params.InputProps.endAdornment}
-                                                                                            </>
-                                                                                        ),
-                                                                                    }}
-                                                                                />
-                                                                            )}
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        {clickedPatient ? (
-                                                            <>
-                                                                <label className='mt-2'><b className='contentHeadings' style={{ fontWeight: 'bold', color: '#1977cc' }} > Patient Details </b></label>
-                                                                <div className="row">
-                                                                    <div className="col-md-4 form-group mt-3">
-                                                                        <label>Patient id:</label>
-                                                                        <input type="text" name="id" className="form-control input-field" value={clickedPatient.id} disabled id="id" placeholder="Patient id" />
-                                                                    </div>
-                                                                    <div className="col-md-4 form-group mt-3">
-                                                                        <label>Patient Name:</label>
-                                                                        <input type="text" name="name" className="form-control input-field" value={clickedPatient.name} disabled id="name" placeholder="Patient id" />
-                                                                    </div>
-                                                                    <div className="col-md-4 form-group mt-3">
-                                                                        <label>Patient contact:</label>
-                                                                        <input type="text" name="contact" className="form-control input-field" value={clickedPatient.contact} disabled id="contact" placeholder="Patient id" />
-                                                                    </div>
-                                                                </div>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <label className='mt-2'><b className='contentHeadings' style={{ fontWeight: 'bold', color: '#1977cc' }} > Patient Details </b></label>
-                                                                <div className="row">
-                                                                    <div className="col-md-4 form-group mt-3">
-                                                                        <label>Patient id:</label>
-                                                                        <input type="text" name="id" className={`form-control input-field form-control-lg bg-light  ${idError && 'is-invalid'} `} value={id} disabled id="id" placeholder="Patient id" />
-                                                                        {idError && <div className="invalid-feedback">{idError}</div>}
-                                                                    </div>
-                                                                    <div className="col-md-4 form-group mt-3">
-                                                                        <label>Patient Name:</label>
-                                                                        <input type="text" name="name" className={`form-control input-field form-control-lg bg-light  ${nameError && 'is-invalid'} `} value={name} disabled id="name" placeholder="Patient name" />
-                                                                        {nameError && <div className="invalid-feedback">{nameError}</div>}
-                                                                    </div>
-                                                                    <div className="col-md-4 form-group mt-3">
-                                                                        <label>Patient contact:</label>
-                                                                        <input type="text" name="contact" className={`form-control input-field form-control-lg bg-light  ${contactError && 'is-invalid'} `} value={contact} disabled id="contact" placeholder="Patient contact" />
-                                                                        {contactError && <div className="invalid-feedback">{contactError}</div>}
-                                                                    </div>
-                                                                </div>
-                                                            </>
-                                                        )}
-
-                                                        <label className='mt-4'><b className='contentHeadings ' style={{ fontWeight: 'bold', color: '#1977cc' }} >Appointments </b></label>
-
-                                                        <div className="" >
-                                                            <div className="row">
-                                                                <div className="col-md-6 form-group mt-1">
-                                                                    <select
-                                                                        value={selectedDepartment}
-                                                                        className={`form-select input-field form-control-lg bg-light  ${departmentError && 'is-invalid'} `}
-                                                                        onChange={(e) => {
-                                                                            setSelectedDepartment(e.target.value);
-                                                                            setSelectedDoctor('');
-                                                                        }}
-                                                                        required
-                                                                    >
-                                                                        <option value="" disabled>
-                                                                            Select Department
-                                                                        </option>
-                                                                        {[...new Set(doctors.map((doctor) => doctor.department))].map((department, index) => (
-                                                                            <option key={index} value={department}>
-                                                                                {department}
-                                                                            </option>
-                                                                        ))}
-                                                                    </select>
-                                                                    {departmentError && <div className="invalid-feedback">{departmentError}</div>}
-                                                                </div>
-                                                                <div className="col-md-6 form-group mt-1">
-                                                                    <select
-                                                                        value={selectedDoctor}
-                                                                        className={`form-select input-field form-control-lg bg-light  ${doctorError && 'is-invalid'} `}
-                                                                        onChange={(e) => handleDoctorSelect(e.target.value)}
-                                                                        required
-                                                                    >
-                                                                        <option value="" disabled>
-                                                                            Select Doctor
-                                                                        </option>
-                                                                        {doctors
-                                                                            .filter((doctor) => doctor.department === selectedDepartment)
-                                                                            .map((doctor) => (
-                                                                                <option key={doctor.id} value={doctor.id}>
-                                                                                    {doctor.name}
-                                                                                </option>
-                                                                            ))}
-                                                                    </select>
-                                                                    {doctorError && <div className="invalid-feedback">{doctorError}</div>}
-                                                                </div>
-                                                            </div>
-                                                            {doctorSelected && (
-                                                                <>
-                                                                    <div className="row">
-                                                                        <div className="col-md-6 form-group mt-3 ">
-                                                                            <label className='form-label'>Appointment Date</label> <br />
-                                                                            <h6 className='text-center mt-4' style={{ fontSize: '14px', color: '#1977cc' }}>Slots Available. Click on preferrable date to book slot</h6>
-                                                                            <div className='card  border-0'>
-                                                                                <Calendar
-                                                                                    onChange={handleDateSelect}
-                                                                                    value={selectedDate}
-                                                                                    className="reactCalender"
-                                                                                    tileClassName={({ date, view }) => {
-                                                                                        const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(selectedDoctor));
-                                                                                        if (selectedDoc && view === 'month' && selectedDoc.visitingDays) {
-                                                                                            const day = date.getDay();
-                                                                                            const visitingDaysArray = selectedDoc.visitingDays.split(',');
-                                                                                            let isAvailable = false;
-                                                                                            for (let visitingDaysString of visitingDaysArray) {
-                                                                                                const visitingDays = visitingDaysString.split('-');
-                                                                                                if (visitingDays.length === 2) {
-                                                                                                    const startDayIndex = getDayIndex(visitingDays[0]);
-                                                                                                    const endDayIndex = getDayIndex(visitingDays[1]);
-                                                                                                    if (day >= startDayIndex && day <= endDayIndex) {
-                                                                                                        isAvailable = true;
-                                                                                                        break;
-                                                                                                    }
-                                                                                                } else {
-                                                                                                    const dayName = getDayName(day);
-                                                                                                    if (visitingDays.includes(dayName)) {
-                                                                                                        isAvailable = true;
-                                                                                                        break;
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                            const isDateWithinLeavePeriod = leaveRequests.some(request => {
-                                                                                                let fromTime = new Date(request.fromDate);
-                                                                                                let endTime = new Date(request.toDate);
-                                                                                                fromTime.setHours(0, 0, 0);
-                                                                                                endTime.setHours(23, 59, 59);
-
-                                                                                                return request.doctor.id === selectedDoctor &&
-                                                                                                    date >= fromTime && date <= endTime;
-                                                                                            });
-
-                                                                                            if (isDateWithinLeavePeriod) {
-                                                                                                return 'custom-tile-leave';
-                                                                                            } else if (isAvailable) {
-                                                                                                return 'custom-tile-green';
-                                                                                            } else {
-                                                                                                return 'custom-tile-red';
-                                                                                            }
-                                                                                        }
-                                                                                        return null;
-                                                                                    }}
-                                                                                    tileDisabled={({ date, view }) => {
-                                                                                        const selectedDoc = doctors.find((doctor) => doctor.id === parseInt(selectedDoctor));
-                                                                                        const isPastDate = date < startOfDay(new Date());
-                                                                                        if (selectedDoc && view === 'month' && selectedDoc.visitingDays) {
-                                                                                            const day = date.getDay();
-                                                                                            const visitingDaysArray = selectedDoc.visitingDays.split(',');
-
-                                                                                            let isAvailable = false;
-                                                                                            for (let visitingDaysString of visitingDaysArray) {
-                                                                                                const visitingDays = visitingDaysString.split('-');
-                                                                                                if (visitingDays.length === 2) {
-                                                                                                    const startDayIndex = getDayIndex(visitingDays[0]);
-                                                                                                    const endDayIndex = getDayIndex(visitingDays[1]);
-                                                                                                    if (day >= startDayIndex && day <= endDayIndex) {
-                                                                                                        isAvailable = true;
-                                                                                                        break;
-                                                                                                    }
-                                                                                                } else {
-                                                                                                    const dayName = getDayName(day);
-                                                                                                    if (visitingDays.includes(dayName)) {
-                                                                                                        isAvailable = true;
-                                                                                                        break;
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-
-                                                                                            const isDateWithinLeavePeriod = leaveRequests.some(request => {
-                                                                                                let fromTime = new Date(request.fromDate);
-                                                                                                fromTime.setHours(0, 0, 0);
-
-                                                                                                return request.doctor.id === selectedDoctor &&
-                                                                                                    date.getTime() >= fromTime.getTime() && date.getTime() <= new Date(request.toDate).getTime() &&
-                                                                                                    !(request.fromDate === request.toDate && request.fromTime != null && request.toTime != null && request.fromTime !== request.toTime); // Check if fromTime and toTime are equal
-                                                                                            });
-
-                                                                                            return (!isAvailable || isPastDate || isDateWithinLeavePeriod);
-                                                                                        }
-                                                                                        return false;
-                                                                                    }}
-
-                                                                                />
-                                                                                <div className="indicators">
-                                                                                    <div className="indicator green">Slots Available</div>
-                                                                                    <div className="indicator red">No Slots Available</div>
-                                                                                    <div className="indicator leave">On Leave</div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div className="col-md-6 form-group mt-3" style={{ fontSize: '13px' }}>
-                                                                            <label className='form-label'>Available Slots</label>
-                                                                            <h6 className='text-center mt-4' style={{ fontSize: '16px', color: '#1977cc' }}>Select the time slot and click Make an appointment button </h6>
-                                                                            {selectedDate && <h6 className='text-center mt-2' style={{ fontSize: '14px' }}>Available time slots for <b style={{ color: 'black' }}> {selectedDate.getDate().toString().padStart(2, '0')}-{(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-{selectedDate.getFullYear()}</b></h6>}
-                                                                            <table className=" custom-table-new">
-                                                                                <thead>
-                                                                                    <tr>
-                                                                                        <th>Time Slots</th>
-                                                                                        <th>Available Slots</th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                    {availableSlots &&
-                                                                                        Object.entries(availableSlots).map(([timeSlot, slotsCount]) => {
-                                                                                            const isDisabled = leaveRequests.some(request => {
-                                                                                                const requestFromDate = request.fromDate;
-                                                                                                const requestToDate = request.toDate;
-                                                                                                const requestFromTime = request.fromTime;
-                                                                                                const requestToTime = request.toTime;
-
-                                                                                                const isOnSelectedDate = selectedDate.toISOString().split('T')[0] === requestFromDate && selectedDate.toISOString().split('T')[0] === requestToDate;
-                                                                                                const [slotStartTime, slotEndTime] = timeSlot.split(' to ');
-
-                                                                                                const isTimeSlotOverlap = isOnSelectedDate && requestFromTime && requestToTime &&
-                                                                                                    slotStartTime >= requestFromTime &&
-                                                                                                    slotEndTime <= requestToTime;
-
-                                                                                                return isTimeSlotOverlap;
-                                                                                            }) || slotsCount === 0;
-
-                                                                                            return (
-                                                                                                <tr key={timeSlot}>
-                                                                                                    <td>{timeSlot}</td>
-                                                                                                    <td>
-                                                                                                        <div className="form-check d-flex ml-3 availability">
-                                                                                                            <input
-                                                                                                                type="radio"
-                                                                                                                id={timeSlot}
-                                                                                                                name="availableSlots"
-                                                                                                                value={timeSlot}
-                                                                                                                style={{ cursor: 'pointer' }}
-                                                                                                                className={`form-check-input justify-content-start ${availableSlotsError && 'is-invalid'} `}
-                                                                                                                onChange={handleTimeSlotSelect}
-                                                                                                                disabled={isDisabled}
-                                                                                                            />
-                                                                                                            <label htmlFor={timeSlot} className="form-check-label mt-1">{`${slotsCount} slots available`}</label>
-                                                                                                        </div>
-                                                                                                    </td>
-                                                                                                </tr>
-                                                                                            );
-                                                                                        })
-                                                                                    }
-
-                                                                                </tbody>
-                                                                            </table>
-                                                                            {availableSlotsError && <div className="invalid-feedback">{availableSlotsError}</div>}
-
-                                                                        </div>
-
-                                                                        <div className="col-md-6 form-group mt-3" style={{ display: 'inline-block' }}>
-                                                                            <label className='form-label'>Consultancy charge:</label>
-                                                                            <input
-                                                                                type="text"
-                                                                                name="charge"
-                                                                                className="form-control input-field"
-                                                                                id="charge"
-                                                                                placeholder="Consultancy charge"
-                                                                                value={consultationCharge}
-                                                                                disabled
-                                                                            />
-                                                                            <div className="validate"></div>
-                                                                        </div>
-                                                                        <div className="col-md-6 form-group mt-4 text-center" style={{ display: 'inline-block' }}>
-                                                                            <button onClick={handleSubmit} className='text-center appointmentButton mt-3' type="submit">Make an Appointment</button>
-                                                                        </div>
-
-                                                                    </div>
-                                                                </>
-                                                            )}
-
-                                                        </div>
-                                                    </div>
-                                                </>
-                                            </div>
-                                        </section>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <ToastContainer position="bottom-right" />
-        </div>
+  const handleDateSelect = async (date) => {
+    // Normalize Date
+    const formattedDate = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
     );
+    setSelectedDate(formattedDate);
+
+    // Re-fetch Slots
+    try {
+      setAvailableSlots(
+        await getAvailableSlots(selectedDoctor, formattedDate, authToken)
+      );
+    } catch {}
+  };
+
+  // --- SLOT BLOCKING LOGIC (HALF DAY) ---
+  const isSlotBlocked = (slotString) => {
+    if (!selectedDate || !leaveRequests.length) return false;
+
+    // Find active leave for this date
+    const activeLeave = leaveRequests.find((leave) => {
+      const leaveStart = new Date(leave.fromDate).setHours(0, 0, 0, 0);
+      const leaveEnd = new Date(leave.toDate).setHours(0, 0, 0, 0);
+      const current = new Date(selectedDate).setHours(0, 0, 0, 0);
+      return current >= leaveStart && current <= leaveEnd;
+    });
+
+    if (!activeLeave) return false;
+
+    // If Full Day Leave, block everything (Calendar should alert this, but safety check)
+    if (activeLeave.fromTime === activeLeave.toTime) return true;
+
+    // Parse "09:00 to 10:00"
+    const [slotStartStr] = slotString.split(" to ");
+    if (!slotStartStr) return false;
+
+    const [slotH, slotM] = slotStartStr.split(":").map(Number);
+    const slotTimeValue = slotH * 60 + slotM;
+
+    // Parse Leave Times
+    const [leaveStartH, leaveStartM] = activeLeave.fromTime
+      .split(":")
+      .map(Number);
+    const [leaveEndH, leaveEndM] = activeLeave.toTime.split(":").map(Number);
+
+    const leaveStartValue = leaveStartH * 60 + leaveStartM;
+    const leaveEndValue = leaveEndH * 60 + leaveEndM;
+
+    // Check if slot starts inside the leave window
+    return slotTimeValue >= leaveStartValue && slotTimeValue < leaveEndValue;
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const slot = selectedTimeSlot.target.value;
+      const formattedDate = selectedDate.toISOString().split("T")[0];
+      await bookAppointmentApi(
+        selectedDoctor,
+        clickedPatient.id,
+        formattedDate,
+        slot,
+        authToken
+      );
+      toast.success("Appointment Scheduled!");
+      // Reset
+      setAvailableSlots([]);
+      setSelectedTimeSlot("");
+      setConsultationCharge("");
+      setDoctorSelected(false);
+      setSelectedDepartment("");
+      setClickedPatient(null);
+      setSearchQuery("");
+    } catch {
+      toast.error("Failed to schedule appointment");
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setDoctors((await getDoctorsApi()) ?? []);
+      } catch {}
+    })();
+  }, []);
+
+  return (
+    <div className="background_part">
+      <div className="register-card">
+        <img
+          src={BackArrow}
+          className="register-back-btn"
+          alt="back"
+          onClick={() => dispatch(setActiveTab("showAppointments"))}
+        />
+
+        <h3 className="register-title">Book Appointment</h3>
+
+        <div className="appointment-content" style={{ marginTop: "30px" }}>
+          {/* --- SEARCH PATIENT --- */}
+          <div className="form-grid-full" style={{ marginBottom: "20px" }}>
+            <label className="form-label">Search Patient</label>
+            <Autocomplete
+              value={searchQuery}
+              onChange={(e, val) => {
+                setSearchQuery(val);
+                handleSuggestionClick(val);
+              }}
+              onInputChange={handleInputChange}
+              options={suggestions}
+              getOptionLabel={(o) => (o ? o.name : "")}
+              renderInput={(params) => (
+                <TextField {...params} variant="outlined" />
+              )}
+            />
+          </div>
+
+          {/* --- PATIENT DETAILS --- */}
+          {clickedPatient && (
+            <div className="form-grid">
+              <div>
+                <label className="form-label">ID</label>
+                <input
+                  className="form-control input-field"
+                  disabled
+                  value={clickedPatient.id}
+                />
+              </div>
+              <div>
+                <label className="form-label">Name</label>
+                <input
+                  className="form-control input-field"
+                  disabled
+                  value={clickedPatient.name}
+                />
+              </div>
+              <div>
+                <label className="form-label">Contact</label>
+                <input
+                  className="form-control input-field"
+                  disabled
+                  value={clickedPatient.contact}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* --- DOCTOR SELECTION --- */}
+          <div className="form-grid-full" style={{ marginTop: "30px" }}>
+            <label className="form-label">Appointment Details</label>
+          </div>
+
+          <div className="form-grid">
+            <div>
+              <label className="form-label">Department</label>
+              <select
+                className="form-select input-field"
+                value={selectedDepartment}
+                onChange={(e) => {
+                  setSelectedDepartment(e.target.value);
+                  setSelectedDoctor("");
+                  setDoctorSelected(false);
+                }}
+              >
+                <option value="" disabled>
+                  Select Department
+                </option>
+                {[...new Set(doctors.map((d) => d.department))].map(
+                  (dept, i) => (
+                    <option key={i} value={dept}>
+                      {dept}
+                    </option>
+                  )
+                )}
+              </select>
+            </div>
+
+            <div>
+              <label className="form-label">Doctor</label>
+              <select
+                className="form-select input-field"
+                value={selectedDoctor}
+                onChange={(e) => handleDoctorSelect(e.target.value)}
+              >
+                <option value="" disabled>
+                  Select Doctor
+                </option>
+                {doctors
+                  .filter((doc) => doc.department === selectedDepartment)
+                  .map((doc) => (
+                    <option key={doc.id} value={doc.id}>
+                      {doc.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          </div>
+
+          {/* --- CALENDAR & SLOTS --- */}
+          {doctorSelected && (
+            <div className="form-grid-full" style={{ marginTop: "30px" }}>
+              <div className="form-grid booking-calendar-container">
+                {/* 1. Calendar */}
+                <div className="calendar-wrapper">
+                  <label className="form-label">Availability Calendar</label>
+                  <LeaveCalendar
+                    date={selectedDate}
+                    onChange={handleDateSelect}
+                    doctorId={selectedDoctor}
+                    doctors={doctors}
+                    pastLeaves={leaveRequests}
+                  />
+                </div>
+
+                {/* 2. Slots Table */}
+                <div className="slots-wrapper">
+                  <label className="form-label">Available Time Slots</label>
+                  <table className="custom-table-new">
+                    <thead>
+                      <tr>
+                        <th style={{ width: "40%" }}>Time Slot</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {availableSlots &&
+                      Object.keys(availableSlots).length > 0 ? (
+                        Object.entries(availableSlots).map(([slot, count]) => {
+                          const isHalfDayBlocked = isSlotBlocked(slot);
+                          const isFullyBooked = count === 0;
+                          const isDisabled = isHalfDayBlocked || isFullyBooked;
+
+                          return (
+                            <tr key={slot}>
+                              <td>{slot}</td>
+                              <td>
+                                <label
+                                  className={`availability ${
+                                    isDisabled ? "disabled" : ""
+                                  }`}
+                                  onClick={(e) => {
+                                    if (isDisabled) {
+                                      e.preventDefault();
+                                      if (isHalfDayBlocked)
+                                        toast.error(
+                                          "Doctor is on leave during this time."
+                                        );
+                                      else
+                                        toast.error(
+                                          "This slot is fully booked."
+                                        );
+                                    }
+                                  }}
+                                >
+                                  <input
+                                    type="radio"
+                                    className="form-check-input"
+                                    name="slot"
+                                    value={slot}
+                                    disabled={isDisabled}
+                                    onChange={(e) => setSelectedTimeSlot(e)}
+                                    checked={
+                                      selectedTimeSlot?.target?.value === slot
+                                    }
+                                  />
+
+                                  {/* Status Badge */}
+                                  {isHalfDayBlocked ? (
+                                    <span
+                                      className="text-danger"
+                                      style={{ minWidth: "120px" }}
+                                    >
+                                      <i className="bi bi-clock-history me-1"></i>{" "}
+                                      On Leave
+                                    </span>
+                                  ) : (
+                                    <span
+                                      className={
+                                        count > 0
+                                          ? "text-success"
+                                          : "text-danger"
+                                      }
+                                    >
+                                      {count > 0
+                                        ? `Available (${count})`
+                                        : "Full"}
+                                    </span>
+                                  )}
+                                </label>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan="2"
+                            style={{
+                              textAlign: "center",
+                              padding: "50px",
+                              color: "#dc3545",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            <i
+                              className="bi bi-calendar-x me-2"
+                              style={{ fontSize: "1.5rem" }}
+                            ></i>
+                            <br />
+                            Doctor Not Available / On Leave
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {consultationCharge && (
+            <div className="form-grid-full" style={{ marginTop: "25px" }}>
+              <label className="form-label">Consultation Charge</label>
+              <input
+                className="form-control input-field"
+                disabled
+                value={consultationCharge}
+              />
+            </div>
+          )}
+
+          {selectedTimeSlot && (
+            <div className="button-row" style={{ marginTop: "30px" }}>
+              <button
+                className="register-btn"
+                type="button"
+                onClick={handleSubmit}
+              >
+                Book Appointment
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+      <ToastContainer position="bottom-right" />
+    </div>
+  );
 }

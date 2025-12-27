@@ -1,0 +1,121 @@
+.appointments-container {
+  margin-left: 266px;
+  margin-top: 80px;
+  width: calc(100% - 266px);
+  padding: 40px 30px;
+  background: #f5f8fa;
+  font-family: "Roboto", sans-serif;
+}
+
+.appointments-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px 30px 30px;
+  box-shadow: 4px 0 4px #c7dbe940, 0 -3px 4px #c7dbe940,
+  -3px 0 4px #c7dbe940, 0 4px 4px #c7dbe940;
+}
+
+/* HEADER */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-text {
+  font-size: 16px;
+  color: #373737;
+}
+
+.add-btn {
+  background: #0150b5;
+  color: #fff;
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* DIVIDER */
+.divider {
+  height: 1px;
+  width: 100%;
+  background: #d9d9d9;
+  margin: 15px 0;
+  border: none;
+}
+
+/* TITLE & SEARCH */
+.title-search {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title-search h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* SEARCH BOX */
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  width: 212px;
+  height: 35px;
+  border: 1px solid #c7dbe940;
+  padding: 0 40px 0 12px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+/* TABLE FIXES */
+.table-wrapper {
+  margin-top: 15px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.rdt_Table {
+  table-layout: fixed !important;
+  width: 100% !important;
+}
+
+.rdt_TableHeadRow {
+  background: #f0f8ff !important;
+}
+
+.rdt_TableCol, 
+.rdt_TableCell {
+  font-size: 14px !important;
+  padding: 10px 14px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* PAGINATION */
+.pagination-footer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-top: 15px;
+}
+
+.pagination-footer select, .pagination-footer button {
+  cursor: pointer;
+  font-size: 12px;
+}
