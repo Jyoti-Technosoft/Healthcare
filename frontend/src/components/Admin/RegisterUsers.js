@@ -645,7 +645,7 @@ export default function RegisterUsers() {
                         <label
                           className="form-check-label"
                           htmlFor="male"
-                          style={{ fontFamily: "Roboto", fontSize: "15px" }}
+                          style={{ fontSize: "15px" }}
                         >
                           Male
                         </label>
@@ -663,7 +663,7 @@ export default function RegisterUsers() {
                         <label
                           className="form-check-label"
                           htmlFor="female"
-                          style={{ fontFamily: "Roboto", fontSize: "15px" }}
+                          style={{ fontSize: "15px" }}
                         >
                           Female
                         </label>
@@ -681,7 +681,7 @@ export default function RegisterUsers() {
                         <label
                           className="form-check-label"
                           htmlFor="other"
-                          style={{ fontFamily: "Roboto", fontSize: "15px" }}
+                          style={{ fontSize: "15px" }}
                         >
                           Other
                         </label>
@@ -1054,7 +1054,6 @@ export default function RegisterUsers() {
                         borderRadius: "6px",
                         minHeight: "44px",
                         fontSize: "15px",
-                        fontFamily: "Roboto, sans-serif",
                         boxShadow: "none",
                       }),
                     }}

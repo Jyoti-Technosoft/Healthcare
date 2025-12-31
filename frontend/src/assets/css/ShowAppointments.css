@@ -4,8 +4,7 @@
   width: calc(100% - 266px);
   padding: 40px 30px;
   background: #f5f8fa;
-  font-family: "Roboto", sans-serif;
-}
+  }
 
 .appointments-card {
   background: #fff;

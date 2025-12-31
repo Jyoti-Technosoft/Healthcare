@@ -13,8 +13,7 @@
 
 /* Fonts */
 .font-poppins {
-  font-family: 'Poppins', sans-serif;
-}
+  }
 
 /* Custom Body Padding */
 .custom-modal-body {
@@ -33,7 +32,6 @@
 }
 
 .section-header {
-  font-family: 'Poppins', sans-serif;
   font-weight: 600;
   color: #0150b5;
   margin-bottom: 12px;

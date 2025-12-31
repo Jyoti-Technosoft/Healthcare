@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap");
-
 /* =========================================================
    GLOBAL / LAYOUT
 ======================================================== */
@@ -232,7 +230,6 @@
 }
 
 .dashboard-table th {
-  font-family: "Roboto", sans-serif;
   font-weight: 600;
   font-size: 15px;
   color: #373737;
@@ -244,7 +241,6 @@
 
 /* Body Styles */
 .dashboard-table td {
-  font-family: "Roboto", sans-serif;
   font-size: 14px;
   color: #333;
   padding: 14px 16px;

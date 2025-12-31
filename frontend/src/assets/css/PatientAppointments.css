@@ -5,8 +5,7 @@
   padding: 40px 30px;
   width: calc(100% - 266px);
   background: #f5f8fa;
-  font-family: "Roboto", sans-serif;
-}
+  }
 
 /* CARD */
 .patient-card {
@@ -50,8 +49,7 @@
   font-weight: 600;
   color: #373737;
   margin: 0;
-  font-family: "Poppins", sans-serif;
-}
+  }
 
 /* SEARCH BOX */
 .search-box {
@@ -111,7 +109,6 @@
 }
 
 .patient-info h4 {
-  font-family: "Poppins";
   font-size: 18px;
   margin-bottom: 16px;
 }

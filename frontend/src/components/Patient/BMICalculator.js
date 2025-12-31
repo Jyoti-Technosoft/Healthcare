@@ -1,5 +1,4 @@
-import React, { useState, useRef } from "react";
-import CloseIcon from "@mui/icons-material/Close";
+import { useState, useRef } from "react";
 import { calculateBMI, getClassificationFromBMI } from "../Validations";
 import "../../assets/css/Patient/PanelGlobal.css";
 
@@ -75,7 +74,12 @@ const BMICalculator = ({ toggleForm }) => {
       {/* HEADER */}
       <div className="panel-header">
         <h2>BMI Calculator</h2>
-        <CloseIcon className="panel-close" onClick={toggleForm} />
+        <button 
+          className="text-gray-500 hover:text-gray-700 text-xl leading-none bg-transparent border-none cursor-pointer p-1"
+          onClick={toggleForm}
+        >
+          ×
+        </button>
       </div>
 
       {/* FORM */}

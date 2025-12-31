@@ -5,7 +5,6 @@
   padding: 40px 30px;
   width: calc(100% - 266px);
   background: #f5f8fa;
-  font-family: "Roboto", sans-serif;
   box-sizing: border-box; /* Added for safer padding calculation */
 }
 

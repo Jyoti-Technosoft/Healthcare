@@ -7,7 +7,6 @@
   width: calc(100% - 266px);
   background: #f5f8fa;
   min-height: 100vh;
-  font-family: "Roboto", sans-serif;
   color: #373737;
 }
 
@@ -35,8 +34,7 @@
 }
 
 .total-docs {
- font-family: "Roboto", sans-serif;
-  font-weight: 400;            
+ font-weight: 400;            
   font-size: 16px;
   line-height: 100%;
   letter-spacing: 0;
@@ -46,8 +44,7 @@
   padding: 0;
 }
 .total-docs strong{
-   font-family: "Roboto", sans-serif;
-  font-weight: 400;            
+   font-weight: 400;            
   font-size: 16px;
   line-height: 100%;
   letter-spacing: 0;
@@ -76,7 +73,6 @@
 }
 
 .doctor-list-header h3 {
-  font-family: "Poppins", sans-serif !important;
   font-weight: 600 !important;
   font-size: 20px !important;
   line-height: 100% !important;
@@ -101,7 +97,6 @@
   border: 1px solid #C7DBE940;            
   border-radius: 5px;
   padding: 0 40px 0 12px;               
-  font-family: "Roboto", sans-serif;
   font-size: 14px;
   outline: none;
   box-shadow: 0px 1px 2px 0px #C7DBE940;
@@ -177,7 +172,6 @@
 }
 
 .appointments-table th {
-  font-family: 'Roboto', sans-serif;
   font-weight: 500;
   font-size: 16px;
   color: #373737;
@@ -187,7 +181,6 @@
 }
 
 .appointments-table td {
-  font-family: 'Roboto', sans-serif;
   font-size: 14px;
   color: #373737;
   background: #fff;
@@ -273,7 +266,6 @@
 .pagination-footer span,
 .pagination-footer select,
 .pagination-footer button {
-  font-family: 'Roboto', sans-serif !important;
   font-weight: 500 !important;    
   font-size: 12px !important;
   color: #9E9E9E !important;
@@ -357,7 +349,6 @@
 
 .doctor-card h4 {
   margin-top: 15px;
-  font-family: "Roboto", sans-serif;
   font-weight: 600;
   font-size: 20px;
   color: #373737;
@@ -366,7 +357,6 @@
 .specialization {
   margin-top: 3px;
   margin-bottom: 3px !important;
-  font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 14px;
   color: #373737;
@@ -380,7 +370,6 @@
   text-align: center;
   justify-content: center;
   gap: 6px;
-  font-family: "Roboto", sans-serif;
   font-weight: 300;
   font-size: 12px;
 }
@@ -417,7 +406,6 @@
   border-radius: 20px;
   border: none;
   cursor: pointer;
-  font-family: "Roboto", sans-serif;
   font-weight: 600;
   font-size: 16px;
 }
@@ -441,7 +429,6 @@
 .grid-footer span,
 .grid-footer select,
 .grid-footer button {
-  font-family: 'Roboto', sans-serif !important;
   font-weight: 500 !important;
   font-size: 12px !important;
   color: #9E9E9E !important;
@@ -521,7 +508,6 @@
 
 .popup-doctor-name {
   text-align: center;
-  font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 16px;
   color: #373737;
@@ -535,7 +521,6 @@
 }
 
 .popup-label {
-  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 500;
   color: #373737;
@@ -543,7 +528,6 @@
 }
 
 .popup-value {
-  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 400;
   color: #5D5D5D;
@@ -554,7 +538,6 @@
   margin-top: 20px;
   width: 466px;
   text-align: justify;
-  font-family: "Roboto", sans-serif;
   font-size: 14px;
   font-weight: 400;
   line-height: 25px;
@@ -568,7 +551,6 @@
   color: #FFFFFF;
   border-radius: 20px;
   border: none;
-  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 600;
   position: absolute;

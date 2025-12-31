@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
-
 /* =========================================================
    GLOBAL LAYOUT
 ========================================================= */
@@ -8,7 +6,6 @@
   padding: 100px 30px 30px;
   min-height: 100vh;
   background-color: #f5f8fa;
-  font-family: 'Roboto', sans-serif;
   transition: margin-left 0.3s ease;
 }
 
@@ -140,7 +137,6 @@
 }
 
 .admin-table th {
-  font-family: 'Roboto', sans-serif;
   font-weight: 600;
   font-size: 15px;
   color: #373737;
@@ -152,7 +148,6 @@
 
 /* Rows */
 .admin-table td {
-  font-family: 'Roboto', sans-serif;
   font-size: 14px;
   color: #333;
   background: #fff;
@@ -216,7 +211,6 @@
 .pagination-footer span,
 .pagination-footer select,
 .pagination-footer button {
-  font-family: 'Roboto', sans-serif !important;
   font-weight: 500 !important;    
   font-size: 12px !important;
   color: #9E9E9E !important;

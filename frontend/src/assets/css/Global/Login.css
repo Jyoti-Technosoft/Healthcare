@@ -9,7 +9,6 @@ body, html {
   width: 100%;
   /* Change height to min-height: 100vh to force it to fill screen */
   min-height: 100vh; 
-  font-family: 'Roboto', sans-serif;
   
   /* ADD THIS: Backup background color so user never sees white */
   background-color: #f5f8fa; 
@@ -82,7 +81,6 @@ body, html {
 }
 
 .left-box p {
-  font-family: 'Courier New', Courier, monospace;
   font-weight: 600;
   font-size: 28px;
   margin: 0;
@@ -101,7 +99,6 @@ body, html {
 }
 
 .header-text h2 {
-  font-family: "Roboto", sans-serif;
   font-weight: 700;
   color: #333;
   margin-bottom: 10px;

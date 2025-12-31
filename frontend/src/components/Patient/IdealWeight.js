@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import CloseIcon from "@mui/icons-material/Close";
 import "../../assets/css/Patient/PanelGlobal.css"; // Ensure path is correct
 
 const IdealWeightCalculator = ({ toggleForm }) => {
@@ -56,7 +55,7 @@ const IdealWeightCalculator = ({ toggleForm }) => {
       <div className="panel-header">
         <h2>Ideal Weight</h2>
         <button className="panel-close-btn" onClick={toggleForm}>
-          <CloseIcon style={{ fontSize: 24 }} />
+          <span className="text-gray-500 hover:text-gray-700 text-xl leading-none" style={{ fontSize: 24 }}>×</span>
         </button>
       </div>
 

@@ -5,8 +5,7 @@
   padding: 40px 30px;
   width: calc(100% - 266px);
   background: #f5f8fa;
-  font-family: "Roboto", sans-serif;
-}
+  }
 
 @media (max-width: 768px) {
   .patient-app-container {
@@ -50,7 +49,6 @@
   align-items: center;
 }
 .title-row h3 {
-  font-family: "Poppins", sans-serif;
   font-size: 20px;
   font-weight: 600;
   color: #373737;

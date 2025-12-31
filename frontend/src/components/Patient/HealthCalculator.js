@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Backdrop } from "@mui/material";
+import { useState } from "react";
 import SlidePanel from "./SlidePanel";
 import "../../assets/css/Patient/HealthCalculator.css";
 
@@ -28,7 +27,12 @@ export default function HealthCalculator() {
   return (
     <div className="hc-wrapper">
       {/* DARK BACKDROP BEHIND PANEL */}
-      <Backdrop open={showForm} onClick={closeForm} style={{ opacity: 0.03 }} />
+      {showForm && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-3 z-40"
+          onClick={closeForm}
+        />
+      )}
 
       <SlidePanel
         showForm={showForm}

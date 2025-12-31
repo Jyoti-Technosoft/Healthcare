@@ -7,8 +7,7 @@
   min-height: 100vh;
   background-color: #F9F9F9; /* Light cream background */
   overflow: hidden;
-  font-family: 'Arial', sans-serif;
-}
+  }
 
 .art-composition {
   position: relative;

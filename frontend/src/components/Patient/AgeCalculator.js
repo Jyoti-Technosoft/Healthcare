@@ -1,7 +1,6 @@
-import React, { useState, useRef } from "react";
-import CloseIcon from "@mui/icons-material/Close";
+import { useState, useRef } from "react";
 import { getAgeCalculator } from "../Validations";
-import "../../assets/css/PanelGlobal.css";
+import "../../assets/css/Patient/PanelGlobal.css";
 
 const AgeCalculator = ({ toggleForm }) => {
   const [dob, setDob] = useState("");
@@ -61,7 +60,7 @@ const AgeCalculator = ({ toggleForm }) => {
       <div className="panel-header">
         <h2>Age Calculator</h2>
         <button className="panel-close-btn" onClick={handleClose}>
-          <CloseIcon className="panel-close" />
+          <span className="text-gray-500 hover:text-gray-700 text-xl leading-none">×</span>
         </button>
       </div>
 

@@ -13,7 +13,6 @@
   
   /* Appearance */
   background: #f5f8fa;
-  font-family: "Roboto", sans-serif;
   box-sizing: border-box;
   min-height: calc(100vh - 80px);
   
@@ -69,7 +68,6 @@
 
 /* Title Row */
 .profile-title-row h3 {
-  font-family: "Poppins", sans-serif;
   font-size: 22px;
   font-weight: 600;
   margin: 0;

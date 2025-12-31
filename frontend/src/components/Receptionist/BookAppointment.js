@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import "react-toastify/dist/ReactToastify.css";
 import {
   getSearchPatientsApi,
   getDoctorsApi,
@@ -7,18 +11,10 @@ import {
   fetchConsultationChargeApi,
   getDoctorLeaveRequest,
 } from "../Api";
-import Cookies from "js-cookie";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import LeaveCalendar from "../Doctor/LeaveCalendar";
 import { setActiveTab } from "../../actions/submenuActions";
-
 import "../../assets/css/Receptionist/BookAppointment.css";
 import BackArrow from "../../assets/img/back-arrow.png";
-import LeaveCalendar from "../Doctor/LeaveCalendar";
 
 export default function BookAppointment() {
   const [suggestions, setSuggestions] = useState([]);
@@ -188,19 +184,41 @@ export default function BookAppointment() {
           {/* --- SEARCH PATIENT --- */}
           <div className="form-grid-full" style={{ marginBottom: "20px" }}>
             <label className="form-label">Search Patient</label>
-            <Autocomplete
-              value={searchQuery}
-              onChange={(e, val) => {
-                setSearchQuery(val);
-                handleSuggestionClick(val);
-              }}
-              onInputChange={handleInputChange}
-              options={suggestions}
-              getOptionLabel={(o) => (o ? o.name : "")}
-              renderInput={(params) => (
-                <TextField {...params} variant="outlined" />
+            <div className="relative">
+              <input
+                type="text"
+                value={typeof searchQuery === 'string' ? searchQuery : (searchQuery?.name || '')}
+                onChange={handleInputChange}
+                onFocus={() => {
+                  if (searchQuery?.trim()) {
+                    handleInputChange({ target: { value: searchQuery } });
+                  }
+                }}
+                onBlur={() => {
+                  setTimeout(() => setSuggestions([]), 200);
+                }}
+                placeholder="Type to search patients..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              {suggestions.length > 0 && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                  {suggestions.map((patient, index) => (
+                    <div
+                      key={patient.id || index}
+                      onClick={() => {
+                        setSearchQuery(patient);
+                        handleSuggestionClick(patient);
+                        setSuggestions([]);
+                      }}
+                      className="px-3 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+                    >
+                      <div className="font-medium">{patient.name}</div>
+                      <div className="text-sm text-gray-500">{patient.contact}</div>
+                    </div>
+                  ))}
+                </div>
               )}
-            />
+            </div>
           </div>
 
           {/* --- PATIENT DETAILS --- */}

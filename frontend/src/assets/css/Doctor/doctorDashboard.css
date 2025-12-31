@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
-
 /* =========================================================
    GLOBAL LAYOUT
 ========================================================= */
@@ -9,7 +7,6 @@
   width: calc(100% - 266px);
   background-color: #f5f8fa;
   box-sizing: border-box;
-  font-family: "Roboto", sans-serif;
   color: #373737;
   min-height: 100vh;
   transition: all 0.3s ease;
@@ -59,8 +56,7 @@
 
 .flat-card-info h2 {
   font-size: 36px;
-    font-family: "Roboto";
-  margin: 0;
+    margin: 0;
   color: #333;
   font-weight: 400;
 }

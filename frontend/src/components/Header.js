@@ -78,17 +78,23 @@ export default function Header() {
                         Links changed to to="/..." so they trigger the 404 Page
                     */}
                     <li className="nav-item dropdown">
-                      <a
+                      <button
                         className="nav-link dropdown-toggle"
-                        href="#"
+                        type="button"
                         id="navbarDropdown"
-                        role="button"
                         data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          font: 'inherit',
+                          cursor: 'pointer'
+                        }}
                       >
                         Pages
-                      </a>
+                      </button>
                       <div
                         className="dropdown-menu"
                         aria-labelledby="navbarDropdown"
@@ -119,17 +125,23 @@ export default function Header() {
 
                     {/* BLOG DROPDOWN */}
                     <li className="nav-item dropdown">
-                      <a
+                      <button
                         className="nav-link dropdown-toggle"
-                        href="#"
+                        type="button"
                         id="navbarDropdown_1"
-                        role="button"
                         data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          font: 'inherit',
+                          cursor: 'pointer'
+                        }}
                       >
                         Blog
-                      </a>
+                      </button>
                       <div
                         className="dropdown-menu"
                         aria-labelledby="navbarDropdown_1"
@@ -173,20 +185,26 @@ export default function Header() {
                     {/* LOGIN / PROFILE LOGIC (UNCHANGED) */}
                     {userEmail ? (
                       <li className="nav-item dropdown">
-                        <a
+                        <button
                           className="nav-link dropdown-toggle"
-                          href="#"
-                          id="navbarDropdown_1"
-                          role="button"
+                          type="button"
+                          id="navbarDropdown_2"
                           data-toggle="dropdown"
                           aria-haspopup="true"
                           aria-expanded="false"
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            font: 'inherit',
+                            cursor: 'pointer'
+                          }}
                         >
                           {userEmail}
-                        </a>
+                        </button>
                         <div
                           className="dropdown-menu"
-                          aria-labelledby="navbarDropdown_1"
+                          aria-labelledby="navbarDropdown_2"
                         >
                           <Link
                             className="dropdown-item"
@@ -195,14 +213,22 @@ export default function Header() {
                           >
                             Dashboard
                           </Link>
-                          <a
-                            href="#"
+                          <button
                             className="dropdown-item"
-                            style={{ cursor: "pointer" }}
+                            type="button"
                             onClick={handleLogout}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              padding: '10px 20px',
+                              font: 'inherit',
+                              cursor: 'pointer',
+                              width: '100%',
+                              textAlign: 'left'
+                            }}
                           >
                             Logout
-                          </a>
+                          </button>
                         </div>
                       </li>
                     ) : (
