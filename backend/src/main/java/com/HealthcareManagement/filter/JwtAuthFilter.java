@@ -29,16 +29,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response, jakarta.servlet.FilterChain filterChain) throws jakarta.servlet.ServletException, IOException {
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-
-        // Allow requests from the specified origin
-        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-        httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        httpResponse.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-        httpResponse.setHeader("Access-Control-Max-Age", "3600");
-
-//        chain.doFilter(request, response);
-
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String email = null;
