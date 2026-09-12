@@ -16,15 +16,11 @@ services:
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
       - key: SPRING_WEB_CORS_ALLOWED_ORIGINS
-        fromService:
-          type: web
-          name: healthcare-frontend
-          property: url
+        sync: false
 
   # 2. React Frontend Static Site
-  - type: web
+  - type: static
     name: healthcare-frontend
-    env: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/build
     plan: free
@@ -34,7 +30,4 @@ services:
         destination: /index.html
     envVars:
       - key: REACT_APP_API_BASE_URL
-        fromService:
-          type: web
-          name: healthcare-backend
-          property: url
+        sync: false
