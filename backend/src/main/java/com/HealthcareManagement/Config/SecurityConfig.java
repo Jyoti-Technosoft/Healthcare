@@ -25,6 +25,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 @Configuration
@@ -43,34 +49,48 @@ public class SecurityConfig implements WebMvcConfigurer {
     private String allowedOrigins;
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        List<String> origins = Arrays.asList(allowedOrigins.split(","));
+        configuration.setAllowedOrigins(origins);
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .cors().and()
-                        .authorizeHttpRequests(requests -> requests
-                                .requestMatchers("/pdf/**").permitAll()
-                                .requestMatchers("/superAdmin/loginAdmin").permitAll()
-                                .requestMatchers("/superAdmin/forgotPassword/**").permitAll()
-                                .requestMatchers("/superAdmin/getReceptionist/**").permitAll()
-                                .requestMatchers("/superAdmin/auth/registerUsers").permitAll()
-                                .requestMatchers("/superAdmin/getPatient/**").authenticated()
-                                .requestMatchers("/superAdmin/getDoctors").permitAll()
-                                .requestMatchers("/swagger-ui/**").permitAll() // Allow all access to /swagger-ui/**
-                                .requestMatchers("/v2/api-docs/**", "/swagger-ui.html", "/swagger-resources/**").permitAll() // Additional paths for Swagger
-                                .requestMatchers("/superAdmin/getAllDoctorsWithImages").permitAll()
-                                .requestMatchers("/superAdmin/auth/registerPatient").authenticated()
-                                .requestMatchers("/doctor/auth/**").authenticated()
-                                .requestMatchers("/patient/auth/**").authenticated()
-                                .requestMatchers("/receptionist/auth/todayAppointment").authenticated()
-                                .requestMatchers("/receptionist/auth/updateReceptionistProfile").authenticated()
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/pdf/**").permitAll()
+                        .requestMatchers("/superAdmin/loginAdmin").permitAll()
+                        .requestMatchers("/superAdmin/forgotPassword/**").permitAll()
+                        .requestMatchers("/superAdmin/getReceptionist/**").permitAll()
+                        .requestMatchers("/superAdmin/auth/registerUsers").permitAll()
+                        .requestMatchers("/superAdmin/getPatient/**").authenticated()
+                        .requestMatchers("/superAdmin/getDoctors").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll() // Allow all access to /swagger-ui/**
+                        .requestMatchers("/v2/api-docs/**", "/swagger-ui.html", "/swagger-resources/**").permitAll() // Additional paths for Swagger
+                        .requestMatchers("/superAdmin/getAllDoctorsWithImages").permitAll()
+                        .requestMatchers("/superAdmin/auth/registerPatient").authenticated()
+                        .requestMatchers("/doctor/auth/**").authenticated()
+                        .requestMatchers("/patient/auth/**").authenticated()
+                        .requestMatchers("/receptionist/auth/todayAppointment").authenticated()
+                        .requestMatchers("/receptionist/auth/updateReceptionistProfile").authenticated()
 
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-                .httpBasic();
+                .anyRequest().authenticated()
+        )
+        .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )
+        .authenticationProvider(authenticationProvider())
+        .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+        .httpBasic();
 
         return http.build();
     }
