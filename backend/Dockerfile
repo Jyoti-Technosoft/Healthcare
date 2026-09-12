@@ -14,6 +14,9 @@ RUN mvn package -DskipTests -B
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
+# Install ca-certificates for SSL handshake validation
+RUN apk add --no-cache ca-certificates
+
 # Create non-root user for security
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
