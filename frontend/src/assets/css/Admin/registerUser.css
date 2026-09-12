@@ -1,0 +1,232 @@
+/* =========================================================
+   MAIN LAYOUT CONTAINER
+========================================================= */
+.background_part {
+  background: #f5f8fa;
+  min-height: 100vh;
+  /* Desktop: Push content to right */
+  margin-left: 266px; 
+  width: calc(100% - 266px);
+  /* Padding top allows space for fixed header */
+  padding: 120px 40px 35px 40px; 
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  box-sizing: border-box;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.register-card {
+  flex: 1;
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  padding: 40px 45px 35px 45px;
+  position: relative;
+  box-shadow: 0px 4px 4px #C7DBE940, 0px -3px 4px #C7DBE940, 4px 0px 4px #C7DBE940, -3px 0px 4px #C7DBE940;
+}
+
+/* =========================================================
+   BUTTONS & TITLE
+========================================================= */
+.register-back-btn {
+  width: 36px;
+  height: 36px;
+  position: absolute;
+  top: 26px;
+  left: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  color: #373737;
+}
+
+.register-back-btn:hover {
+  background: #f0f0f0;
+}
+
+.register-title {
+  font-weight: 600;
+  font-size: 20px;
+  color: #373737;
+  text-transform: uppercase;
+  margin-top: 35px; /* Adjusted for alignment */
+  margin-bottom: 25px;
+}
+
+.register-btn {
+  width: 190px !important;
+  height: 45px !important;
+  background: #0150B5 !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  border: none !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.register-btn:hover {
+  background: #013a82 !important;
+}
+
+/* =========================================================
+   FORM GRID SYSTEM
+========================================================= */
+.form-grid {
+  margin-top: 20px;
+  width: 100%;
+  display: grid;
+  /* Default: 2 Columns */
+  grid-template-columns: 1fr 1fr; 
+  gap: 20px;
+}
+
+/* Elements that should span full width in 2-col mode */
+.form-grid-full {
+  grid-column: span 2;
+}
+
+.form-label {
+  font-weight: 500 !important;
+  font-size: 15px !important;
+  color: #373737 !important;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* =========================================================
+   INPUT FIELDS
+========================================================= */
+.input-field,
+.form-control.input-field,
+.form-select.input-field {
+  background: #FFFFFF !important;
+  border: 1px solid #D9D9D9 !important;
+  height: 44px !important;
+  border-radius: 6px !important;
+  padding: 10px 12px !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  color: #373737 !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-field:focus {
+  box-shadow: none !important;
+  border-color: #0150B5 !important;
+  outline: none;
+}
+
+.invalid-feedback {
+  color: #DA4848;
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+/* =========================================================
+   PASSWORD EYE ICON FIX
+========================================================= */
+.input-group {
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100%;
+}
+
+.input-group .input-field {
+  border-right: none !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  z-index: 1;
+}
+
+.input-group .input-group-text {
+  height: 44px !important;
+  background-color: #ffffff !important;
+  border: 1px solid #D9D9D9 !important;
+  border-left: none !important;
+  border-radius: 0 6px 6px 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+/* Seamless border focus effect */
+.input-group .input-field:focus + .input-group-text {
+  border-color: #0150B5 !important;
+  border-left: none !important;
+}
+
+/* =========================================================
+   RESPONSIVE BREAKPOINTS
+========================================================= */
+
+/* 1. LAPTOP & SMALLER (Max Width 1024px) 
+   MATCHES SIDEBAR TOGGLE LOGIC */
+@media (max-width: 1024px) {
+  .background_part {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 110px 30px 35px !important; /* Adjusted padding */
+  }
+  
+  .register-card {
+    padding: 35px 30px !important;
+  }
+}
+
+/* 2. TABLETS & MOBILE (Max Width 768px) 
+   SWITCH TO SINGLE COLUMN */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr !important; /* Force 1 column */
+    gap: 15px !important;
+  }
+  
+  /* Reset the span 2 so it doesn't break layout in 1-col mode */
+  .form-grid-full {
+    grid-column: span 1 !important;
+  }
+
+  .register-btn {
+    width: 100% !important; /* Full width button on mobile */
+  }
+}
+
+/* 3. SMALL MOBILE (Max Width 480px) */
+@media (max-width: 480px) {
+  .background_part {
+    padding: 95px 15px 20px !important;
+  }
+
+  .register-card {
+    padding: 25px 20px !important;
+  }
+
+  .register-back-btn {
+    left: 15px;
+    top: 20px;
+  }
+
+  .register-title {
+    margin-top: 30px;
+    font-size: 18px !important;
+  }
+
+  .input-field, 
+  .input-group .input-group-text {
+    height: 42px !important;
+    font-size: 14px !important;
+  }
+}

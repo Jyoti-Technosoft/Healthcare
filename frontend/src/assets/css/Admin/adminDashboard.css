@@ -1,0 +1,337 @@
+/* =========================================================
+   GLOBAL LAYOUT
+========================================================= */
+.admin-dashboard-container {
+  margin-left: 266px;
+  padding: 100px 30px 30px;
+  min-height: 100vh;
+  background-color: #f5f8fa;
+  transition: margin-left 0.3s ease;
+}
+
+/* =========================================================
+   TOP GRID (Responsive 4 -> 2 -> 1)
+========================================================= */
+.admin-top-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Default 4 columns */
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.flat-card {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  height: 150px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.flat-card-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flat-card-info {
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+  text-align: right;
+}
+
+.flat-card-info h2 {
+  font-size: 36px;
+  margin: 0;
+  color: #333;
+  font-weight: 700;
+}
+
+.flat-card-info p {
+  color: #777;
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* =========================================================
+   MIDDLE GRID (Table Box)
+========================================================= */
+.admin-middle-grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.appointments-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f0f0f0;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column; 
+}
+
+.appointments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.appointments-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+}
+
+.appointments-header a {
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.box-content {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* =========================================================
+   PERFECT TABLE STYLES
+========================================================= */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto; /* Allows scrolling on mobile */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 14px;
+  table-layout: fixed; /* Locks column widths */
+  min-width: 600px; /* Forces scrollbar if screen is smaller than 600px */
+}
+
+/* Header */
+.admin-table thead tr {
+  background: #F0F8FF;
+}
+
+.admin-table th {
+  font-weight: 600;
+  font-size: 15px;
+  color: #373737;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e6edf5;
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Rows */
+.admin-table td {
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f2f5;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- STRICT COLUMN WIDTHS (Desktop Default) --- */
+
+/* 1. ID Column */
+.admin-table th:nth-child(1),
+.admin-table td:nth-child(1) {
+  width: 15%;       
+  min-width: 70px;
+  text-align: left;
+}
+
+/* 2. Email Column */
+.admin-table th:nth-child(2),
+.admin-table td:nth-child(2) {
+  width: 50%;       
+  text-align: left;
+  padding-left: 200px; /* Large gap for Desktop */
+}
+
+/* 3. Role Column */
+.admin-table th:nth-child(3),
+.admin-table td:nth-child(3) {
+  width: 10%;       
+  text-align: left;
+  padding-left: 50px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #888;
+}
+
+/* =========================================================
+   PAGINATION FOOTER
+========================================================= */
+.pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; 
+  gap: 16px;
+  padding: 12px 0;
+  background: transparent !important;
+  border-top: 1px solid #f9f9f9;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.pagination-footer label,
+.pagination-footer span,
+.pagination-footer select,
+.pagination-footer button {
+  font-weight: 500 !important;    
+  font-size: 12px !important;
+  color: #9E9E9E !important;
+  opacity: 1 !important;
+}
+
+.pagination-footer select {
+  border: none;
+  background: transparent;
+  padding: 2px 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+.pagination-footer button {
+  border: none;
+  background: transparent;
+  font-size: 14px !important;
+  cursor: pointer;
+  padding: 4px;
+  color: #9E9E9E !important;
+  display: flex;
+  align-items: center;
+}
+
+.pagination-footer button:hover:not(:disabled) {
+  background: #eee;
+  border-radius: 4px;
+  color: #555 !important;
+}
+
+.pagination-footer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5 !important;
+}
+
+/* =========================================================
+   RESPONSIVE MEDIA QUERIES
+========================================================= */
+
+/* 1. LAPTOPS & SMALL DESKTOPS (Max 1200px) */
+/* Reduce that huge 200px padding slightly so it doesn't break layout */
+@media (max-width: 1200px) {
+  .admin-table th:nth-child(2),
+  .admin-table td:nth-child(2) {
+    padding-left: 100px; /* Reduced from 200px */
+  }
+}
+
+/* 2. TABLETS (Max 992px) */
+@media (max-width: 992px) {
+  .admin-dashboard-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 100px 20px;
+  }
+
+  /* Further reduce padding for tablets */
+  .admin-table th:nth-child(2),
+  .admin-table td:nth-child(2) {
+    padding-left: 40px;
+  }
+
+  .admin-table th:nth-child(3),
+  .admin-table td:nth-child(3) {
+    padding-left: 20px;
+  }
+}
+
+/* 3. MOBILE PHONES (Max 768px) */
+@media (max-width: 768px) {
+  .admin-dashboard-container {
+    padding: 80px 15px 20px;
+  }
+
+  /* Card Grid becomes 1 column */
+  .admin-top-grid {
+    grid-template-columns: 1fr; 
+  }
+
+  /* Table Header Stack */
+  .appointments-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  /* TABLE ADJUSTMENTS */
+  /* Remove the large padding completely on mobile so data fits */
+  .admin-table th:nth-child(2),
+  .admin-table td:nth-child(2),
+  .admin-table th:nth-child(3),
+  .admin-table td:nth-child(3) {
+    padding-left: 16px; /* Standard padding */
+  }
+
+  /* Adjust column widths for mobile scrolling */
+  .admin-table th:nth-child(1), .admin-table td:nth-child(1) { width: 60px; }
+  .admin-table th:nth-child(2), .admin-table td:nth-child(2) { width: 200px; }
+  .admin-table th:nth-child(3), .admin-table td:nth-child(3) { width: 120px; }
+
+  /* Pagination */
+  .pagination-footer {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* 4. SMALL MOBILES (Max 480px) */
+@media (max-width: 480px) {
+  .flat-card {
+    height: auto;
+    min-height: 140px;
+  }
+  
+  .flat-card-info h2 {
+    font-size: 28px;
+  }
+
+  /* Ensure table wrapper handles scroll nicely */
+  .table-wrapper {
+    margin-right: -10px; /* Visual hack to show it scrolls */
+  }
+}

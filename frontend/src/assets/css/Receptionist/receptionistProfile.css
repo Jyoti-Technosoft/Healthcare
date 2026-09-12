@@ -1,0 +1,224 @@
+/* =========================================================
+ * MAIN CONTAINER (Desktop Default)
+ * ========================================================= */
+.profile-dashboard {
+  /* Default Desktop Spacing */
+  margin-left: 266px; /* Sidebar space */
+  margin-top: 80px;   /* Header space */
+  padding: 40px 30px;
+  width: calc(100% - 266px);
+  background: #f5f8fa;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+ * CARD STYLES
+ * ========================================================= */
+.profile-card {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 1000px; /* Prevents card from getting too wide on large screens */
+  margin: 0 auto;    /* Centers card */
+}
+
+.profile-title-row h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #373737;
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.divider-line {
+  border: 0;
+  height: 1px;
+  background: #e0e0e0;
+  margin-bottom: 20px;
+}
+
+/* =========================================================
+ * ROLE BADGE & INFO
+ * ========================================================= */
+.role-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.role-badge {
+  background: #e3f1ff;
+  color: #0150b5;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.join-date {
+  color: #757575;
+  font-size: 13px;
+}
+
+/* =========================================================
+ * FORM GRID & INPUTS
+ * ========================================================= */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns by default */
+  gap: 20px;
+}
+
+.form-full {
+  grid-column: 1 / -1; /* Spans full width */
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #373737;
+  margin-bottom: 6px;
+}
+
+.req {
+  color: #d32f2f;
+}
+
+.input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+  box-sizing: border-box; /* Critical for alignment */
+}
+
+.input:focus {
+  border-color: #0150b5;
+}
+
+.input[readonly], .input[disabled] {
+  background-color: #f9f9f9;
+  color: #757575;
+  cursor: default;
+}
+
+textarea.input {
+  height: 80px;
+  padding: 10px;
+  resize: none;
+}
+
+/* ERROR STATE */
+.input.error {
+  border-color: #d32f2f;
+}
+
+.error-text {
+  color: #d32f2f;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+/* =========================================================
+ * GENDER TOGGLE BUTTONS
+ * ========================================================= */
+.gender-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.gender-btn {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #d0d0d0;
+  background: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #757575;
+  transition: all 0.2s;
+}
+
+.gender-btn:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+.gender-btn.active {
+  background: #0150b5;
+  color: white;
+  border-color: #0150b5;
+}
+
+/* =========================================================
+ * ACTION BUTTONS (Edit / Update)
+ * ========================================================= */
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.edit-btn, .update-btn {
+  padding: 10px 30px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.edit-btn {
+  background: #e0e0e0;
+  color: #373737;
+}
+
+.update-btn {
+  background: #0150b5;
+  color: white;
+}
+
+/* =========================================================
+ * RESPONSIVE FIXES (The Solution)
+ * ========================================================= */
+
+/* 1. Tablet & Laptop (Max 1024px) */
+@media (max-width: 1024px) {
+  .profile-dashboard {
+    /* REMOVE MARGINS */
+    margin-left: 0 !important;
+    margin-top: 10 !important; 
+    width: 100% !important;
+    padding: 20px !important;
+  }
+  
+  .profile-card {
+    padding: 20px;
+  }
+}
+
+/* 2. Mobile (Max 768px) */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .profile-dashboard {
+    padding: 15px !important;
+    margin-top: 10 !important;
+  }
+}

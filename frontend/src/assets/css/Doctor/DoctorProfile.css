@@ -1,0 +1,244 @@
+/* =========================================================
+   MAIN LAYOUT - PROFILE DASHBOARD
+========================================================= */
+.profile-dashboard {
+  /* DESKTOP STATE (>= 993px) */
+  /* Matches the .sidebar width of 266px */
+  margin-left: 266px; 
+  width: calc(100% - 266px);
+  
+  /* Vertical Spacing */
+  margin-top: 80px; /* Adjust based on your Header height */
+  padding: 40px 30px;
+  
+  /* Appearance */
+  background: #f5f8fa;
+  box-sizing: border-box;
+  min-height: calc(100vh - 80px);
+  
+  /* Smooth transition when resizing window */
+  transition: margin-left 0.3s ease, width 0.3s ease, padding 0.3s ease;
+}
+
+/* =========================================================
+   RESPONSIVE BREAKPOINTS
+========================================================= */
+
+/* 1. TABLET/MOBILE BREAKPOINT (<= 992px) 
+   Crucial: Matches the Sidebar hiding point exactly. */
+@media (max-width: 992px) {
+  .profile-dashboard {
+    margin-left: 0;
+    width: 100%;
+    /* Add top padding to account for the fixed mobile header */
+    padding: 100px 20px 40px; 
+  }
+}
+
+/* 2. SMALL MOBILE ADJUSTMENTS (<= 480px) */
+@media (max-width: 480px) {
+  .profile-dashboard {
+    padding: 90px 15px 30px;
+  }
+}
+
+/* =========================================================
+   CARD STYLES
+========================================================= */
+.profile-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 35px 40px;
+  box-shadow: 4px 0 4px #c7dbe940, 0 -3px 4px #c7dbe940,
+              -3px 0 4px #c7dbe940, 0 4px 4px #c7dbe940;
+}
+
+/* Responsive Card Padding */
+@media (max-width: 768px) {
+  .profile-card {
+    padding: 30px 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-card {
+    padding: 25px 15px;
+  }
+}
+
+/* Title Row */
+.profile-title-row h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+  color: #373737;
+}
+
+/* Role Info */
+.role-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin: 12px 0 25px;
+  flex-wrap: wrap;
+}
+
+.role-badge {
+  background: #e1edff;
+  color: #0150b5;
+  padding: 5px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.join-date {
+  font-size: 13px;
+  color: #666;
+}
+
+/* =========================================================
+   FORM GRID
+========================================================= */
+.profile-form {
+  width: 100%;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns by default */
+  gap: 22px 32px;
+}
+
+.form-full {
+  grid-column: span 2;
+}
+
+/* Tablet Breakpoint for Grid: Stack inputs sooner for better touch targets */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr; /* Stack to 1 column */
+    gap: 20px;
+  }
+  
+  .form-full {
+    grid-column: span 1;
+  }
+}
+
+/* =========================================================
+   INPUTS & LABELS
+========================================================= */
+label {
+  font-weight: 500;
+  font-size: 15px;
+  color: #373737;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.req { color: #DA4848; }
+
+.input {
+  width: 100%;
+  height: 46px;
+  border-radius: 6px;
+  border: 1px solid #D9D9D9;
+  background: #fff;
+  padding: 10px 12px;
+  font-size: 15px;
+  box-sizing: border-box;
+  color: #333;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #0150b5;
+  box-shadow: 0 0 0 3px rgba(1, 80, 181, 0.1);
+}
+
+textarea.input {
+  height: 80px;
+  resize: none;
+}
+
+.input.error { border-color: #DA4848; }
+
+.error-text {
+  color: #DA4848;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* =========================================================
+   GENDER TOGGLE
+========================================================= */
+.gender-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.gender-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  border: 1px solid #c7c7c7;
+  cursor: pointer;
+  background: #fff;
+  transition: 0.2s;
+  color: #555;
+}
+
+.gender-btn.active {
+  background: #0150b5;
+  color: #fff;
+  border-color: #0150b5;
+}
+
+/* =========================================================
+   FOOTER BUTTONS
+========================================================= */
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+  gap: 15px; /* Added gap for when buttons stack or sit next to each other */
+}
+
+.edit-btn,
+.update-btn {
+  width: 140px;
+  height: 45px;
+  border-radius: 6px;
+  border: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.edit-btn {
+  background: #5a5a5a;
+}
+.edit-btn:hover { background: #444; }
+
+.update-btn {
+  background: #0150B5;
+}
+.update-btn:hover { background: #013f8e; }
+
+/* Mobile Button Adjustment */
+@media (max-width: 480px) {
+  .form-footer {
+    flex-direction: column;
+  }
+
+  .edit-btn,
+  .update-btn {
+    width: 100%;
+  }
+}

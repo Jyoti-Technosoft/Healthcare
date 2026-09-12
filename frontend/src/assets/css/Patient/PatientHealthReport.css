@@ -1,0 +1,152 @@
+/* PAGE WRAPPER */
+.patient-app-container {
+  margin-left: 266px;
+  margin-top: 80px;
+  padding: 40px 30px;
+  width: calc(100% - 266px);
+  background: #f5f8fa;
+  }
+
+@media (max-width: 768px) {
+  .patient-app-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 25px 18px;
+  }
+}
+
+/* CARD */
+.app-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px 30px 30px;
+  box-shadow: 4px 0 4px #c7dbe940, 
+              0 -3px 4px #c7dbe940,
+              -3px 0 4px #c7dbe940, 
+              0 4px 4px #c7dbe940;
+  position: relative;
+}
+
+/* BACK BUTTON */
+.go-back-btn {
+  font-size: 23px;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 5px;
+  border-radius: 50%;
+  transition: 0.25s ease;
+  display: inline-block;
+}
+.go-back-btn:hover {
+  background: #ebeef2;
+  color: #000;
+}
+
+/* TITLE */
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.title-row h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #373737;
+}
+
+/* DETAILS CARD */
+.patient-info-card {
+  background: #ffffff;
+  border: 1px solid #e4e8ef;
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+}
+
+/* DETAILS GRID */
+.patient-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 50px;
+  padding-top: 6px;
+}
+
+.patient-info-grid p {
+  margin: 4px 0;
+  font-size: 14.5px;
+}
+
+.patient-info-grid .label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.patient-info-grid .value {
+  color: #111827;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .patient-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* PRESCRIPTIONS LIST */
+.prescription-list {
+  padding-left: 18px;
+  margin: 0;
+}
+.prescription-list li {
+  font-size: 13.5px;
+  margin-bottom: 3px;
+  color: #333;
+}
+
+/* DATA TABLE HEAD */
+.rdt_TableHeadRow {
+  background: #f0f8ff !important;
+}
+
+.rdt_TableCol {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: #373737 !important;
+}
+
+.rdt_TableCell {
+  font-size: 14px !important;
+  color: #333;
+}
+
+/* PAGINATION */
+.rdt_Pagination {
+  background: transparent !important;        /* ← No white strip */
+  border-top: none !important;              /* Removes white border feel */
+  margin-top: 8px;
+  padding: 8px 0 !important;
+}
+
+.rdt_Pagination button {
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  padding: 4px 9px;
+  font-size: 13px;
+  color: #666;
+  background: transparent;
+  transition: 0.2s;
+}
+
+.rdt_Pagination button:hover {
+  background: #e6eefc;
+  color: #0150b5;
+  font-weight: 600;
+}
+
+.rdt_Pagination span {
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+}

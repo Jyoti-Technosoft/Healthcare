@@ -1,0 +1,270 @@
+/* ============================================================
+   MAIN CONTAINER & LAYOUT
+============================================================ */
+.doctor-dashboard {
+  margin-left: 266px;
+  margin-top: 80px; 
+  padding: 40px 30px;
+  width: calc(100% - 266px);
+  background: #f5f8fa;
+  min-height: 100vh;
+  box-sizing: border-box;
+  transition: margin-left 0.3s ease;
+}
+
+/* CARD WRAPPER */
+.doctor-list-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px 30px 30px;
+  box-shadow: 4px 0 4px #c7dbe940, 0 -3px 4px #c7dbe940,
+    -3px 0 4px #c7dbe940, 0 4px 4px #c7dbe940;
+}
+
+/* HEADER SECTION */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-patient {
+  font-size: 16px;
+  color: #373737;
+  margin-bottom: 0;
+  }
+
+/* Add Button */
+.btn-add {
+  background: #0150b5;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+  }
+
+.btn-add:hover {
+  background: #013a82;
+}
+
+.divider-line {
+  width: 100%;
+  height: 1px;
+  background: #d9d9d9;
+  margin: 15px 0;
+  border: none;
+  opacity: 1;
+}
+
+/* TITLE + SEARCH */
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title-row h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #373737;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  width: 212px;
+  height: 35px;
+  background: white;
+  border: 1px solid #c7dbe940;
+  padding: 0 40px 0 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  box-shadow: 0px 1px 2px #c7dbe940;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.search-box input:focus {
+  border-color: #0150b5;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #373737;
+}
+
+/* ============================================================
+   PERFECTLY ALIGNED HTML TABLE (ALL LEFT ALIGNED)
+============================================================ */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.appointment-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 14px;
+  table-layout: fixed; /* Locks column widths */
+  min-width: 1800px; /* LARGE WIDTH: Because this table has MANY columns */
+}
+
+/* Header Styles */
+.appointment-table thead tr {
+  background: #F0F8FF;
+  border-bottom: 1px solid #e6edf5;
+  height: 50px;
+}
+
+.appointment-table th {
+  font-weight: 600;
+  font-size: 15px;
+  color: #373737;
+  padding: 0 16px;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Body Styles */
+.appointment-table td {
+  font-size: 14px;
+  color: #333;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f2f5;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+/* --- COLUMN WIDTHS (Total: 15 Columns) --- */
+/* Adjusted for density */
+
+.appointment-table th:nth-child(1), .appointment-table td:nth-child(1) { width: 70px; }  /* Index */
+.appointment-table th:nth-child(2), .appointment-table td:nth-child(2) { width: 130px; } /* ID */
+.appointment-table th:nth-child(3), .appointment-table td:nth-child(3) { width: 150px; } /* Name */
+.appointment-table th:nth-child(4), .appointment-table td:nth-child(4) { width: 200px; } /* Email */
+.appointment-table th:nth-child(5), .appointment-table td:nth-child(5) { width: 120px; } /* Contact */
+.appointment-table th:nth-child(6), .appointment-table td:nth-child(6) { width: 80px; }  /* Gender */
+.appointment-table th:nth-child(7), .appointment-table td:nth-child(7) { width: 60px; }  /* Age */
+.appointment-table th:nth-child(8), .appointment-table td:nth-child(8) { width: 80px; }  /* Weight */
+.appointment-table th:nth-child(9), .appointment-table td:nth-child(9) { width: 80px; }  /* Height */
+.appointment-table th:nth-child(10), .appointment-table td:nth-child(10) { width: 200px; } /* Address */
+.appointment-table th:nth-child(11), .appointment-table td:nth-child(11) { width: 150px; } /* Doctor */
+.appointment-table th:nth-child(12), .appointment-table td:nth-child(12) { width: 150px; } /* Department */
+.appointment-table th:nth-child(13), .appointment-table td:nth-child(13) { width: 120px; } /* Date */
+.appointment-table th:nth-child(14), .appointment-table td:nth-child(14) { width: 120px; } /* Time */
+.appointment-table th:nth-child(15), .appointment-table td:nth-child(15) { width: 100px; } /* Fees */
+.appointment-table th:nth-child(16), .appointment-table td:nth-child(16) { width: 120px; } /* Payment */
+
+
+.no-data {
+  text-align: left;
+  padding: 20px 16px;
+  color: #888;
+  font-style: italic;
+}
+
+/* ============================================================
+   PAGINATION FOOTER
+============================================================ */
+.pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 12px 0;
+  background: transparent;
+  border-top: 1px solid #f9f9f9;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.pagination-footer label,
+.pagination-footer span,
+.pagination-footer select,
+.pagination-footer button {
+  font-weight: 500;
+  font-size: 12px;
+  color: #9E9E9E;
+}
+
+.pagination-footer select {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.pagination-footer button {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  color: #9E9E9E;
+}
+
+.pagination-footer button:hover:not(:disabled) {
+  background: #eee;
+  border-radius: 4px;
+  color: #555;
+}
+
+.pagination-footer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ============================================================
+   RESPONSIVE MEDIA QUERIES
+============================================================ */
+@media (max-width: 1024px) {
+  .doctor-dashboard {
+    margin-left: 0;
+    width: 100%;
+    padding: 35px 20px;
+  }
+  .top-header, .title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .search-box { width: 100%; }
+  .search-box input { width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .doctor-dashboard {
+    padding: 25px 15px;
+  }
+  
+  .pagination-footer {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}

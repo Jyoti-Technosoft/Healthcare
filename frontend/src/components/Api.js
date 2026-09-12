@@ -2,9 +2,11 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 const token = Cookies.get('authToken');
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8082';
+
 export async function loginAdminApi(userData) {
     try {
-        const response = await axios.post("http://localhost:8080/superAdmin/loginAdmin", userData);
+        const response = await axios.post(`${API_BASE_URL}/superAdmin/loginAdmin`, userData);
         return response.data;
     } catch (error) {
         throw error;
@@ -13,8 +15,8 @@ export async function loginAdminApi(userData) {
 
 export async function registerUserApi(userData) {
     try {
-        
-        const response = await axios.post("http://localhost:8080/superAdmin/auth/registerUsers", userData,{
+
+        const response = await axios.post(`${API_BASE_URL}/superAdmin/auth/registerUsers`, userData,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -27,17 +29,17 @@ export async function registerUserApi(userData) {
 
 export async function getReceptionistApi(userId) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/superAdmin/getReceptionist/${userId}`);
+
+        const response = await axios.get(`${API_BASE_URL}/superAdmin/getReceptionist/${userId}`);
         return response.data;
     } catch (error) {
         throw error;
     }
 }
-export async function getPatientApi(userId,token) {
+export async function getPatientApi(userId, token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/superAdmin/getPatient/${userId}`,{
+
+        const response = await axios.get(`${API_BASE_URL}/superAdmin/getPatient/${userId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -47,14 +49,14 @@ export async function getPatientApi(userId,token) {
         throw error;
     }
 }
-export async function getDoctorsWithIdApi(userId,token) {
+export async function getDoctorsWithIdApi(userId, token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/doctor/auth/getDoctor/${userId}`,{
+
+        const response = await axios.get(`${API_BASE_URL}/doctor/auth/getDoctor/${userId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
-        });      
+        });
         return response.data;
     } catch (error) {
         throw error;
@@ -67,7 +69,7 @@ export async function registerDoctorApi(userData, doctorImageData, token) {
         formData.append('userDTOString', JSON.stringify(userData));
         formData.append('image', doctorImageData);
 
-        const response = await axios.post("http://localhost:8080/superAdmin/auth/registerDoctors", formData, {
+        const response = await axios.post(`${API_BASE_URL}/superAdmin/auth/registerDoctors`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
@@ -81,8 +83,8 @@ export async function registerDoctorApi(userData, doctorImageData, token) {
 
 export async function getDoctorsApi() {
     try {
-        
-        const response = await axios.get("http://localhost:8080/superAdmin/getAllDoctorsWithImages");
+
+        const response = await axios.get(`${API_BASE_URL}/superAdmin/getAllDoctorsWithImages`);
         return response.data;
     } catch (error) {
         throw error;
@@ -90,14 +92,14 @@ export async function getDoctorsApi() {
 }
 
 
-export async function updateReceptionistProfileApi(userId,email,currentPassword,password,name,contact,gender,dateOfBirth,address,age,navigate) {
+export async function updateReceptionistProfileApi(userId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age, navigate) {
     try {
         if (!token) {
             console.log('User not authenticated. Redirecting to login...');
             navigate('/login');
             return;
         }
-        const userData={
+        const userData = {
             email,
             currentPassword,
             password,
@@ -109,7 +111,7 @@ export async function updateReceptionistProfileApi(userId,email,currentPassword,
             age,
         }
 
-        const response = await axios.put(`http://localhost:8080/receptionist/auth/updateReceptionistProfile/${userId}`,userData,{
+        const response = await axios.put(`${API_BASE_URL}/receptionist/auth/updateReceptionistProfile/${userId}`,userData,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -122,9 +124,9 @@ export async function updateReceptionistProfileApi(userId,email,currentPassword,
     }
 }
 
-export async function updatePatientProfileApi(patientId,email,currentPassword,password,name,contact,gender,dateOfBirth,address,age,weight,height,navigate) {
+export async function updatePatientProfileApi(patientId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age, weight, height, navigate) {
     try {
-        const userData={
+        const userData = {
             email,
             currentPassword,
             password,
@@ -138,7 +140,7 @@ export async function updatePatientProfileApi(patientId,email,currentPassword,pa
             height,
         }
 
-        const response = await axios.put(`http://localhost:8080/patient/auth/updatePatientProfile/${patientId}`,userData,{
+        const response = await axios.put(`${API_BASE_URL}/patient/auth/updatePatientProfile/${patientId}`,userData,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -149,14 +151,14 @@ export async function updatePatientProfileApi(patientId,email,currentPassword,pa
     }
 }
 
-export async function updateDoctorProfileApi(userId,email,currentPassword,password,name,contact,gender,dateOfBirth,address,age,navigate) {
+export async function updateDoctorProfileApi(userId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age, navigate) {
     try {
         if (!token) {
             console.log('User not authenticated. Redirecting to login...');
             navigate('/login');
             return;
         }
-        const userData={
+        const userData = {
             email,
             currentPassword,
             password,
@@ -168,7 +170,7 @@ export async function updateDoctorProfileApi(userId,email,currentPassword,passwo
             age,
         }
 
-        const response = await axios.put(`http://localhost:8080/doctor/auth/updateDoctorProfile/${userId}`,userData,{
+        const response = await axios.put(`${API_BASE_URL}/doctor/auth/updateDoctorProfile/${userId}`,userData,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -181,8 +183,8 @@ export async function updateDoctorProfileApi(userId,email,currentPassword,passwo
 
 export async function registerPatientApi(userData) {
     try {
-        
-        const response = await axios.post("http://localhost:8080/superAdmin/auth/registerPatient", userData,{
+
+        const response = await axios.post(`${API_BASE_URL}/superAdmin/auth/registerPatient`, userData,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -193,10 +195,10 @@ export async function registerPatientApi(userData) {
     }
 }
 
-export async function getSearchPatientsApi(query,token) {
+export async function getSearchPatientsApi(query, token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/receptionist/auth/searchPatient?query=${query}`, { 
+
+        const response = await axios.get(`${API_BASE_URL}/receptionist/auth/searchPatient?query=${query}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -208,8 +210,8 @@ export async function getSearchPatientsApi(query,token) {
 }
 export async function getAllPatientsApi(token) {
     try {
-        
-        const response = await axios.get("http://localhost:8080/receptionist/auth/allPatientsList", { 
+
+        const response = await axios.get(`${API_BASE_URL}/receptionist/auth/allPatientsList`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -220,11 +222,11 @@ export async function getAllPatientsApi(token) {
     }
 }
 
-export async function getAvailableSlots(doctorId, date,token) {
+export async function getAvailableSlots(doctorId, date, token) {
     try {
-        
-        
-        const response = await axios.get(`http://localhost:8080/receptionist/auth/availableSlots`, {
+
+
+        const response = await axios.get(`${API_BASE_URL}/receptionist/auth/availableSlots`, {
             params: {
                 doctorId,
                 date: new Date(date).toISOString().split('T')[0]
@@ -238,19 +240,19 @@ export async function getAvailableSlots(doctorId, date,token) {
         throw error;
     }
 }
- 
 
-export async function bookAppointmentApi(doctorId,patientId,appointmentDate,appointmentTime,token) {
+
+export async function bookAppointmentApi(doctorId, patientId, appointmentDate, appointmentTime, token) {
     try {
-        const userData={
+        const userData = {
             doctorId,
             patientId,
             appointmentDate,
             appointmentTime,
-            
+
         }
 
-        const response = await axios.post("http://localhost:8080/receptionist/auth/bookAppointment",userData,{
+        const response = await axios.post(`${API_BASE_URL}/receptionist/auth/bookAppointment`,userData,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -259,13 +261,13 @@ export async function bookAppointmentApi(doctorId,patientId,appointmentDate,appo
     } catch (error) {
         console.log(error);
         throw error;
-        
+
     }
 }
 
-export async function fetchConsultationChargeApi(patientId,doctorId,date,token){
-    try{
-        const response = await axios.get(`http://localhost:8080/receptionist/auth/patientConsultationCharge`, { 
+export async function fetchConsultationChargeApi(patientId, doctorId, date, token) {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/receptionist/auth/patientConsultationCharge`, {
             params: {
                 patientId,
                 doctorId,
@@ -276,15 +278,15 @@ export async function fetchConsultationChargeApi(patientId,doctorId,date,token){
             },
         });
         return response.data;
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-export async function getAllAppointmentsApi(doctorId,token) {
+export async function getAllAppointmentsApi(doctorId, token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/doctor/auth/new/allAppointments/${doctorId}`,{
+
+        const response = await axios.get(`${API_BASE_URL}/doctor/auth/new/allAppointments/${doctorId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -294,10 +296,10 @@ export async function getAllAppointmentsApi(doctorId,token) {
         throw error;
     }
 }
-export async function getAppointmentWithoutHealthReport(doctorId,token) {
+export async function getAppointmentWithoutHealthReport(doctorId, token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/doctor/auth/AppointmentWithoutHealthReport/${doctorId}`,{
+
+        const response = await axios.get(`${API_BASE_URL}/doctor/auth/AppointmentWithoutHealthReport/${doctorId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -307,10 +309,10 @@ export async function getAppointmentWithoutHealthReport(doctorId,token) {
         throw error;
     }
 }
-export async function getAppointmentByUserId(userId,token) {
+export async function getAppointmentByUserId(userId, token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/receptionist/auth/getAppointments/${userId}`,{
+
+        const response = await axios.get(`${API_BASE_URL}/receptionist/auth/getAppointments/${userId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -322,8 +324,8 @@ export async function getAppointmentByUserId(userId,token) {
 }
 export async function getAllAppointments(token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/receptionist/auth/getAppointments`,{
+
+        const response = await axios.get(`${API_BASE_URL}/receptionist/auth/getAppointments`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -335,8 +337,8 @@ export async function getAllAppointments(token) {
 }
 export async function getAllDoctors(token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/receptionist/auth/getDoctors`,{
+
+        const response = await axios.get(`${API_BASE_URL}/receptionist/auth/getDoctors`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -348,8 +350,8 @@ export async function getAllDoctors(token) {
 }
 export async function getAllHealthreports(token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/doctor/auth/allHealthReport`,{
+
+        const response = await axios.get(`${API_BASE_URL}/doctor/auth/allHealthReport`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -359,10 +361,10 @@ export async function getAllHealthreports(token) {
         throw error;
     }
 }
-export async function getHealthreportsByAppointmentId(appointmentId,token) {
+export async function getHealthreportsByAppointmentId(appointmentId, token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/doctor/auth/healthReport/${appointmentId}`,{
+
+        const response = await axios.get(`${API_BASE_URL}/doctor/auth/healthReport/${appointmentId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -372,10 +374,10 @@ export async function getHealthreportsByAppointmentId(appointmentId,token) {
         throw error;
     }
 }
-export async function submitConsultationReport(appointmentId,data,token) {
+export async function submitConsultationReport(appointmentId, data, token) {
     try {
-        
-        const response = await axios.post(`http://localhost:8080/doctor/auth/healthReport/${appointmentId}`,data,{
+
+        const response = await axios.post(`${API_BASE_URL}/doctor/auth/healthReport/${appointmentId}`,data,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -385,10 +387,10 @@ export async function submitConsultationReport(appointmentId,data,token) {
         throw error;
     }
 }
-export async function getPatientsListForDoctor(doctorId,token) {
+export async function getPatientsListForDoctor(doctorId, token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/doctor/auth/patients/${doctorId}`,{
+
+        const response = await axios.get(`${API_BASE_URL}/doctor/auth/patients/${doctorId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -398,10 +400,10 @@ export async function getPatientsListForDoctor(doctorId,token) {
         throw error;
     }
 }
-export async function getAllAppointmentsForPatient(patientId,token) {
+export async function getAllAppointmentsForPatient(patientId, token) {
     try {
-        
-        const response = await axios.get(`http://localhost:8080/patient/auth/new/allAppointments/${patientId}`,{
+
+        const response = await axios.get(`${API_BASE_URL}/patient/auth/new/allAppointments/${patientId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -412,22 +414,22 @@ export async function getAllAppointmentsForPatient(patientId,token) {
     }
 }
 
-export async function getAllUsers(token){
-    try{
-        const response = await axios.get("http://localhost:8080/superAdmin/auth/getUsers", {  
+export async function getAllUsers(token) {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/superAdmin/auth/getUsers`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
         return response.data;
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }
 export async function updatePatientArrive(appointmentIds, token) {
     try {
         const appointmentIdsParam = appointmentIds.join(','); // Convert array to comma-separated string
-        const response = await axios.put(`http://localhost:8080/receptionist/auth/todayAppointment?appointmentIds=${appointmentIdsParam}`, null, {
+        const response = await axios.put(`${API_BASE_URL}/receptionist/auth/todayAppointment?appointmentIds=${appointmentIdsParam}`, null, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -437,16 +439,16 @@ export async function updatePatientArrive(appointmentIds, token) {
         throw error;
     }
 }
-export async function doctorLeaveRequest(fromDate,toDate,fromTime,toTime,reason,doctorId,token){
-    try {       
-        const userData={
+export async function doctorLeaveRequest(fromDate, toDate, fromTime, toTime, reason, doctorId, token) {
+    try {
+        const userData = {
             fromDate,
             toDate,
             fromTime,
             toTime,
             reason,
-        } 
-        const response = await axios.post(`http://localhost:8080/doctor/auth/doctorLeaveRequest/${doctorId}`,userData,{
+        }
+        const response = await axios.post(`${API_BASE_URL}/doctor/auth/doctorLeaveRequest/${doctorId}`,userData,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -457,61 +459,61 @@ export async function doctorLeaveRequest(fromDate,toDate,fromTime,toTime,reason,
     }
 }
 
-export async function getDoctorLeaveRequest(doctorId,token){
-    try{
-        const response = await axios.get(`http://localhost:8080/doctor/auth/getDoctorLeaveRequest/${doctorId}`,{
+export async function getDoctorLeaveRequest(doctorId, token) {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/doctor/auth/getDoctorLeaveRequest/${doctorId}`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
         return response.data;
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }
-export async function getAllDoctorsLeaveRequest(token){
-    try{
-        const response = await axios.get("http://localhost:8080/receptionist/auth/getAllDoctorsLeaveRequest", { 
+export async function getAllDoctorsLeaveRequest(token) {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/receptionist/auth/getAllDoctorsLeaveRequest`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
         return response.data;
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }
-export async function sendOTP(emailId){
-    try{
-        const response = await axios.post(`http://localhost:8080/superAdmin/forgotPassword/SendOTP/${emailId}`);
+export async function sendOTP(emailId) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/superAdmin/forgotPassword/SendOTP/${emailId}`);
         return response.data;
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }
-export async function verifyOTP(emailId, otp){
-    try{
-        const response = await axios.post('http://localhost:8080/superAdmin/forgotPassword/verifyOTP',null,{
+export async function verifyOTP(emailId, otp) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/superAdmin/forgotPassword/verifyOTP`,null,{
             params: {
                 emailId,
                 otp
             }
         });
         return response.data;
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }
-export async function changePassword(emailId, newPassword){
-    try{
-        const response = await axios.put('http://localhost:8080/superAdmin/forgotPassword/changePassword',null,{
+export async function changePassword(emailId, newPassword) {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/superAdmin/forgotPassword/changePassword`,null,{
             params: {
                 emailId,
                 newPassword
             }
         });
         return response.data;
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }

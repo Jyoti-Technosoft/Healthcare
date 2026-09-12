@@ -1,60 +1,61 @@
-import React, { useState } from 'react';
-import { Backdrop } from '@mui/material';
-import SlidePanel from './SlidePanel';
+import { useState } from "react";
+import SlidePanel from "./SlidePanel";
+import "../../assets/css/Patient/HealthCalculator.css";
 
 export default function HealthCalculator() {
-    const [showForm, setShowForm] = useState(false);
-    const [activePanel, setActivePanel] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [activePanel, setActivePanel] = useState(null);
 
-    const toggleForm = (panel) => () => {
-        setShowForm(prevState => !prevState);
-        setActivePanel(panel);
-    };
-    return (
-        <div>
-            <Backdrop open={showForm} onClick={() => setShowForm(false)} style={{ opacity: 0 }} />
-            <SlidePanel showForm={showForm} toggleForm={toggleForm} activePanel={activePanel} />
 
-            <div className="d-flex justify-content-center align-items-center ">
-                <div className="container">
-                    <h1>Fitness</h1>
-                    <div className="row row-cols-1 row-cols-md-3">
-                        <div className="col mb-4">
-                            <div className="card  h-100 rounded border-0 justify-content-center" >
-                                <div className="card-body p-1 ">
-                                    <div className="d-flex justify-content-center">
-                                        <img src="img/age.jpg" className="card-img-top mt-2  rounded" style={{ width: '100%', height: '150px', objectFit: 'cover' }} alt="card1" />
-                                    </div>
-                                    <p className='text-center mt-2'>Age Calculator</p>
-                                    <a href="#" className="btn btn-block" style={{ backgroundColor: '#1977cc', color: 'white' }} onClick={toggleForm('Age')}>Calculate</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col mb-4">
-                            <div className="card  h-100 rounded border-0 justify-content-center" >
-                                <div className="card-body p-1 ">
-                                    <div className="d-flex justify-content-center">
-                                        <img src="img/bmi.jpg" className="card-img-top mt-2  rounded" style={{ width: '100%', height: '150px', objectFit: 'cover' }} alt="card 2" />
-                                    </div>
-                                    <p className='text-center mt-2'>BMI Calculator</p>
-                                    <a href="#" className="btn btn-block" style={{ backgroundColor: '#1977cc', color: 'white' }} onClick={toggleForm('BMI')}>Calculate</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col mb-4">
-                            <div className="card  h-100 rounded border-0 justify-content-center" >
-                                <div className="card-body p-1 ">
-                                    <div className="d-flex justify-content-center">
-                                        <img src="img/idealWeight.jpg" className="card-img-top mt-2  rounded" style={{ width: '100%', height: '150px', objectFit: 'cover' }} alt="card 3" />
-                                    </div>
-                                    <p className='text-center mt-2'>Know the ideal weight</p>
-                                    <a href="#" className="btn btn-block" style={{ backgroundColor: '#1977cc', color: 'white' }} onClick={toggleForm('IdealWeight')}>Calculate</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  const toggleForm = (panel) => () => {
+    setShowForm(true);
+    setActivePanel(panel);
+  };
+
+
+  const closeForm = () => {
+    setShowForm(false);
+    setActivePanel(null);
+  };
+
+  const cards = [
+    { title: "Age Calculator", img: "img/age.jpg", panel: "Age" },
+    { title: "BMI Calculator", img: "img/bmi.jpg", panel: "BMI" },
+    { title: "Ideal Weight", img: "img/idealWeight.jpg", panel: "IdealWeight" },
+  ];
+
+  return (
+    <div className="hc-wrapper">
+      {/* DARK BACKDROP BEHIND PANEL */}
+      {showForm && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-3 z-40"
+          onClick={closeForm}
+        />
+      )}
+
+      <SlidePanel
+        showForm={showForm}
+        toggleForm={toggleForm}
+        closeForm={closeForm} // <-- added
+        activePanel={activePanel}
+      />
+
+      <h2 className="hc-title">Health & Fitness Tools</h2>
+
+      <div className="hc-grid">
+        {cards.map((c, i) => (
+          <div key={i} className="hc-card">
+            <img src={c.img} alt={c.title} className="hc-img" />
+            <div className="hc-overlay">
+              <h4>{c.title}</h4>
+              <button onClick={toggleForm(c.panel)} className="hc-btn">
+                Calculate
+              </button>
             </div>
-        </div>
-    )
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }

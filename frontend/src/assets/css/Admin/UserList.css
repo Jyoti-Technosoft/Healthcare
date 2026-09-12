@@ -1,0 +1,310 @@
+/* ============================================================
+   MAIN CONTAINER & LAYOUT
+============================================================ */
+.doctor-dashboard {
+  margin-left: 266px;
+  margin-top: 80px;
+  padding: 40px 30px;
+  width: calc(100% - 266px);
+  background: #f5f8fa;
+  min-height: 100vh;
+  box-sizing: border-box;
+  transition: margin-left 0.3s ease;
+}
+
+/* CARD WRAPPER */
+.doctor-list-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px 30px 30px;
+  box-shadow: 4px 0 4px #c7dbe940, 0 -3px 4px #c7dbe940,
+    -3px 0 4px #c7dbe940, 0 4px 4px #c7dbe940;
+}
+
+/* HEADER SECTION */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-patient {
+  font-size: 16px;
+  color: #373737;
+  margin-bottom: 0;
+  }
+
+.btn-add {
+  background: #0150b5;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+  }
+
+.btn-add:hover {
+  background: #013a82;
+}
+
+.divider-line {
+  width: 100%;
+  height: 1px;
+  background: #d9d9d9;
+  margin: 15px 0;
+  border: none;
+  opacity: 1;
+}
+
+/* TITLE + SEARCH */
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title-row h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #373737;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  width: 212px;
+  height: 35px;
+  background: white;
+  border: 1px solid #c7dbe940;
+  padding: 0 40px 0 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  box-shadow: 0px 1px 2px #c7dbe940;
+  outline: none;
+  }
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #373737;
+}
+
+/* ============================================================
+   PERFECTLY ALIGNED HTML TABLE
+============================================================ */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto; /* Enable horizontal scroll */
+  -webkit-overflow-scrolling: touch;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 14px;
+  table-layout: fixed; 
+  min-width: 600px; /* FORCE MIN WIDTH: Ensures table scrolls instead of squishing */
+}
+
+/* Header Styles */
+.user-table thead tr {
+  background: #F0F8FF;
+  border-bottom: 1px solid #e6edf5;
+}
+
+.user-table th {
+  font-weight: 600;
+  font-size: 15px;
+  color: #373737;
+  padding: 14px 16px;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Body Styles */
+.user-table td {
+  font-size: 14px;
+  color: #333;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f2f5;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- STRICT COLUMN WIDTHS --- */
+
+/* 1. Index Column */
+.user-table th:nth-child(1),
+.user-table td:nth-child(1) {
+  width: 20%;     
+  min-width: 60px;
+  text-align: left;
+}
+
+/* 2. ID Column */
+.user-table th:nth-child(2),
+.user-table td:nth-child(2) {
+  width: 20%;      
+  min-width: 80px;
+  text-align: left;
+}
+
+/* 3. Email Column */
+.user-table th:nth-child(3),
+.user-table td:nth-child(3) {
+  width: 30%;      
+  text-align: left;
+  padding-left: 30px; /* Desktop Visual Gap */
+}
+
+/* 4. Role Column */
+.user-table th:nth-child(4),
+.user-table td:nth-child(4) {
+  width: 10%;
+  text-align: left;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-style: italic;
+}
+
+/* ============================================================
+   PAGINATION FOOTER
+============================================================ */
+.pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 12px 0;
+  background: transparent;
+  border-top: 1px solid #f9f9f9;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.pagination-footer label,
+.pagination-footer span,
+.pagination-footer select,
+.pagination-footer button {
+  font-weight: 500;
+  font-size: 12px;
+  color: #9E9E9E;
+}
+
+.pagination-footer select {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.pagination-footer button {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  color: #9E9E9E;
+}
+
+.pagination-footer button:hover:not(:disabled) {
+  background: #eee;
+  border-radius: 4px;
+  color: #555;
+}
+
+.pagination-footer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ============================================================
+   RESPONSIVE MEDIA QUERIES
+============================================================ */
+
+/* 1. TABLET LANDSCAPE (Max 1024px) */
+@media (max-width: 1024px) {
+  .doctor-dashboard {
+    margin-left: 0;
+    width: 100%;
+    padding: 35px 24px;
+  }
+  .top-header, .title-row {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+}
+
+/* 2. TABLET PORTRAIT (Max 768px) */
+@media (max-width: 768px) {
+  .doctor-dashboard {
+    padding: 30px 20px;
+  }
+  .doctor-list-card {
+    padding: 20px;
+  }
+  .title-row h3 {
+    font-size: 18px;
+  }
+  .search-box input {
+    width: 180px;
+  }
+
+  /* Reset Padding on Email column for smaller screens */
+  .user-table th:nth-child(3),
+  .user-table td:nth-child(3) {
+    padding-left: 16px; 
+  }
+}
+
+/* 3. MOBILE (Max 425px) */
+@media (max-width: 425px) {
+  .doctor-dashboard {
+    padding: 22px 16px;
+  }
+
+  /* Stack Headers */
+  .top-header, .title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  /* Full Width Button & Search */
+  .btn-add {
+    width: 100%;
+    justify-content: center;
+  }
+  .search-box {
+    width: 100%;
+  }
+  .search-box input {
+    width: 100%;
+  }
+
+  /* Wrap Pagination */
+  .pagination-footer {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}

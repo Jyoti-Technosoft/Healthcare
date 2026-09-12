@@ -1,434 +1,292 @@
-import React, { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
-import { getPatientApi } from "../Api";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { updatePatientProfileApi } from '../Api';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+import { getPatientApi, updatePatientProfileApi } from "../Api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import "../../assets/css/Patient/patientProfile.css";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function PatientProfile() {
   const userId = Cookies.get("userId");
-  const authToken = Cookies.get('authToken');
-  const totalSteps = 3;
-  const [step, setStep] = useState(1);
+  const authToken = Cookies.get("authToken");
+
+  const [editMode, setEditMode] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  // Form fields
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
-  const [dateOfBirth, setDob] = useState("");
+  const [dob, setDob] = useState("");
   const [age, setAge] = useState("");
-  const [gender, setGender] = useState('');
+  const [gender, setGender] = useState("");
   const [address, setAddress] = useState("");
-  const [role, setRole] = useState("");
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
+  const [role, setRole] = useState("");
   const [patientId, setPatientId] = useState("");
-  const [editMode, setEditMode] = useState(false);
 
+  // Password fields
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const [currentPasswordVisibility, setCurrentPasswordVisibility] = useState(true);
   const [newPasswordVisibility, setNewPasswordVisibility] = useState(true);
   const [confirmPasswordVisibility, setConfirmPasswordVisibility] = useState(true);
 
-  const capitalizeName = (name) => {
-    return name.toLowerCase().replace(/(^|\s)\S/g, (firstLetter) => firstLetter.toUpperCase());
-  };
-  const calculateAge = (dateOfBirth) => {
+  const calculateAge = (birthDate) => {
     const today = new Date();
-    const birthDate = new Date(dateOfBirth);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    const dobDate = new Date(birthDate);
+    let age = today.getFullYear() - dobDate.getFullYear();
+    const monthDiff = today.getMonth() - dobDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dobDate.getDate())) {
       age--;
     }
     return age;
   };
-  const handleGenderChange = (event) => {
-    setGender(event.target.value);
-  };
-  const toggleCurrentPasswordVisibility = () => {
-    setCurrentPasswordVisibility(!currentPasswordVisibility);
-  };
-  const toggleNewPasswordVisibility = () => {
-    setNewPasswordVisibility(!newPasswordVisibility);
-  };
-  const toggleConfirmPasswordVisibility = () => {
-    setConfirmPasswordVisibility(!confirmPasswordVisibility);
-  };
 
   useEffect(() => {
-
-    async function fetchData() {
+    async function fetchProfile() {
       try {
-        const userData = await getPatientApi(userId, authToken);
-        setEmail(userData.user.email);
-        setPatientId(userData.id);
-        setName(userData.name);
-        setRole(userData.user.role);
-        setContact(userData.contact);
-        const formattedDate = new Date(userData.dateOfBirth).toISOString().substr(0, 10);
-        setDob(formattedDate);
-        setAge(userData.age);
-        setGender(userData.gender);
-        setAddress(userData.address);
-        setWeight(userData.weight);
-        setHeight(userData.height);
+        const data = await getPatientApi(userId, authToken);
+        setEmail(data.user.email);
+        setName(data.name);
+        setContact(data.contact);
+        setDob(new Date(data.dateOfBirth).toISOString().substr(0, 10));
+        setAge(data.age);
+        setGender(data.gender);
+        setAddress(data.address);
+        setWeight(data.weight);
+        setHeight(data.height);
+        setRole(data.user.role);
+        setPatientId(data.id);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error("Error fetching profile", error);
       }
     }
-    fetchData();
-    // eslint-disable-next-line
+    fetchProfile();
   }, []);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = {};
+
+    if (!name) validationErrors.name = "Required";
+    if (!contact) validationErrors.contact = "Required";
+    if (!dob) validationErrors.dob = "Required";
+    if (!gender) validationErrors.gender = "Required";
+    if (!address) validationErrors.address = "Required";
+    if (!email) validationErrors.email = "Required";
+    if (!password) validationErrors.password = "Required";
+    if (password !== confirmPassword)
+      validationErrors.confirmPassword = "Passwords do not match";
+
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length !== 0) return;
+
     try {
-      await updatePatientProfileApi(patientId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age, weight, height);
-      toast.success('Profile updated successfully');
+      await updatePatientProfileApi(
+        patientId,
+        email,
+        currentPassword,
+        password,
+        name,
+        contact,
+        gender,
+        dob,
+        address,
+        age,
+        weight,
+        height
+      );
+      toast.success("Profile updated successfully!");
+      setEditMode(false);
     } catch (error) {
-      toast.error('Failed to update profile');
+      toast.error("Failed to update. Check credentials.");
     }
   };
+
   return (
-    <div className='background_part mt-3'>
-      <div className="container">
-        <div className="row flex-lg-nowrap">
-          <div className="col">
-            <div className="row">
-              <div className="col mb-3">
-                <div className="card border-0 mb-3 shadow  bg-white rounded">
-                  <div className="card-body">
-                    <div className="">
-                      <div className="row">
-                        <div className="col d-flex flex-column flex-sm-row justify-content-between mb-3">
-                          <div className="text-center text-sm-left mb-2 mb-sm-0">
-                            <h4 className="pt-sm-2 pb-1 mb-0 updateProfileHeading"><b className='contentHeadings' style={{ color: 'black' }}>Patient Profile</b></h4>
-                          </div>
-                          <div className="text-center text-sm-right profileHead">
-                            <span className="badge badge-secondary">{role}</span>
+    <>
+      <div className="patient-profile-dashboard">
+        <div className="patient-profile-card">
+          <div className="profile-title-row">
+            <h3>Patient Profile</h3>
+          </div>
 
-                          </div>
-                        </div>
-                      </div>
+          <hr className="divider-line" />
 
-                      <div className="d-flex align-items-center justify-content-between">
-                        <ul className="nav nav-tabs flex-grow-1">
-                          <li className="nav-item">
-                            <a href='#' className="active nav-link profileTab">
-                              <i className="bi bi-person"></i> Profile
-                            </a>
-                          </li>
-                        </ul>
-                        <div className="">
-                          <button className="btn" style={{ width: '70px', fontSize: '13px' }} type="button" onClick={() => setEditMode(true)} >
-                            <FontAwesomeIcon icon={faPencilAlt} /> Edit
-                          </button>
-                        </div>
-                      </div>
+          <div className="role-info">
+            <span className="role-badge">{role}</span>
+          </div>
 
-                      <div className="tab-content pt-3">
-                        {[...Array(totalSteps).keys()].map((index) => (
-                          <div className={`tab-pane ${step === index + 1 ? 'active' : ''}`} key={index + 1}>
-                            {step === index + 1 && (
-                              <form className="form">
-                                <>
-                                  <br />
-                                  <div className="row">
-                                    <div className="col">
-                                      <div className="mb-2"><b className='contentHeadings'>Personal details</b></div>
-                                      <div className="row g-3">
-                                        <div className="col-md-6">
-                                          <label htmlFor="name" className="form-label">Name</label>
-                                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                          <input
-                                            id="name"
-                                            type="text"
-                                            className="form-control input-field form-control-lg bg-light "
-                                            placeholder="Name"
-                                            value={capitalizeName(name)}
-                                            onChange={(event) => {
-                                              setName(event.target.value);
-                                            }}
-                                            readOnly={!editMode}
-                                          />
+          <form className="profile-form" onSubmit={handleSubmit}>
+            <div className="form-grid">
+              <div>
+                <label>Name <span className="req">*</span></label>
+                <input
+                  className={errors.name ? "input error" : "input"}
+                  value={name}
+                  readOnly={!editMode}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                {errors.name && <p className="error-text">{errors.name}</p>}
+              </div>
 
+              <div>
+                <label>Contact <span className="req">*</span></label>
+                <input
+                  className={errors.contact ? "input error" : "input"}
+                  value={contact}
+                  readOnly={!editMode}
+                  onChange={(e) => setContact(e.target.value)}
+                />
+              </div>
 
-                                        </div>
+              <div>
+                <label>Date of Birth <span className="req">*</span></label>
+                <input
+                  type="date"
+                  className={errors.dob ? "input error" : "input"}
+                  value={dob}
+                  readOnly={!editMode}
+                  onChange={(e) => {
+                    setDob(e.target.value);
+                    setAge(calculateAge(e.target.value));
+                  }}
+                />
+              </div>
 
-                                        <div className="col-md-6">
-                                          <label htmlFor="phone" className="form-label">Contact</label>
-                                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                          <input
-                                            id="phone"
-                                            type="number"
-                                            className="form-control input-field form-control-lg bg-light "
-                                            placeholder="Phone Number"
-                                            value={contact}
-                                            onChange={(event) => {
-                                              setContact(event.target.value);
-                                            }}
-                                            readOnly={!editMode}
-                                          />
+              <div>
+                <label>Age</label>
+                <input className="input" value={age} readOnly />
+              </div>
 
-                                        </div>
-                                        <div className="col-md-6">
-                                          <label htmlFor="dateOfBirth" className="form-label">Date of Birth</label>
-                                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                          <input
-                                            id="dateOfBirth"
-                                            type="date"
-                                            value={dateOfBirth}
-                                            className="form-control input-field form-control-lg bg-light "
-                                            onChange={(event) => {
-                                              setDob(event.target.value);
-                                              setAge(calculateAge(event.target.value)); 
+              <div>
+                <label>Weight (kg)</label>
+                <input
+                  className="input"
+                  value={weight}
+                  readOnly={!editMode}
+                  placeholder="eg. 72"
+                  onChange={(e) => setWeight(e.target.value)}
+                />
+              </div>
 
-                                            }}
-                                            readOnly={!editMode}
-                                          />
+              <div>
+                <label>Height (cm)</label>
+                <input
+                  className="input"
+                  value={height}
+                  readOnly={!editMode}
+                  placeholder="eg. 176"
+                  onChange={(e) => setHeight(e.target.value)}
+                />
+              </div>
 
-                                        </div>
-                                        <div className="col-md-6">
-                                          <label htmlFor="age" className="form-label">Age</label>
-                                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                          <input
-                                            id="age"
-                                            type="number"
-                                            className="form-control input-field form-control-lg bg-light "
-                                            placeholder="Age"
-                                            value={age}
-                                            readOnly
-                                          />
-                                        </div>
+              <div className="form-full">
+                <label>Gender <span className="req">*</span></label>
+                <div className="gender-toggle">
+                  {["Male", "Female", "Other"].map((g) => (
+                    <button
+                      type="button"
+                      key={g}
+                      disabled={!editMode}
+                      className={`gender-btn ${gender === g ? "active" : ""}`}
+                      onClick={() => setGender(g)}
+                    >
+                      {g}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-                                        <div className="col-md-6">
-                                          <label htmlFor="weight" className="form-label">Weight</label>
-                                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                          <input
-                                            id="weight"
-                                            type="text"
-                                            className="form-control input-field form-control-lg bg-light "
-                                            placeholder="Weight"
-                                            value={weight}
-                                            onChange={(event) => {
-                                              setWeight(event.target.value);
-                                            }}
-                                            readOnly={!editMode}
-                                          />
+              <div className="form-full">
+                <label>Address <span className="req">*</span></label>
+                <textarea
+                  className={errors.address ? "input error" : "input"}
+                  value={address}
+                  readOnly={!editMode}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </div>
 
-                                        </div>
-                                        <div className="col-md-6">
-                                          <label htmlFor="height" className="form-label">Height</label>
-                                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                          <input
-                                            id="height"
-                                            type="text"
-                                            className="form-control input-field form-control-lg bg-light "
-                                            placeholder="Height"
-                                            value={height}
-                                            onChange={(event) => {
-                                              setHeight(event.target.value);
-                                            }}
-                                            readOnly={!editMode}
-                                          />
-                                        </div>
+              <div>
+                <label>Email <span className="req">*</span></label>
+                <input
+                  className={errors.email ? "input error" : "input"}
+                  value={email}
+                  readOnly={!editMode}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
 
-                                        <div className="col-md-12 ">
-                                          <label className="form-label" htmlFor="gender">
-                                            Gender
-                                          </label>
-                                          <span style={{ color: 'red', marginLeft: '3px' }}>*</span> &nbsp;
-                                          <div className="form-check me-2">
-                                            <input
-                                              className="form-check-input "
-                                              type="radio"
-                                              name="gender"
-                                              id="male"
-                                              value="Male"
-                                              checked={gender === "Male"}
-                                              onChange={handleGenderChange}
-                                            />
-                                            <label className="form-check-label" htmlFor="male">
-                                              Male
-                                            </label>
-                                          </div>
-                                          <div className="form-check me-3">
-                                            <input
-                                              className="form-check-input"
-                                              type="radio"
-                                              name="gender"
-                                              id="female"
-                                              value="Female"
-                                              checked={gender === "Female"}
-                                              onChange={handleGenderChange}
-                                            />
-                                            <label className="form-check-label" htmlFor="female">
-                                              Female
-                                            </label>
-                                          </div>
-                                          <div className="form-check">
-                                            <input
-                                              className="form-check-input"
-                                              type="radio"
-                                              name="gender"
-                                              id="other"
-                                              value="other"
-                                              checked={gender === "other"}
-                                              onChange={handleGenderChange}
-                                            />
-                                            <label className="form-check-label" htmlFor="other">
-                                              Other
-                                            </label>
-                                          </div>
-                                        </div>
+              <div>
+                <label>Current Password <span className="req">*</span></label>
+                <div className="password-box">
+                  <input
+                    type={currentPasswordVisibility ? "password" : "text"}
+                    disabled={!editMode}
+                    className={errors.currentPassword ? "input error" : "input"}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                  />
+                  <span className="pw-icon" onClick={() => setCurrentPasswordVisibility(!currentPasswordVisibility)}>
+                    <FontAwesomeIcon icon={currentPasswordVisibility ? faEyeSlash : faEye} />
+                  </span>
+                </div>
+              </div>
 
-                                        <div className="col-12">
-                                          <label htmlFor="address" className="form-label">Address</label>
-                                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                          <textarea
-                                            id="address"
-                                            className="form-control input-field form-control-lg bg-light " placeholder="Address"
-                                            value={address}
-                                            onChange={(event) => {
-                                              setAddress(event.target.value);
-                                            }}
-                                            readOnly={!editMode}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <br />
-                                  <div className="row">
-                                    <div className="col">
-                                      <div className="mb-2"><b className='contentHeadings'>Account details</b></div>
-                                      <div className="row g-3">
-                                        <div className="col-md-6">
+              <div>
+                <label>New Password <span className="req">*</span></label>
+                <div className="password-box">
+                  <input
+                    type={newPasswordVisibility ? "password" : "text"}
+                    disabled={!editMode}
+                    className="input"
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                  <span className="pw-icon" onClick={() => setNewPasswordVisibility(!newPasswordVisibility)}>
+                    <FontAwesomeIcon icon={newPasswordVisibility ? faEyeSlash : faEye} />
+                  </span>
+                </div>
+              </div>
 
-                                          <div className="form-group ">
-                                            <label htmlFor="email" className="form-label">Email</label>
-                                            <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                            <input
-                                              id="email"
-                                              type="email"
-                                              className="form-control input-field form-control-lg bg-light " placeholder="Email"
-                                              value={email}
-                                              onChange={(event) => {
-                                                setEmail(event.target.value);
-                                              }}
-                                              readOnly={!editMode}
-                                            />
-                                          </div>
-                                        </div>
-                                        <div className="col">
-                                          <div className="form-group">
-                                            <label className='form-label'>Current Password</label>
-                                            <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                            <input
-                                              id="current-password"
-                                              className="form-control input-field form-control-lg bg-light " type={currentPasswordVisibility ? 'password' : 'text'}
-                                              value={currentPassword}
-                                              placeholder="••••••"
-                                              onChange={(event) => {
-                                                setCurrentPassword(event.target.value);
-                                              }}
-                                              readOnly={!editMode}
-                                            />
-
-                                            <button
-                                              className="btn btn-password-toggle1"
-                                              type="button"
-                                              onClick={toggleCurrentPasswordVisibility}
-                                            >
-                                              <FontAwesomeIcon icon={currentPasswordVisibility ? faEyeSlash : faEye} />
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="row">
-                                        <div className="col">
-                                          <label htmlFor="new-password" className="form-label"> New Password </label>
-                                          <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                          <input
-                                            id="new-password"
-                                            className="form-control input-field form-control-lg bg-light " type={newPasswordVisibility ? 'password' : 'text'}
-                                            placeholder="••••••"
-                                            value={password}
-                                            onChange={(event) => {
-                                              setNewPassword(event.target.value);
-                                            }}
-                                            readOnly={!editMode}
-                                          />
-                                          <button
-                                            className="btn btn-password-toggle1"
-                                            type="button"
-                                            onClick={toggleNewPasswordVisibility}
-                                          >
-                                            <FontAwesomeIcon icon={newPasswordVisibility ? faEyeSlash : faEye} />
-                                          </button>
-
-                                        </div>
-
-                                        <div className="col">
-                                          <div className="form-group">
-                                            <label className='form-label'>Confirm <span className="d-none d-xl-inline ">Password</span></label>
-                                            <span style={{ color: 'red', marginLeft: '2px' }}>*</span>
-                                            <input
-                                              id="confirm-password"
-                                              className="form-control input-field form-control-lg bg-light " type={confirmPasswordVisibility ? 'password' : 'text'}
-                                              placeholder="••••••"
-                                              value={confirmPassword}
-                                              onChange={(event) => {
-                                                setConfirmPassword(event.target.value);
-                                              }}
-                                              readOnly={!editMode}
-                                            />
-                                            <button
-                                              className="btn btn-password-toggle1"
-                                              type="button"
-                                              onClick={toggleConfirmPasswordVisibility}
-                                            >
-                                              <FontAwesomeIcon icon={confirmPasswordVisibility ? faEyeSlash : faEye} />
-                                            </button>
-
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <br />
-                                </>
-                                <>
-                                  {editMode && (
-                                    <div className="row">
-                                      <div className="col">
-                                        <div className="col-12 mt-3">
-                                          <button type="submit" onClick={handleSubmit} className="btn btn-primary float-end" style={{ backgroundColor: '#1977cc' }}>Update</button>
-
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
-                                </>
-
-                              </form>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-
-                    </div>
-                  </div>
+              <div>
+                <label>Confirm Password <span className="req">*</span></label>
+                <div className="password-box">
+                  <input
+                    type={confirmPasswordVisibility ? "password" : "text"}
+                    disabled={!editMode}
+                    className={errors.confirmPassword ? "input error" : "input"}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <span className="pw-icon" onClick={() => setConfirmPasswordVisibility(!confirmPasswordVisibility)}>
+                    <FontAwesomeIcon icon={confirmPasswordVisibility ? faEyeSlash : faEye} />
+                  </span>
+                  {errors.confirmPassword && (
+                    <p className="error-text">{errors.confirmPassword}</p>
+                  )}
                 </div>
               </div>
             </div>
-          </div>
+
+            <div className="form-footer">
+              {!editMode ? (
+                <button type="button" className="edit-btn" onClick={() => setEditMode(true)}>
+                  Edit
+                </button>
+              ) : (
+                <button type="submit" className="update-btn">
+                  Update
+                </button>
+              )}
+            </div>
+          </form>
         </div>
       </div>
       <ToastContainer position="bottom-right" />
-    </div>
-  )
+    </>
+  );
 }

@@ -1,0 +1,45 @@
+/* ================================
+   SLIDE PANEL CONTAINER
+================================ */
+.slide-panel {
+  background: #f8fbfe;
+}
+
+/* Scrollbar styling */
+.slide-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.slide-panel::-webkit-scrollbar-thumb {
+  background: #c7d7ea;
+  border-radius: 10px;
+}
+
+/* Inner padding for all calculators */
+.panel-wrapper {
+  padding: 22px 20px;
+}
+
+/* ================================
+   BACKDROP CLICK-TO-CLOSE
+================================ */
+.slide-panel-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  z-index: 9998;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 480px) {
+  .panel-wrapper {
+    padding: 18px 16px;
+  }
+}

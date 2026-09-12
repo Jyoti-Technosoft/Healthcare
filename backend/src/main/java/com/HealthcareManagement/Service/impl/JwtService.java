@@ -25,7 +25,14 @@ public class JwtService {
     @Autowired
     private UserRepository userRepository;
 
+    @org.springframework.beans.factory.annotation.Value("${app.jwt.secret:5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437}")
+    private String secretKey;
+
+    @org.springframework.beans.factory.annotation.Value("${app.jwt.expiration-ms:86400000}")
+    private long jwtExpirationMs;
+
     public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
+
     public String generateToken(String email) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, email);
@@ -36,7 +43,7 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
@@ -82,7 +89,7 @@ public class JwtService {
     }
 
     private Key getSignKey() {
-        byte[] keyBytes= Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
