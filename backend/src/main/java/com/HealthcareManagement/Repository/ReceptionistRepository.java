@@ -13,6 +13,6 @@ public interface ReceptionistRepository extends JpaRepository<Receptionist,Long>
     @Query("SELECT r FROM Receptionist r JOIN FETCH r.user WHERE r.user.id = :userId")
     Optional<Receptionist> findByUserId(@Param("userId") Long userId);
 
-    @Query("SELECT a from Appointment a WHERE a.createdBy.id = :userId")
+    @Query("SELECT a from Appointment a WHERE a.createdBy.id = :userId ORDER BY a.id DESC")
     List<Appointment> findAllAppointmentsByUserId(Long userId);
 }

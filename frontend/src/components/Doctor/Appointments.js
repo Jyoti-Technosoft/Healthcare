@@ -34,8 +34,9 @@ export default function Appointments() {
           fetchedDoctorId,
           authToken
         );
-        setAppointments(data);
-        setFilteredAppointments(data);
+        const appointmentsData = Array.isArray(data) ? data : [];
+        setAppointments(appointmentsData);
+        setFilteredAppointments(appointmentsData);
         setLoading(false);
       } catch (error) {
         setLoading(false);

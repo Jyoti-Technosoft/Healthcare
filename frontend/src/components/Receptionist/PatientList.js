@@ -31,8 +31,9 @@ export default function PatientList() {
     const fetchData = async () => {
       try {
         const data = await getAllPatientsApi(token);
-        setPatients(data);
-        setFilteredPatients(data);
+        const patientsData = Array.isArray(data) ? data : [];
+        setPatients(patientsData);
+        setFilteredPatients(patientsData);
       } catch (error) {
         console.error("Error fetching patients:", error);
       } finally {

@@ -27,8 +27,9 @@ export default function ShowAppointments() {
     const fetchData = async () => {
       try {
         const data = await getAllAppointments(token);
-        setAppointments(data);
-        setFilteredAppointments(data);
+        const appointmentsData = Array.isArray(data) ? data : [];
+        setAppointments(appointmentsData);
+        setFilteredAppointments(appointmentsData);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching appointments:", error);

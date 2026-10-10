@@ -40,8 +40,9 @@ export default function PatientAppointments() {
         patientData.id,
         authToken
       );
-      setAppointments(appointmentsData || []);
-      setFilteredAppointments(appointmentsData || []);
+      const appointmentsList = Array.isArray(appointmentsData) ? appointmentsData : [];
+      setAppointments(appointmentsList);
+      setFilteredAppointments(appointmentsList);
 
       const reports = await getAllHealthreports(authToken);
       setHealthReport(reports || []);

@@ -25,8 +25,9 @@ export default function Patients() {
         const doctorInfo = await getDoctorsWithIdApi(userId, token);
         const doctorId = doctorInfo.id;
         const data = await getPatientsListForDoctor(doctorId, token);
-        setPatients(data || []);
-        setFilteredPatients(data || []);
+        const patientsData = Array.isArray(data) ? data : [];
+        setPatients(patientsData);
+        setFilteredPatients(patientsData);
       } catch (error) {
         console.error("Error fetching patients:", error);
       } finally {

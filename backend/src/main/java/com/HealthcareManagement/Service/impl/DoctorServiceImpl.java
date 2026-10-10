@@ -139,7 +139,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<HealthReport> getAllHealthreport() {
-        List<HealthReport> healthReports = healthReportRepository.findAll();
+        List<HealthReport> healthReports = healthReportRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id"));
         if (!healthReports.isEmpty()) {
             // Iterate through each health report and fetch prescriptions for each one
             for (HealthReport healthReport : healthReports) {

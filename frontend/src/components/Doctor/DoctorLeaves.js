@@ -31,7 +31,7 @@ export default function DoctorLeaves() {
         const doctorInfo = await getDoctorsWithIdApi(userId, token);
         const fetchedDoctorId = doctorInfo.id;
         const data = await getDoctorLeaveRequest(fetchedDoctorId, token);
-        setPastLeaves(data || []);
+        setPastLeaves(Array.isArray(data) ? data : []);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching leaves:", error);
@@ -108,30 +108,48 @@ export default function DoctorLeaves() {
               <tbody>
                 {paginatedData.length > 0 ? (
                   paginatedData.map((row, index) => (
-                    <tr key={index}>
+                    <tr key={row.id || index}>
                       {/* Index */}
-                      <td>{startIndex + index + 1}</td>
+                      <td>
+                        <span className="badge bg-light text-secondary border">#{startIndex + index + 1}</span>
+                      </td>
 
                       {/* From Date */}
-                      <td>{row.fromDate}</td>
+                      <td>
+                        <div className="d-flex align-items-center gap-2 fw-semibold text-dark">
+                          <span className="material-symbols-outlined text-muted" style={{ fontSize: "16px" }}>event</span>
+                          <span>{row.fromDate}</span>
+                        </div>
+                      </td>
 
                       {/* To Date */}
-                      <td>{row.toDate}</td>
+                      <td>
+                        <div className="d-flex align-items-center gap-2 fw-semibold text-dark">
+                          <span className="material-symbols-outlined text-muted" style={{ fontSize: "16px" }}>event</span>
+                          <span>{row.toDate}</span>
+                        </div>
+                      </td>
 
                       {/* From Time */}
                       <td>
-                        {row.fromTime
-                          ? convertTo12HourFormat(row.fromTime)
-                          : "-"}
+                        <span className="badge bg-light text-dark border">
+                          {row.fromTime ? convertTo12HourFormat(row.fromTime) : "All Day"}
+                        </span>
                       </td>
 
                       {/* To Time */}
                       <td>
-                        {row.toTime ? convertTo12HourFormat(row.toTime) : "-"}
+                        <span className="badge bg-light text-dark border">
+                          {row.toTime ? convertTo12HourFormat(row.toTime) : "All Day"}
+                        </span>
                       </td>
 
                       {/* Reason */}
-                      <td title={row.reason}>{row.reason}</td>
+                      <td>
+                        <span className="text-secondary" title={row.reason} style={{ fontSize: "13px" }}>
+                          {row.reason || "Personal Time Off"}
+                        </span>
+                      </td>
                     </tr>
                   ))
                 ) : (
@@ -148,47 +166,67 @@ export default function DoctorLeaves() {
 
         {/* CUSTOM PAGINATION FOOTER */}
         {!loading && pastLeaves.length > 0 && (
-          <div className="pagination-footer">
-            <label>Rows per page: </label>
-            <select
-              value={rowsPerPage}
-              onChange={(e) => {
-                setRowsPerPage(Number(e.target.value));
-                setPage(1);
-              }}
-            >
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={30}>30</option>
-            </select>
+          <div className="pagination-footer d-flex align-items-center justify-content-between pt-3 mt-3 border-top">
+            <div className="d-flex align-items-center gap-2 text-muted" style={{ fontSize: "13px" }}>
+              <span>Rows per page:</span>
+              <select
+                className="form-select form-select-sm"
+                style={{ width: "70px", height: "32px" }}
+                value={rowsPerPage}
+                onChange={(e) => {
+                  setRowsPerPage(Number(e.target.value));
+                  setPage(1);
+                }}
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={30}>30</option>
+              </select>
+            </div>
 
-            <span>
-              {startIndex + 1}-{Math.min(endIndex, pastLeaves.length)} of{" "}
-              {pastLeaves.length}
-            </span>
+            <div className="d-flex align-items-center gap-2">
+              <span className="text-muted" style={{ fontSize: "13px" }}>
+                {startIndex + 1}-{Math.min(endIndex, pastLeaves.length)} of {pastLeaves.length}
+              </span>
 
-            <div className="pagination-controls">
-              <button onClick={() => setPage(1)} disabled={page === 1}>
-                |&lt;
-              </button>
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-              >
-                &lt;
-              </button>
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-              >
-                &gt;
-              </button>
-              <button
-                onClick={() => setPage(totalPages)}
-                disabled={page === totalPages}
-              >
-                &gt;|
-              </button>
+              <div className="btn-group btn-group-sm">
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={() => setPage(1)}
+                  disabled={page === 1}
+                  title="First Page"
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>first_page</span>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  title="Previous Page"
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>chevron_left</span>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  title="Next Page"
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>chevron_right</span>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={() => setPage(totalPages)}
+                  disabled={page === totalPages}
+                  title="Last Page"
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>last_page</span>
+                </button>
+              </div>
             </div>
           </div>
         )}
