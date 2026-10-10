@@ -194,34 +194,19 @@ export default function Header() {
                 </ul>
               </div>
             ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="btn btn-outline-secondary d-none d-sm-inline-flex align-items-center justify-content-center px-3 py-2 rounded-3 fw-semibold text-decoration-none"
-                  style={{
-                    fontSize: "13px",
-                    borderColor: "#bfc7d2",
-                    color: "#0b1c30"
-                  }}
-                  onClick={closeMenu}
-                >
-                  Sign In
-                </Link>
-
-                <Link
-                  to="/login"
-                  className="btn btn-primary d-inline-flex align-items-center gap-1 px-3 py-2 rounded-3 fw-semibold text-white shadow-sm text-decoration-none"
-                  style={{
-                    backgroundColor: "#006194",
-                    borderColor: "#006194",
-                    fontSize: "13px"
-                  }}
-                  onClick={closeMenu}
-                >
-                  <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>lock</span>
-                  <span>Portal Access</span>
-                </Link>
-              </>
+              <Link
+                to="/login"
+                className="btn btn-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 rounded-3 fw-semibold text-white shadow-sm text-decoration-none"
+                style={{
+                  backgroundColor: "#006194",
+                  borderColor: "#006194",
+                  fontSize: "13px"
+                }}
+                onClick={closeMenu}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>lock</span>
+                <span>Portal Access</span>
+              </Link>
             )}
 
             {/* Mobile Menu Toggle Button */}

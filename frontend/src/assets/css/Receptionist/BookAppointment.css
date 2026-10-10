@@ -207,8 +207,11 @@
   cursor: pointer;
 }
 
-/* Status Pills */
-.text-success, .text-danger {
+/* Status Pills - scoped specifically to appointment availability cells */
+.availability .text-success, 
+.availability .text-danger,
+.table-data .text-success,
+.table-data .text-danger {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
@@ -220,15 +223,15 @@
   white-space: nowrap;
 }
 
-/* Available Style */
-.text-success {
+.availability .text-success,
+.table-data .text-success {
   background-color: #e8f5e9;
   color: #1b5e20;
   border: 1px solid #c8e6c9;
 }
 
-/* Unavailable/Leave Style */
-.text-danger {
+.availability .text-danger,
+.table-data .text-danger {
   background-color: #ffebee;
   color: #c62828;
   border: 1px solid #ffcdd2;

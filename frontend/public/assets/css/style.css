@@ -7,31 +7,34 @@
 */
 
 /*--------------------------------------------------------------
-# General
+# General (AegisHealth Stitch Typography)
 --------------------------------------------------------------*/
 body {
-  color: #444444;
-  font-family: "Roboto", sans-serif;
+  color: #0b1c30;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 a {
-  color: #1977cc;
+  color: #006194;
   text-decoration: none;
 }
 
 a:hover {
-  color: #3291e6;
+  color: #004b73;
   text-decoration: none;
 }
 
-p,
+p {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 /*--------------------------------------------------------------
