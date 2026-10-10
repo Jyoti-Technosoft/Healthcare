@@ -73,50 +73,54 @@ export default function PatientAppointments() {
     <div className="patient-app-container">
       <div className="app-card">
         {/* Patient Info Section */}
-        <div className="patient-info-card">
-          <div className="patient-info-header">
-            <span className="label">Patient :</span>
-            <span className="value name">{patients.name}</span>
+        <div className="p-4 mb-4 rounded-3 border bg-light">
+          <div className="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+            <div className="d-flex align-items-center gap-2">
+              <span className="material-symbols-outlined text-primary" style={{ fontSize: "24px" }}>person</span>
+              <h4 className="mb-0 fw-bold text-dark">{patients.name || "Patient Record"}</h4>
+            </div>
+            <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1.5 rounded-pill">
+              Patient ID: #{patients.id}
+            </span>
           </div>
 
-          <hr />
-
-          <div className="patient-info-grid">
-            <div>
-              <p>
-                <span className="label">ID:</span>{" "}
-                <span className="value">{patients.id}</span>
-              </p>
-              <p>
-                <span className="label">Contact:</span>{" "}
-                <span className="value">{patients.contact}</span>
-              </p>
+          <div className="row g-3">
+            <div className="col-md-3 col-6">
+              <small className="text-secondary d-block">Contact Phone</small>
+              <strong className="text-dark">{patients.contact || "-"}</strong>
             </div>
-
-            <div>
-              <p>
-                <span className="label">Gender:</span>{" "}
-                <span className="value text-capitalize">{patients.gender}</span>
-              </p>
-              <p>
-                <span className="label">Age:</span>{" "}
-                <span className="value">{patients.age}</span>
-              </p>
+            <div className="col-md-3 col-6">
+              <small className="text-secondary d-block">Gender</small>
+              <strong className="text-dark text-capitalize">{patients.gender || "-"}</strong>
+            </div>
+            <div className="col-md-3 col-6">
+              <small className="text-secondary d-block">Age</small>
+              <strong className="text-dark">{patients.age ? `${patients.age} Years` : "-"}</strong>
+            </div>
+            <div className="col-md-3 col-6">
+              <small className="text-secondary d-block">Total Consultations</small>
+              <strong className="text-dark">{appointments.length} Visits</strong>
             </div>
           </div>
         </div>
 
         {/* Header + Search */}
-        <div className="title-row">
-          <h3>Appointments</h3>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+          <div>
+            <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+              <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>history</span>
+              Encounter History
+            </div>
+            <h3 className="fw-bold text-dark mb-0" style={{ fontSize: "20px" }}>Medical Appointments Timeline</h3>
+          </div>
 
           <div className="search-box">
             <input
               type="text"
-              placeholder="Search by Appointment ID"
+              placeholder="Search by Appointment ID..."
               onChange={handleSearch}
             />
-            <i className="bi bi-search search-icon"></i>
+            <span className="material-symbols-outlined search-icon" style={{ fontSize: "18px" }}>search</span>
           </div>
         </div>
 
@@ -125,11 +129,11 @@ export default function PatientAppointments() {
           <table className="patient-table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Charge</th>
-                <th>Report</th>
+                <th>Appointment Ref</th>
+                <th>Scheduled Date</th>
+                <th>Consultation Time</th>
+                <th>Fee Tariff</th>
+                <th>Medical Report</th>
               </tr>
             </thead>
             <tbody>
@@ -142,25 +146,47 @@ export default function PatientAppointments() {
                   return (
                     <tr key={row.id}>
                       {/* ID */}
-                      <td>{row.id}</td>
+                      <td>
+                        <span className="badge font-monospace text-dark bg-light border">
+                          #APT-{row.id}
+                        </span>
+                      </td>
 
                       {/* Date */}
-                      <td>{formatDate(row.appointmentDate)}</td>
+                      <td>
+                        <div className="d-flex align-items-center gap-1.5 text-dark fw-medium">
+                          <span className="material-symbols-outlined text-muted" style={{ fontSize: "16px" }}>calendar_today</span>
+                          {formatDate(row.appointmentDate)}
+                        </div>
+                      </td>
 
                       {/* Time */}
-                      <td>{row.appointmentTime}</td>
+                      <td>
+                        <div className="d-flex align-items-center gap-1.5 text-secondary">
+                          <span className="material-symbols-outlined text-muted" style={{ fontSize: "16px" }}>schedule</span>
+                          {row.appointmentTime}
+                        </div>
+                      </td>
 
                       {/* Charge */}
-                      <td>{row.consultationCharge}</td>
+                      <td>
+                        <strong className="text-dark">₹ {row.consultationCharge}</strong>
+                      </td>
 
                       {/* Report Action */}
                       <td>
-                        {hasReport && (
-                          <i
-                            className="bi bi-eye-fill report-eye"
+                        {hasReport ? (
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1 rounded-pill"
                             onClick={() => viewReport(row)}
-                            title="View Report"
-                          ></i>
+                            title="View Health Report"
+                          >
+                            <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>description</span>
+                            <span>View Report</span>
+                          </button>
+                        ) : (
+                          <span className="badge bg-light text-muted border">Pending Notes</span>
                         )}
                       </td>
                     </tr>
@@ -168,7 +194,10 @@ export default function PatientAppointments() {
                 })
               ) : (
                 <tr>
-                  <td colSpan="5" className="no-data">
+                  <td colSpan="5" className="no-data text-center py-4 text-muted">
+                    <span className="material-symbols-outlined d-block mb-1 text-muted" style={{ fontSize: "32px", opacity: 0.6 }}>
+                      calendar_month
+                    </span>
                     No appointments found
                   </td>
                 </tr>

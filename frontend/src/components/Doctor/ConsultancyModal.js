@@ -104,10 +104,13 @@ const ConsultancyModal = ({
       <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div className="modal-content custom-modal-shadow border-0">
           {/* --- HEADER --- */}
-          <div className="modal-header bg-primary text-white">
-            <h5 className="modal-title fw-bold font-poppins">
-              <i className="bi bi-clipboard-pulse me-2"></i>Consultation Form
-            </h5>
+          <div className="modal-header text-white" style={{ backgroundColor: "#006194" }}>
+            <div className="d-flex align-items-center gap-2">
+              <span className="material-symbols-outlined" style={{ fontSize: "24px" }}>clinical_notes</span>
+              <h5 className="modal-title fw-bold mb-0" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                Clinical Encounter &amp; Electronic Prescription
+              </h5>
+            </div>
             {/* UPDATED CLOSE BUTTON */}
             <button
               type="button"

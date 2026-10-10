@@ -14,7 +14,6 @@ import {
 import LeaveCalendar from "../Doctor/LeaveCalendar";
 import { setActiveTab } from "../../actions/submenuActions";
 import "../../assets/css/Receptionist/BookAppointment.css";
-import BackArrow from "../../assets/img/back-arrow.png";
 
 export default function BookAppointment() {
   const [suggestions, setSuggestions] = useState([]);
@@ -171,37 +170,67 @@ export default function BookAppointment() {
   return (
     <div className="background_part">
       <div className="register-card">
-        <img
-          src={BackArrow}
-          className="register-back-btn"
-          alt="back"
-          onClick={() => dispatch(setActiveTab("showAppointments"))}
-        />
+        {/* TOP BAR WITH BREADCRUMB & BACK ACTION */}
+        <div className="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+          <div className="d-flex align-items-center gap-3">
+            <button
+              type="button"
+              className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1 rounded-circle p-2 shadow-sm"
+              style={{ width: "38px", height: "38px", justifyContent: "center" }}
+              onClick={() => dispatch(setActiveTab("showAppointments"))}
+              title="Return to Appointments"
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>arrow_back</span>
+            </button>
+            <div>
+              <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+                <span className="material-symbols-outlined" style={{ fontSize: "15px" }}>calendar_add_on</span>
+                Scheduling Desk
+              </div>
+              <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "22px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                Book Clinical Appointment
+              </h2>
+            </div>
+          </div>
+          <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold" style={{ fontSize: "12px" }}>
+            AegisHealth Care Dispatch
+          </span>
+        </div>
 
-        <h3 className="register-title">Book Appointment</h3>
-
-        <div className="appointment-content" style={{ marginTop: "30px" }}>
+        <div className="appointment-content">
           {/* --- SEARCH PATIENT --- */}
-          <div className="form-grid-full" style={{ marginBottom: "20px" }}>
-            <label className="form-label">Search Patient</label>
-            <div className="relative">
-              <input
-                type="text"
-                value={typeof searchQuery === 'string' ? searchQuery : (searchQuery?.name || '')}
-                onChange={handleInputChange}
-                onFocus={() => {
-                  if (searchQuery?.trim()) {
-                    handleInputChange({ target: { value: searchQuery } });
-                  }
-                }}
-                onBlur={() => {
-                  setTimeout(() => setSuggestions([]), 200);
-                }}
-                placeholder="Type to search patients..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+          <div className="form-grid-full mb-4">
+            <label className="form-label fw-semibold text-dark d-flex align-items-center gap-1.5">
+              <span className="material-symbols-outlined text-primary" style={{ fontSize: "18px" }}>person_search</span>
+              Patient Lookup
+            </label>
+            <div className="position-relative">
+              <div className="input-group">
+                <span className="input-group-text bg-white border-end-0">
+                  <span className="material-symbols-outlined text-muted" style={{ fontSize: "18px" }}>search</span>
+                </span>
+                <input
+                  type="text"
+                  value={typeof searchQuery === 'string' ? searchQuery : (searchQuery?.name || '')}
+                  onChange={handleInputChange}
+                  onFocus={() => {
+                    if (searchQuery?.trim()) {
+                      handleInputChange({ target: { value: searchQuery } });
+                    }
+                  }}
+                  onBlur={() => {
+                    setTimeout(() => setSuggestions([]), 200);
+                  }}
+                  placeholder="Search registered patients by name or contact number..."
+                  className="form-control border-start-0 py-2"
+                  style={{ fontSize: "14px" }}
+                />
+              </div>
               {suggestions.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                <div
+                  className="position-absolute w-100 mt-1 bg-white border rounded-3 shadow-lg"
+                  style={{ zIndex: 1050, maxHeight: "240px", overflowY: "auto" }}
+                >
                   {suggestions.map((patient, index) => (
                     <div
                       key={patient.id || index}
@@ -210,10 +239,22 @@ export default function BookAppointment() {
                         handleSuggestionClick(patient);
                         setSuggestions([]);
                       }}
-                      className="px-3 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+                      className="p-3 border-bottom d-flex align-items-center justify-content-between hover-bg-light cursor-pointer"
+                      style={{ cursor: "pointer" }}
                     >
-                      <div className="font-medium">{patient.name}</div>
-                      <div className="text-sm text-gray-500">{patient.contact}</div>
+                      <div className="d-flex align-items-center gap-2">
+                        <div
+                          className="rounded-circle d-flex align-items-center justify-content-center bg-primary text-white fw-bold"
+                          style={{ width: "32px", height: "32px", fontSize: "12px" }}
+                        >
+                          {patient.name?.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <div className="fw-semibold text-dark">{patient.name}</div>
+                          <div className="text-muted" style={{ fontSize: "12px" }}>{patient.contact} &bull; {patient.gender || "Patient"}</div>
+                        </div>
+                      </div>
+                      <span className="badge bg-light text-secondary border">Select</span>
                     </div>
                   ))}
                 </div>
@@ -223,42 +264,38 @@ export default function BookAppointment() {
 
           {/* --- PATIENT DETAILS --- */}
           {clickedPatient && (
-            <div className="form-grid">
-              <div>
-                <label className="form-label">ID</label>
-                <input
-                  className="form-control input-field"
-                  disabled
-                  value={clickedPatient.id}
-                />
+            <div className="p-3 mb-4 rounded-3 border bg-light d-flex flex-wrap align-items-center justify-content-between gap-3">
+              <div className="d-flex align-items-center gap-3">
+                <div
+                  className="rounded-circle d-flex align-items-center justify-content-center bg-primary-subtle text-primary fw-bold"
+                  style={{ width: "42px", height: "42px", fontSize: "16px" }}
+                >
+                  <span className="material-symbols-outlined">badge</span>
+                </div>
+                <div>
+                  <div className="fw-bold text-dark">{clickedPatient.name}</div>
+                  <div className="text-muted" style={{ fontSize: "12px" }}>
+                    Patient ID: #{clickedPatient.id} &bull; Contact: {clickedPatient.contact}
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="form-label">Name</label>
-                <input
-                  className="form-control input-field"
-                  disabled
-                  value={clickedPatient.name}
-                />
-              </div>
-              <div>
-                <label className="form-label">Contact</label>
-                <input
-                  className="form-control input-field"
-                  disabled
-                  value={clickedPatient.contact}
-                />
-              </div>
+              <span className="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1.5 rounded-pill">
+                Verified Patient
+              </span>
             </div>
           )}
 
           {/* --- DOCTOR SELECTION --- */}
-          <div className="form-grid-full" style={{ marginTop: "30px" }}>
-            <label className="form-label">Appointment Details</label>
+          <div className="form-grid-full mt-4">
+            <label className="form-label fw-semibold text-dark d-flex align-items-center gap-1.5">
+              <span className="material-symbols-outlined text-primary" style={{ fontSize: "18px" }}>stethoscope</span>
+              Consulting Physician &amp; Department
+            </label>
           </div>
 
           <div className="form-grid">
             <div>
-              <label className="form-label">Department</label>
+              <label className="form-label text-secondary" style={{ fontSize: "13px" }}>Medical Department</label>
               <select
                 className="form-select input-field"
                 value={selectedDepartment}
@@ -282,20 +319,21 @@ export default function BookAppointment() {
             </div>
 
             <div>
-              <label className="form-label">Doctor</label>
+              <label className="form-label text-secondary" style={{ fontSize: "13px" }}>Attending Doctor</label>
               <select
                 className="form-select input-field"
                 value={selectedDoctor}
                 onChange={(e) => handleDoctorSelect(e.target.value)}
+                disabled={!selectedDepartment}
               >
                 <option value="" disabled>
-                  Select Doctor
+                  {selectedDepartment ? "Select Doctor" : "Select Department First"}
                 </option>
                 {doctors
                   .filter((doc) => doc.department === selectedDepartment)
                   .map((doc) => (
                     <option key={doc.id} value={doc.id}>
-                      {doc.name}
+                      Dr. {doc.name}
                     </option>
                   ))}
               </select>
@@ -304,11 +342,14 @@ export default function BookAppointment() {
 
           {/* --- CALENDAR & SLOTS --- */}
           {doctorSelected && (
-            <div className="form-grid-full" style={{ marginTop: "30px" }}>
+            <div className="form-grid-full mt-4">
               <div className="form-grid booking-calendar-container">
                 {/* 1. Calendar */}
-                <div className="calendar-wrapper">
-                  <label className="form-label">Availability Calendar</label>
+                <div className="calendar-wrapper border rounded-3 p-3 bg-white shadow-sm">
+                  <div className="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                    <span className="material-symbols-outlined text-primary" style={{ fontSize: "20px" }}>calendar_today</span>
+                    <label className="form-label mb-0 fw-bold text-dark">Schedule &amp; Leave Calendar</label>
+                  </div>
                   <LeaveCalendar
                     date={selectedDate}
                     onChange={handleDateSelect}
@@ -319,13 +360,20 @@ export default function BookAppointment() {
                 </div>
 
                 {/* 2. Slots Table */}
-                <div className="slots-wrapper">
-                  <label className="form-label">Available Time Slots</label>
+                <div className="slots-wrapper border rounded-3 p-3 bg-white shadow-sm">
+                  <div className="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                    <div className="d-flex align-items-center gap-2">
+                      <span className="material-symbols-outlined text-info" style={{ fontSize: "20px" }}>schedule</span>
+                      <label className="form-label mb-0 fw-bold text-dark">Available Time Windows</label>
+                    </div>
+                    <span className="badge bg-light text-secondary border">30 Min Consultation</span>
+                  </div>
+
                   <table className="custom-table-new">
                     <thead>
                       <tr>
-                        <th style={{ width: "40%" }}>Time Slot</th>
-                        <th>Status</th>
+                        <th style={{ width: "45%" }}>Time Slot</th>
+                        <th>Slot Status</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -335,10 +383,22 @@ export default function BookAppointment() {
                           const isHalfDayBlocked = isSlotBlocked(slot);
                           const isFullyBooked = count === 0;
                           const isDisabled = isHalfDayBlocked || isFullyBooked;
+                          const isSelected = selectedTimeSlot?.target?.value === slot;
 
                           return (
-                            <tr key={slot}>
-                              <td>{slot}</td>
+                            <tr
+                              key={slot}
+                              style={{
+                                backgroundColor: isSelected ? "#eef6fc" : "transparent",
+                                transition: "all 0.15s ease",
+                              }}
+                            >
+                              <td>
+                                <div className="d-flex align-items-center gap-2">
+                                  <span className="material-symbols-outlined text-muted" style={{ fontSize: "16px" }}>schedule</span>
+                                  <strong className="text-dark">{slot}</strong>
+                                </div>
+                              </td>
                               <td>
                                 <label
                                   className={`availability ${
@@ -365,31 +425,29 @@ export default function BookAppointment() {
                                     value={slot}
                                     disabled={isDisabled}
                                     onChange={(e) => setSelectedTimeSlot(e)}
-                                    checked={
-                                      selectedTimeSlot?.target?.value === slot
-                                    }
+                                    checked={isSelected}
                                   />
 
                                   {/* Status Badge */}
                                   {isHalfDayBlocked ? (
                                     <span
-                                      className="text-danger"
-                                      style={{ minWidth: "120px" }}
+                                      className="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1.5 rounded-pill"
+                                      style={{ minWidth: "100px" }}
                                     >
-                                      <i className="bi bi-clock-history me-1"></i>{" "}
                                       On Leave
                                     </span>
                                   ) : (
                                     <span
-                                      className={
+                                      className={`badge px-2.5 py-1.5 rounded-pill border ${
                                         count > 0
-                                          ? "text-success"
-                                          : "text-danger"
-                                      }
+                                          ? "bg-success-subtle text-success border-success-subtle"
+                                          : "bg-secondary-subtle text-secondary border-secondary-subtle"
+                                      }`}
+                                      style={{ minWidth: "100px" }}
                                     >
                                       {count > 0
                                         ? `Available (${count})`
-                                        : "Full"}
+                                        : "Booked Out"}
                                     </span>
                                   )}
                                 </label>
@@ -403,17 +461,15 @@ export default function BookAppointment() {
                             colSpan="2"
                             style={{
                               textAlign: "center",
-                              padding: "50px",
+                              padding: "40px 20px",
                               color: "#dc3545",
-                              fontWeight: "bold",
                             }}
                           >
-                            <i
-                              className="bi bi-calendar-x me-2"
-                              style={{ fontSize: "1.5rem" }}
-                            ></i>
-                            <br />
-                            Doctor Not Available / On Leave
+                            <span className="material-symbols-outlined text-danger mb-2" style={{ fontSize: "36px" }}>
+                              event_busy
+                            </span>
+                            <div className="fw-bold">Doctor Not Available / On Leave</div>
+                            <small className="text-muted">Please select another date on the calendar</small>
                           </td>
                         </tr>
                       )}
@@ -424,25 +480,35 @@ export default function BookAppointment() {
             </div>
           )}
 
+          {/* --- CONSULTATION CHARGE CARD --- */}
           {consultationCharge && (
-            <div className="form-grid-full" style={{ marginTop: "25px" }}>
-              <label className="form-label">Consultation Charge</label>
-              <input
-                className="form-control input-field"
-                disabled
-                value={consultationCharge}
-              />
+            <div className="form-grid-full mt-4">
+              <div className="p-3 border rounded-3 bg-primary-subtle border-primary-subtle d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center gap-2">
+                  <span className="material-symbols-outlined text-primary" style={{ fontSize: "24px" }}>payments</span>
+                  <div>
+                    <div className="fw-bold text-dark">Standard Consultation Fee</div>
+                    <small className="text-secondary">Official institutional tariff for selected physician</small>
+                  </div>
+                </div>
+                <div className="text-end">
+                  <div className="fs-4 fw-bold text-primary">₹ {consultationCharge}</div>
+                  <span className="badge bg-white text-primary border border-primary-subtle">Payment at Reception</span>
+                </div>
+              </div>
             </div>
           )}
 
           {selectedTimeSlot && (
-            <div className="button-row" style={{ marginTop: "30px" }}>
+            <div className="d-flex justify-content-end mt-4 pt-3 border-top">
               <button
-                className="register-btn"
+                className="btn btn-primary d-inline-flex align-items-center gap-2 px-4 py-2.5 rounded-3 fw-bold shadow-sm"
+                style={{ backgroundColor: "#006194", borderColor: "#006194" }}
                 type="button"
                 onClick={handleSubmit}
               >
-                Book Appointment
+                <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>check_circle</span>
+                <span>Confirm &amp; Schedule Appointment</span>
               </button>
             </div>
           )}
