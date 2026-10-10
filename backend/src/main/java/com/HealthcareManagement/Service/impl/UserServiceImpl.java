@@ -14,7 +14,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
     public List<User> getAllUsers(){
-        return userRepository.findAll();
+        return userRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id"));
     }
 
     public Optional<User> getUserByEmail(String email) {

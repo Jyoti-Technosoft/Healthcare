@@ -1,127 +1,178 @@
-import React, { useEffect, useState } from 'react';
-import DataTable from 'react-data-table-component';
-import { getHealthreportsByAppointmentId } from '../Api'
-import Cookies from 'js-cookie';
-import { dateFormatter } from '../Validations';
-import PatientDetailPage from './PatientDetailPage';
+import React, { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+import { getHealthreportsByAppointmentId } from "../Api";
+import Cookies from "js-cookie";
+import { dateFormatter } from "../Validations";
+import PatientDetailPage from "./PatientDetailPage";
+import "../../assets/css/Doctor/PatientHealthReport.css"; // New CSS file
+
 const PatientHealthReport = ({ appointment, patient }) => {
-    const authToken = Cookies.get("authToken");
-    const [healthReport, setHealthReport] = useState([]);
-    const [activeTab, setActiveTab] = useState(true);
-    const [loading, setLoading] = useState(true);
-    const setBackMenu = (appointment) => {
-        setActiveTab(false);
+  const authToken = Cookies.get("authToken");
+  const [healthReport, setHealthReport] = useState([]);
+  const [activeTab, setActiveTab] = useState(true); // True = Show Report, False = Go Back
+  const [loading, setLoading] = useState(true);
+
+  // Handle Back Navigation
+  const setBackMenu = () => {
+    setActiveTab(false);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const appointmentId = appointment.id;
+        const data = await getHealthreportsByAppointmentId(
+          appointmentId,
+          authToken
+        );
+        setHealthReport(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching reports:", error);
+        setLoading(false);
+      }
     };
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const appointmentId = appointment.id;
-                const data = await getHealthreportsByAppointmentId(appointmentId, authToken);
-                setHealthReport(data); 
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching patients:', error);
-                setLoading(false);
-            }
-        };
-        fetchData();
-        // eslint-disable-next-line
-    }, []);
-    function formatAppointmentDate(dateString) {
-        return dateFormatter(dateString);
-    }
-    const columns = [
-        { name: 'Index', selector: (row, index) => index + 1, sortable: true, maxWidth: '70px' },
-        { name: 'Healthreport ID', selector: (row) => row.id, sortable: true, minWidth: '110px' },
-        { name: 'Disease', selector: (row) => row.disease, sortable: true, minWidth: '160px' },
-        {
-            name: 'Prescription',
-            selector: (row) => (
-                <ul className="prescription-list">
-                    {row.prescriptions.map(prescription => (
-                        <li key={prescription.id} className="prescription-item">
-                            <strong>{prescription.medicineName}</strong> - Dosage: {prescription.dosage}, Timing: {prescription.timing}
-                        </li>
-                    ))}
-                </ul>
-            ),
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
 
-            minWidth: '400px'
-        },
-        { name: 'Note', selector: (row) => row.notes, sortable: true, minWidth: '200px' },
-    ];
-    return (
-        <>
-            {activeTab ? (
-                <div className='background_part mt-3'>
-                    <div className="container ">
-                        <div className="row flex-lg-nowrap">
-                            <div className="col">
-                                <div className="row">
-                                    <div className="col mb-3">
-                                        <div className="card border-0 mb-3 shadow  bg-white rounded">
-                                            <div className="card-body">
-                                                <div className="">
-                                                    <i className="bi bi-arrow-left"
-                                                        style={{ fontSize: '25px', cursor: 'pointer', color: 'silver', fontWeight: 'bold', borderRadius: '50%', padding: '5px', transition: 'background-color 0.5s' }}
-                                                        onClick={setBackMenu}
-                                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#E5E4E2'}
-                                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                                                    > </i>
-                                                    {patient && (
-                                                        <div className='mt-4'>
-                                                            <h5><b className='contentHeadings' style={{ color: 'black' }}>Appointment Details</b></h5>
-                                                            <br />
-                                                            <div className="row">
-                                                                <div className="col-md-3">
-                                                                    <ul>
-                                                                        <li><strong>Patient ID:</strong> <span style={{ fontSize: '14px' }}> {patient.id}</span></li>
-                                                                        <li><strong>Patient Name:</strong> <span style={{ fontSize: '14px' }}> {patient.name}</span></li>
-                                                                        <li><strong>Contact:</strong> <span style={{ fontSize: '14px' }}> {patient.contact}</span></li>
+  function formatAppointmentDate(dateString) {
+    return dateFormatter(dateString);
+  }
 
-                                                                    </ul>
-                                                                </div>
-                                                                <div className="col-md-4">
-                                                                    <ul>
-                                                                        <li><strong>Appointment date:</strong> <span style={{ fontSize: '14px' }}> {formatAppointmentDate(appointment.appointmentDate)}</span></li>
-                                                                        <li><strong>Appointment time:</strong> <span style={{ fontSize: '14px' }}> {appointment.appointmentTime}</span></li>
-                                                                        <li><strong>Consultancy charge:</strong> <span style={{ fontSize: '14px' }}> &nbsp;  ₹{appointment.consultationCharge}</span></li>
+  // --- COLUMNS ---
+  const columns = [
+    {
+      name: "Index",
+      selector: (row, index) => index + 1,
+      sortable: true,
+      maxWidth: "80px",
+      center: true,
+    },
+    {
+      name: "Report ID",
+      selector: (row) => row.id,
+      sortable: true,
+      minWidth: "100px",
+      center: true,
+      style: { fontWeight: "bold", color: "#0150b5" },
+    },
+    {
+      name: "Diagnosis / Disease",
+      selector: (row) => row.disease,
+      sortable: true,
+      minWidth: "180px",
+      style: { fontWeight: "600", color: "#333" },
+    },
+    {
+      name: "Prescribed Medication",
+      selector: (row) => (
+        <div className="prescription-cell">
+          {row.prescriptions.map((prescription) => (
+            <div key={prescription.id} className="prescription-tag">
+              <span className="med-name">{prescription.medicineName}</span>
+              <span className="med-detail">
+                {prescription.dosage} | {prescription.timing}
+              </span>
+            </div>
+          ))}
+        </div>
+      ),
+      minWidth: "350px",
+      wrap: true, // Allows text to wrap nicely
+    },
+    {
+      name: "Doctor's Note",
+      selector: (row) => row.notes,
+      sortable: true,
+      minWidth: "200px",
+      wrap: true,
+    },
+  ];
 
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
+  // If Back is clicked, render the parent component
+  // Note: We pass the patient prop back so it doesn't crash
+  if (!activeTab) {
+    return <PatientDetailPage patient={patient} />;
+  }
 
-                                                        </div>
-                                                    )}
-                                                    <hr style={{ color: 'grey' }} />
-                                                    <div className="d-flex justify-content-between align-items-center mb-3">
-                                                        <h3 className="fw-normal text-secondary fs-4 mb-4 mt-4"><b className='contentHeadings' style={{ color: 'black' }}>HealthReport</b></h3>
-                                                    </div>
-                                                    {loading ? (
-                                                        <p>Loading...</p>
-                                                    ) : (
-                                                        <DataTable
-                                                            columns={columns}
-                                                            data={healthReport}
-                                                            pagination
-                                                            highlightOnHover
-                                                            noDataComponent="No health report found"
-                                                        />
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  return (
+    <div className="doctor-dashboard">
+      <div className="doctor-list-card">
+        {/* --- HEADER --- */}
+        <div className="detail-header">
+          <button className="btn-back" onClick={setBackMenu}>
+            <i className="bi bi-arrow-left"></i> Back to History
+          </button>
+          <p className="report-id-label">
+            Appointment ID: <strong>{appointment.id}</strong>
+          </p>
+        </div>
+
+        <hr className="divider-line" />
+
+        {/* --- SUMMARY SECTION (Matches Consultancy Form Style) --- */}
+        <div className="patient-info-section">
+          <h4 className="section-title">
+            <i className="bi bi-person-vcard me-2"></i>Appointment & Patient
+            Summary
+          </h4>
+
+          <div className="info-grid">
+            <div className="info-item">
+              <label>Patient Name</label>
+              <span>{patient.name}</span>
+            </div>
+            <div className="info-item">
+              <label>Contact</label>
+              <span>{patient.contact}</span>
+            </div>
+            <div className="info-item">
+              <label>Date</label>
+              <span>{formatAppointmentDate(appointment.appointmentDate)}</span>
+            </div>
+            <div className="info-item">
+              <label>Time</label>
+              <span>{appointment.appointmentTime}</span>
+            </div>
+            <div className="info-item">
+              <label>Consultation Fee</label>
+              <span className="text-success fw-bold">
+                ₹{appointment.consultationCharge}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* --- TABLE SECTION --- */}
+        <div className="title-row mt-4 mb-3">
+          <h3>Health Reports</h3>
+        </div>
+
+        <div className="table-responsive doctor-table-container">
+          {loading ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-primary" role="status"></div>
+              <p className="mt-2 text-muted">Loading report...</p>
+            </div>
+          ) : (
+            <DataTable
+              columns={columns}
+              data={healthReport}
+              pagination
+              highlightOnHover
+              noDataComponent={
+                <div className="p-4 text-center text-muted bg-light rounded">
+                  <i className="bi bi-file-earmark-medical fs-3 d-block mb-2"></i>
+                  No health reports found for this appointment.
                 </div>
-            ) : (
-                <PatientDetailPage />
-            )}
-        </>
-    );
+              }
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
-}
 export default PatientHealthReport;

@@ -3,3 +3,6 @@
 /frontend/build
 
 /backend/target
+/backend/.idea/*
+.metadata/
+/backend/mvnw*

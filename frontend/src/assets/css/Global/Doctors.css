@@ -1,0 +1,178 @@
+/* =========================================================
+   AEGISHEALTH SPECIALIST DIRECTORY STYLES (STITCH MATCH)
+   ========================================================= */
+
+.aegis-doctors-page {
+  background-color: #f8f9ff;
+  color: #0b1c30;
+  min-height: 100vh;
+}
+
+/* Hero Section */
+.aegis-directory-hero {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #bfc7d2;
+  padding: 3rem 0 2.5rem;
+  position: relative;
+}
+
+/* Quick Search Omnibox */
+.aegis-search-omnibox {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid #bfc7d2;
+  box-shadow: 0 4px 20px -2px rgba(11, 28, 48, 0.08);
+  padding: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.aegis-omnibox-input {
+  border: 1px solid #bfc7d2;
+  border-radius: 0.5rem;
+  height: 44px;
+  font-size: 14px;
+  color: #0b1c30;
+  background-color: #ffffff;
+  transition: all 0.15s ease;
+}
+
+.aegis-omnibox-input:focus {
+  border-color: #006194;
+  box-shadow: 0 0 0 3px rgba(0, 97, 148, 0.15);
+  outline: none;
+}
+
+/* Filter Tab Pills */
+.aegis-filter-bar {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(191, 199, 210, 0.7);
+  padding: 0.75rem 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(11, 28, 48, 0.04);
+}
+
+.aegis-pill-btn {
+  padding: 0.45rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  background-color: #eff4ff;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.aegis-pill-btn:hover {
+  background-color: #dce9ff;
+  color: #006194;
+}
+
+.aegis-pill-btn.active {
+  background-color: #006194;
+  color: #ffffff;
+  border-color: #006194;
+  box-shadow: 0 2px 4px rgba(0, 97, 148, 0.2);
+}
+
+.aegis-pill-btn .pill-count {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+/* Bento Specialist Cards */
+.aegis-doctor-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid rgba(191, 199, 210, 0.8);
+  box-shadow: 0 4px 12px rgba(11, 28, 48, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem;
+  height: 100%;
+  position: relative;
+}
+
+.aegis-doctor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px -4px rgba(0, 97, 148, 0.15);
+  border-color: #006194;
+}
+
+/* Card Image & Badges */
+.aegis-card-img-wrap {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background: #f1f5f9;
+  height: 220px;
+}
+
+.aegis-card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.4s ease;
+}
+
+.aegis-doctor-card:hover .aegis-card-img-wrap img {
+  transform: scale(1.04);
+}
+
+.aegis-verified-chip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.aegis-specialty-chip {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  color: #006194;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Online Status Badge */
+.aegis-online-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+}
+
+/* Modal Styling */
+.aegis-doc-modal {
+  background-color: rgba(11, 28, 48, 0.6);
+  backdrop-filter: blur(4px);
+}

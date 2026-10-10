@@ -7,21 +7,25 @@
 */
 
 /*--------------------------------------------------------------
-# General
+# General (AegisHealth Stitch Typography)
 --------------------------------------------------------------*/
 body {
-  font-family: "Open Sans", sans-serif;
-  color: #444444;
+  color: #0b1c30;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 a {
-  color: #1977cc;
+  color: #006194;
   text-decoration: none;
 }
 
 a:hover {
-  color: #3291e6;
+  color: #004b73;
   text-decoration: none;
+}
+
+p {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 h1,
@@ -30,7 +34,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Raleway", sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 /*--------------------------------------------------------------
@@ -71,36 +75,18 @@ h6 {
 }
 
 /*--------------------------------------------------------------
-# Back to top button
+# Back to top button (Suppressed for Stitch design)
 --------------------------------------------------------------*/
 .back-to-top {
-  position: fixed;
-  visibility: hidden;
-  opacity: 0;
-  right: 15px;
-  bottom: 15px;
-  z-index: 996;
-  background: #1977cc;
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  transition: all 0.4s;
-}
-
-.back-to-top i {
-  font-size: 28px;
-  color: #fff;
-  line-height: 0;
-}
-
-.back-to-top:hover {
-  background: #298ce5;
-  color: #fff;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 .back-to-top.active {
-  visibility: visible;
-  opacity: 1;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 .datepicker-dropdown {

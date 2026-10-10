@@ -114,16 +114,16 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
             "WHERE a.doctor.id = :doctorId")
     List getAppointmentsWithPatientName(@Param("doctorId") Long doctorId);
 
-    @Query("SELECT a FROM Appointment a WHERE a.doctor.id = :doctorId")
+    @Query("SELECT a FROM Appointment a WHERE a.doctor.id = :doctorId ORDER BY a.id DESC")
     List<Appointment> findByDoctorId(Long doctorId);
 
-    @Query("SELECT a FROM Appointment a WHERE a.patient.id = :patientId")
+    @Query("SELECT a FROM Appointment a WHERE a.patient.id = :patientId ORDER BY a.id DESC")
     List<Appointment> findByPatientId(Long patientId);
 
-    @Query("SELECT a FROM Appointment a WHERE a.doctor.id = :doctorId AND a NOT IN (SELECT hr.appointment FROM HealthReport hr) ORDER BY a.appointmentDate ASC")
+    @Query("SELECT a FROM Appointment a WHERE a.doctor.id = :doctorId AND a NOT IN (SELECT hr.appointment FROM HealthReport hr) ORDER BY a.appointmentDate DESC, a.id DESC")
     List<Appointment> findAppointmentsWithoutHealthReport(Long doctorId);
 
 
-    @Query("SELECT DISTINCT a.patient FROM Appointment a WHERE a.doctor.id = :doctorId")
+    @Query("SELECT DISTINCT a.patient FROM Appointment a WHERE a.doctor.id = :doctorId ORDER BY a.patient.id DESC")
     List<Patient> getPatientsForDoctor(Long doctorId);
 }

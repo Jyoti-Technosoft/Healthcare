@@ -1,49 +1,35 @@
-import React from 'react';
-import { Slide, Box } from '@mui/material';
-import BMICalculator from './BMICalculator';
-import IdealWeight from './IdealWeight';
-import AgeCalculator from './AgeCalculator';
+import BMICalculator from "./BMICalculator";
+import IdealWeight from "./IdealWeight";
+import AgeCalculator from "./AgeCalculator";
+import "../../assets/css/Patient/SidePanel.css";
 
-const SlidePanel = ({ showForm, toggleForm, activePanel }) => {
-    return (
-        <Slide direction="left" in={showForm} mountOnEnter unmountOnExit>
-            <Box
-                className='slideBox'
-                sx={{
-                    position: "fixed",
-                    top: 0,
-                    right: 0,
-                    width: "43%",
-                    height: "100vh",
-                    background: "#ffffff",
-                    borderRadius: "0.5%",
-                    zIndex: 999,
-                    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-                    overflowY: "auto",
-                }}
-            >
-                <div className='background_part mt-3'>
-                    <div className="container ">
-                        {activePanel === 'BMI' && (
-                            <>
-                                <BMICalculator toggleForm={toggleForm(null)} />
-                            </>
-                        )}
-                        {activePanel === 'IdealWeight' && (
-                            <>
-                                <IdealWeight toggleForm={toggleForm(null)} />
-                            </>
-                        )}
-                        {activePanel === 'Age' && (
-                            <>
-                                <AgeCalculator toggleForm={toggleForm(null)} />
-                            </>
-                        )}
-                    </div>
-                </div >
-            </Box>
-        </Slide>
-    );
+const SlidePanel = ({ showForm, toggleForm, closeForm, activePanel }) => {
+  const handleClose = () => closeForm(); 
+
+  return (
+    <>
+      {/* Custom backdrop (click closes panel) */}
+      {showForm && (
+        <div className="slide-panel-backdrop" onClick={handleClose}></div>
+      )}
+
+      <div
+        className={`slide-panel-drawer ${showForm ? "open" : ""}`}
+      >
+        <div className="panel-wrapper">
+          {activePanel === "BMI" && (
+            <BMICalculator toggleForm={handleClose} />
+          )}
+          {activePanel === "IdealWeight" && (
+            <IdealWeight toggleForm={handleClose} />
+          )}
+          {activePanel === "Age" && (
+            <AgeCalculator toggleForm={handleClose} />
+          )}
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default SlidePanel;

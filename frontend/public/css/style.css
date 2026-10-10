@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Roboto:300,400,500,700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 .btn_1,
 .btn_2,
@@ -350,7 +350,6 @@
   .contentHeadings {
     color: #1977cc;
     font-size: 20px !important;
-    font-family: "Playfair Display", serif;
   }
 
   .appointmentHeading {
@@ -949,7 +948,6 @@
   .contentHeadings {
     color: #1977cc;
     font-size: 20px !important;
-    font-family: "Playfair Display", serif;
   }
 
   .btn-password-toggle1 {
@@ -1271,12 +1269,10 @@ h4,
 h5,
 h6 {
   color: #242429;
-  font-family: "Playfair Display", serif;
 }
 
 p {
   color: #666666;
-  font-family: "Roboto", sans-serif;
   line-height: 1.929;
   font-size: 16px;
   margin-bottom: 0px;
@@ -1553,7 +1549,6 @@ ul {
   text-transform: capitalize;
   border: 1px solid #e4e6ea;
   border-radius: 2px;
-  font-family: "Playfair Display", serif;
   background-size: 200% auto;
 }
 
@@ -1595,7 +1590,6 @@ ul {
   transition: all .4s ease-in-out;
   text-transform: uppercase;
   border-radius: 2px;
-  font-family: "Roboto", sans-serif;
   background-size: 200% auto;
   border-radius: 5px;
   display: inline-block;
@@ -3103,7 +3097,6 @@ ul {
   color: #242429;
   font-size: 14px;
   padding: 38px 23px;
-  font-family: "Playfair Display", serif;
   line-height: 13px;
   text-transform: capitalize;
 
@@ -3224,7 +3217,6 @@ ul {
   color: #fff;
   font-size: 15px;
   padding: 0px 24px;
-  font-family: "Roboto", sans-serif;
 }
 
 @media only screen and (min-width: 992px) and (max-width: 1200px) {
@@ -3276,18 +3268,10 @@ ul {
   .banner_part {
     height: 650px;
   }
-}
-
-.banner_part .banner_text {
-  display: table;
-  width: 100%;
-  height: 935px;
-}
+} 
 
 .banner_part .banner_text .banner_text_iner {
-  display: table-cell;
   vertical-align: middle;
-  padding-top: 155px;
 }
 
 @media (max-width: 991px) {
@@ -3340,7 +3324,6 @@ ul {
   font-weight: 500;
   color: #242429;
   margin-bottom: 0;
-  font-family: "Roboto", sans-serif;
 }
 
 .banner_part .banner_text h1 {
@@ -3390,7 +3373,6 @@ ul {
 .banner_part .banner_text p {
   font-size: 15px;
   line-height: 30px;
-  font-family: "Roboto", sans-serif;
   color: #242429;
   padding-right: 20px;
 }
@@ -3547,7 +3529,6 @@ ul {
   color: #242429;
   width: 50%;
   float: left;
-  font-family: "Playfair Display", serif;
   position: relative;
   padding-left: 29px;
 }
@@ -4004,7 +3985,6 @@ ul {
 
 .review_part .client_review_single .client_review_text p {
   font-size: 18px;
-  font-family: "Playfair Display", serif;
   color: #fff;
   line-height: 1.9;
 }
@@ -4060,7 +4040,6 @@ ul {
 }
 
 .review_part h4 span {
-  font-family: "Playfair Display", serif;
   font-size: 14px;
   color: #fff;
   font-weight: 400;
@@ -4173,7 +4152,6 @@ ul {
   border: 1px solid #fff;
   border-radius: 0px;
   font-size: 14px;
-  font-family: "Roboto", sans-serif;
   margin-bottom: 4px;
   height: 50px;
   padding: 15px;
@@ -4224,7 +4202,6 @@ ul {
 .regervation_part .btn_2 {
   margin-top: 10px;
   background-color: #fff !important;
-  font-family: "Playfair Display", serif;
   font-weight: 500;
   color: #242429;
   font-size: 14px;
@@ -5915,7 +5892,6 @@ h6 {
 .blog_part .blog_btn {
   font-size: 14px;
   text-transform: uppercase;
-  font-family: "Playfair Display", serif;
   font-weight: 500;
   margin-top: 20px;
   display: inline-block;

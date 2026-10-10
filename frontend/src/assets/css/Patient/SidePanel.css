@@ -1,0 +1,62 @@
+/* ================================
+   SLIDE PANEL CONTAINER
+================================ */
+.slide-panel-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 480px;
+  max-width: 90vw;
+  background: #ffffff;
+  z-index: 10000;
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.15);
+  border-left: 1px solid #e2e8f0;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slide-panel-drawer.open {
+  transform: translateX(0);
+}
+
+/* Scrollbar styling */
+.slide-panel-drawer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.slide-panel-drawer::-webkit-scrollbar-thumb {
+  background: #c7d7ea;
+  border-radius: 10px;
+}
+
+/* Inner padding for all calculators */
+.panel-wrapper {
+  padding: 28px 24px;
+  background: #ffffff;
+}
+
+/* ================================
+   BACKDROP CLICK-TO-CLOSE
+================================ */
+.slide-panel-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 9999;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 480px) {
+  .panel-wrapper {
+    padding: 18px 16px;
+  }
+}

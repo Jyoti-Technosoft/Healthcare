@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DoctorLeaveRepository extends JpaRepository<DoctorLeave,Long> {
-    @Query("SELECT dl FROM DoctorLeave dl WHERE dl.doctor.id = :doctorId")
+    @Query("SELECT dl FROM DoctorLeave dl WHERE dl.doctor.id = :doctorId ORDER BY dl.id DESC")
     List<DoctorLeave> findByDoctorId(@Param("doctorId") Long doctorId);
 
     @Query("SELECT COUNT(dl) > 0 FROM DoctorLeave dl WHERE dl.doctor.id = :doctorId AND :date >= dl.fromDate AND :date<= dl.toDate")

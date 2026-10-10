@@ -275,8 +275,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
 
     @Override
     public List<Patient> getAllPatients() {
-        List<Patient> patients = patientRepository.findAll();
-        return patients;
+        return patientRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id"));
     }
 
     @Override
@@ -286,7 +285,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
 
     @Override
     public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
+        return appointmentRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id"));
     }
 
     @Override

@@ -75,7 +75,7 @@ public class DoctorServiceImpl implements DoctorService {
 
                 // Check if the current password matches
                 if (encoder.matches(userDTO.getCurrentPassword(), user.getPassword())) {
-                    // Update the receptionist entity with data from the UserDTO
+                    // Update the doctor entity with data from the UserDTO
                     existingDoctor.setName(userDTO.getName());
                     existingDoctor.setContact(userDTO.getContact());
                     existingDoctor.setGender(userDTO.getGender());
@@ -83,15 +83,26 @@ public class DoctorServiceImpl implements DoctorService {
                     existingDoctor.setAddress(userDTO.getAddress());
                     existingDoctor.setAge(userDTO.getAge());
 
-                    // Update the associated User entity with email and password
-                    user.setEmail(userDTO.getEmail());
-                    user.setPassword(encoder.encode(userDTO.getPassword()));
+                    // Update Doctor Work Details
+                    if (userDTO.getQualification() != null) existingDoctor.setQualification(userDTO.getQualification());
+                    if (userDTO.getDesignation() != null) existingDoctor.setDesignation(userDTO.getDesignation());
+                    if (userDTO.getSpecialities() != null) existingDoctor.setSpecialities(userDTO.getSpecialities());
+                    if (userDTO.getDepartment() != null) existingDoctor.setDepartment(userDTO.getDepartment());
+                    if (userDTO.getMorningTiming() != null) existingDoctor.setMorningTiming(userDTO.getMorningTiming());
+                    if (userDTO.getEveningTiming() != null) existingDoctor.setEveningTiming(userDTO.getEveningTiming());
+                    if (userDTO.getVisitingDays() != null) existingDoctor.setVisitingDays(userDTO.getVisitingDays());
 
-                    // Save changes to receptionist and user entities
+                    // Update the associated User entity with email and optional password
+                    user.setEmail(userDTO.getEmail());
+                    if (userDTO.getPassword() != null && !userDTO.getPassword().trim().isEmpty()) {
+                        user.setPassword(encoder.encode(userDTO.getPassword()));
+                    }
+
+                    // Save changes to doctor and user entities
                     doctorRepository.save(existingDoctor);
                     userRepository.save(user);
 
-                    return ResponseEntity.ok("Receptionist profile and user details updated successfully");
+                    return ResponseEntity.ok("Doctor profile and user details updated successfully");
                 } else {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect");
                 }
@@ -128,7 +139,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<HealthReport> getAllHealthreport() {
-        List<HealthReport> healthReports = healthReportRepository.findAll();
+        List<HealthReport> healthReports = healthReportRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id"));
         if (!healthReports.isEmpty()) {
             // Iterate through each health report and fetch prescriptions for each one
             for (HealthReport healthReport : healthReports) {
