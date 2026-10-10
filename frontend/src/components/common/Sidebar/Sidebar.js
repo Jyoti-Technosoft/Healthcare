@@ -11,7 +11,6 @@ import {
 import SidebarMenuItem from "./SidebarMenuItem";
 import { getMenuForRole, DASHBOARD_ITEM } from "./SidebarMenus";
 
-import logoImg from "../../../assets/img/Medico-logo.png";
 import maleRecep from "../../../assets/img/maleRecep.png";
 import female2 from "../../../assets/img/female2.png";
 
@@ -81,8 +80,21 @@ export default function Sidebar() {
         zIndex: 1020,
       }}
     >
-      <div className="logo">
-        <img src={logoImg} alt="Medico Logo" />
+      <div className="logo d-flex align-items-center gap-2 justify-content-center py-2" style={{ cursor: "pointer" }} onClick={() => setMenu("dashboard")}>
+        <div
+          className="rounded-2 d-flex align-items-center justify-content-center text-white shadow-sm"
+          style={{ width: "34px", height: "34px", backgroundColor: "#006194" }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>local_hospital</span>
+        </div>
+        <div className="text-start">
+          <span className="fw-bold d-block text-dark leading-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "17px", lineHeight: "1.1" }}>
+            AegisHealth
+          </span>
+          <span className="text-secondary text-uppercase fw-semibold" style={{ fontSize: "9px", letterSpacing: "0.8px" }}>
+            Clinical Portal
+          </span>
+        </div>
       </div>
 
       <div className="profile">

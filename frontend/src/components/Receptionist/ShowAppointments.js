@@ -63,29 +63,42 @@ export default function ShowAppointments() {
     <div className="doctor-dashboard">
       <div className="doctor-list-card">
         {/* HEADER */}
-        <div className="top-header">
-          <p className="total-patient">
-            Total Appointments: <strong>{appointments.length}</strong>
-          </p>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
+          <div>
+            <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+              <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>event_note</span>
+              Master Schedule Hub
+            </div>
+            <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "22px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Clinical Appointments Directory
+            </h2>
+            <p className="text-muted mb-0" style={{ fontSize: "13px" }}>
+              Total Records: <strong className="text-dark">{appointments.length}</strong> appointments registered
+            </p>
+          </div>
 
           <button
             type="button"
-            className="btn-add"
+            className="btn btn-sm btn-primary d-inline-flex align-items-center gap-1.5 fw-semibold px-3 py-2 rounded-3"
+            style={{ backgroundColor: "#006194", borderColor: "#006194" }}
             onClick={() => dispatch(setActiveTab("bookAppointment"))}
           >
-            <i className="bi bi-plus"></i> Add
+            <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>add_circle</span>
+            <span>Book New Appointment</span>
           </button>
         </div>
 
-        <hr className="divider-line" />
-
-        {/* TITLE + SEARCH */}
-        <div className="title-row">
-          <h3>Appointments</h3>
+        {/* SEARCH BAR */}
+        <div className="d-flex align-items-center justify-content-between pb-3 border-bottom">
+          <div className="d-flex align-items-center gap-2">
+            <span className="badge rounded-pill bg-light text-secondary border px-2.5 py-1.5 fw-semibold" style={{ fontSize: "12px" }}>
+              Showing {filteredAppointments.length} matching entries
+            </span>
+          </div>
 
           <div className="search-box">
-            <input type="text" placeholder="Search" onChange={handleSearch} />
-            <i className="bi bi-search search-icon"></i>
+            <input type="text" placeholder="Search patient, email, contact..." onChange={handleSearch} />
+            <span className="material-symbols-outlined search-icon" style={{ fontSize: "18px" }}>search</span>
           </div>
         </div>
 

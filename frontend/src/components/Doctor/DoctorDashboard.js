@@ -7,13 +7,6 @@ import { dateFormatter } from "../Validations";
 import { setActiveTab } from "../../actions/submenuActions";
 import { useSelector, useDispatch } from "react-redux";
 import "../../assets/css/Doctor/doctorDashboard.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCalendarCheck,
-  faCalendarDay,
-  faUsers,
-  faUserDoctor,
-} from "@fortawesome/free-solid-svg-icons";
 
 export default function DoctorDashboard() {
   const [appointment, setAppointment] = useState([]);
@@ -138,31 +131,46 @@ export default function DoctorDashboard() {
 
   const columns = [
     {
-      name: "Report",
+      name: "Consultation",
       cell: (row) => (
-        <i
-          className="bi bi-clipboard2-pulse report-icon-btn"
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2.5 rounded-3 fw-semibold"
           onClick={() => handleToggleModal(row)}
-          title="Consult"
-          style={{ fontSize: "1.3rem", cursor: "pointer", color: "#0d6efd" }}
-        ></i>
+          title="Start Clinical Consultation"
+          style={{ fontSize: "12px", borderColor: "#006194", color: "#006194" }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>clinical_notes</span>
+          <span>Consult</span>
+        </button>
       ),
-      width: "80px",
+      width: "120px",
       center: true,
     },
     {
       name: "Appt ID",
       selector: (row) => row.id,
+      cell: (row) => <span className="fw-semibold text-secondary">#{row.id}</span>,
       sortable: true,
-      width: "100px",
+      width: "110px",
     },
     {
       name: "Patient Name",
-      selector: (row) => row.patient.name,
+      selector: (row) => row.patient?.name,
+      cell: (row) => (
+        <div className="d-flex align-items-center gap-2">
+          <div
+            className="rounded-circle d-flex align-items-center justify-content-center text-primary"
+            style={{ width: "28px", height: "28px", backgroundColor: "#e0f2fe", fontSize: "11px", fontWeight: "700" }}
+          >
+            {row.patient?.name ? row.patient.name.charAt(0).toUpperCase() : "P"}
+          </div>
+          <span className="fw-semibold text-dark">{row.patient?.name}</span>
+        </div>
+      ),
       sortable: true,
       grow: 1,
       minWidth: "180px",
-      style: { fontWeight: "500", color: "#333", fontSize: "14px" },
     },
     {
       name: "Date",
@@ -171,8 +179,13 @@ export default function DoctorDashboard() {
       grow: 1,
     },
     {
-      name: "Time",
+      name: "Time Slot",
       selector: (row) => row.appointmentTime,
+      cell: (row) => (
+        <span className="badge bg-light text-dark border px-2.5 py-1" style={{ fontSize: "12px", borderColor: "#cbd5e1" }}>
+          {row.appointmentTime}
+        </span>
+      ),
       sortable: true,
       grow: 1,
     },
@@ -181,64 +194,93 @@ export default function DoctorDashboard() {
   const customTableStyles = {
     headRow: {
       style: {
-        backgroundColor: "#F0F8FF",
-        borderBottom: "1px solid #e6edf5",
-        minHeight: "50px",
-        color: "#373737",
-        fontFamily: "'Roboto', sans-serif",
+        backgroundColor: "#f8fafc",
+        borderBottom: "1px solid #e2e8f0",
+        minHeight: "48px",
+        color: "#475569",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
       },
     },
     headCells: {
       style: {
-        textTransform: "none",
-        fontSize: "15px",
+        textTransform: "uppercase",
+        fontSize: "12px",
+        letterSpacing: "0.5px",
         fontWeight: "600",
       },
     },
     rows: {
       style: {
-        fontFamily: "'Roboto', sans-serif",
-        fontSize: "14px",
-        color: "#333",
-        minHeight: "55px",
-        borderBottom: "1px solid #f0f2f5",
+        fontFamily: "'Inter', sans-serif",
+        fontSize: "13px",
+        color: "#1e293b",
+        minHeight: "56px",
+        borderBottom: "1px solid #f1f5f9",
       },
     },
   };
 
+  const statCards = [
+    {
+      title: "Total Appointments",
+      value: appointment.length,
+      badgeText: "All Time",
+      badgeClass: "text-primary bg-primary-subtle",
+      icon: "calendar_month",
+      color: "#006194",
+    },
+    {
+      title: "Today's Patient Queue",
+      value: countTodaysAppointmentsDoctor(),
+      badgeText: "Active Today",
+      badgeClass: "text-success bg-success-subtle",
+      icon: "event_available",
+      color: "#006947",
+    },
+    {
+      title: "Unique Patients Treated",
+      value: uniquePatientCount,
+      badgeText: "EHR Directory",
+      badgeClass: "text-info bg-info-subtle",
+      icon: "groups",
+      color: "#0284c7",
+    },
+    {
+      title: "Clinical Rounds Status",
+      value: "Normal",
+      badgeText: "On Schedule",
+      badgeClass: "text-success bg-success-subtle",
+      icon: "health_and_safety",
+      color: "#006947",
+    },
+  ];
+
   return (
     <div className="doctor-dashboard-container">
+      {/* SECTION HEADER */}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
+        <div>
+          <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+            <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>stethoscope</span>
+            Physician Clinical Telemetry
+          </div>
+          <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "24px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            Doctor Clinical Operations
+          </h2>
+        </div>
+      </div>
+
       {/* ========== Top Stats ========== */}
       <div className="doctor-top-grid">
-        {[
-          {
-            title: "Total Appointments",
-            value: appointment.length,
-            color: "#6F42C1",
-            icon: faCalendarCheck,
-          },
-          {
-            title: "Today's Appointments",
-            value: countTodaysAppointmentsDoctor(),
-            color: "#4CAF50",
-            icon: faCalendarDay,
-          },
-          {
-            title: "Top Doctors",
-            value: "-", // Usually not relevant for a specific doctor dashboard
-            color: "#FD7E14",
-            icon: faUserDoctor,
-          },
-          {
-            title: "Total Patients",
-            value: uniquePatientCount, // UPDATED HERE
-            color: "#2196F3",
-            icon: faUsers,
-          },
-        ].map((card, index) => (
+        {statCards.map((card, index) => (
           <div key={index} className="flat-card">
-            <div className="flat-card-icon" style={{ background: card.color }}>
-              <FontAwesomeIcon icon={card.icon} size="lg" color="#fff" />
+            <div className="d-flex align-items-center justify-content-between w-100">
+              <div className="flat-card-icon" style={{ backgroundColor: `${card.color}15`, color: card.color }}>
+                <span className="material-symbols-outlined" style={{ fontSize: "28px" }}>{card.icon}</span>
+              </div>
+              <span className={`badge rounded-pill px-2.5 py-1 ${card.badgeClass}`} style={{ fontSize: "11px" }}>
+                {card.badgeText}
+              </span>
             </div>
             <div className="flat-card-info">
               <h2>{card.value}</h2>

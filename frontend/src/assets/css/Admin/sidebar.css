@@ -51,76 +51,90 @@ body {
 }
 
 .profile-img {
-  width: 135px; /* Using the smaller desktop size */
-  height: 135px;
-  border-radius: 20px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
   object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 97, 148, 0.12);
 }
 
 .profile-info {
   text-align: center;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .profile-info h3 {
-  font-weight: 600;
-  font-size: 18px;
-  color: #0150B5;
+  font-weight: 700;
+  font-size: 16px;
+  color: #0b1c30;
   margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .profile-info p {
-  font-weight: 500;
-  font-size: 13px;
-  color: #373737;
-  margin-top: 3px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #006194;
+  margin-top: 2px;
+  margin-bottom: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-
 .profile-info small {
-    display: block;                /* Ensures it sits on its own line */
-    margin-top: 0px;               /* Removes top space from designation */
-    line-height: 1.2;
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.2;
 }
 
 /* Divider */
 .divider {
-  width: 80%;
+  width: 85%;
   height: 1px;
-  background-color:  #1977CC;
-  margin: 10px 0;
+  background-color: rgba(191, 199, 210, 0.6);
+  margin: 14px 0;
 }
 
 /* ---------------- MENU ---------------- */
 .menu {
   list-style: none;
-  padding: 0;
+  padding: 0 12px;
   width: 100%;
 }
 
 .menu li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 30px;
-  font-size: 15px;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 500;
-  color: #373737;
+  color: #475569;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.15s ease;
   white-space: nowrap;
+  margin-bottom: 4px;
 }
 
 .menu li img {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
+  opacity: 0.8;
 }
 
-.menu li:hover,
+.menu li:hover {
+  color: #006194;
+  background-color: #eff4ff;
+}
+
 .menu li.active {
-  color: #0150B5;
-  background: #f0f4f8;
-  border-right: 3px solid #0150B5;
+  color: #006194;
+  background-color: #e0f2fe;
+  font-weight: 600;
 }
 
 /* ---------------- MOBILE HAMBURGER & BACKDROP (Hidden on Desktop) ---------------- */

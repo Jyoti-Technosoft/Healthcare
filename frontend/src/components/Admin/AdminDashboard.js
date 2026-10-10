@@ -4,13 +4,6 @@ import Cookies from "js-cookie";
 import "../../assets/css/Admin/adminDashboard.css";
 import { useDispatch } from "react-redux";
 import { setActiveTab } from "../../actions/submenuActions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUsers,
-  faUserPlus,
-  faUserNurse,
-  faUserMd,
-} from "@fortawesome/free-solid-svg-icons";
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -68,39 +61,76 @@ export default function AdminDashboard() {
 
   const cards = [
     {
-      title: "Total Users",
+      title: "Total Registered Users",
       value: users.length,
-      color: "#6F42C1",
-      icon: faUsers,
+      badgeText: "All Roles",
+      badgeClass: "text-primary bg-primary-subtle",
+      icon: "groups",
+      color: "#006194",
     },
     {
-      title: "Today's Users",
-      value: todayUsersCount(), // Calling the fixed function
-      color: "#4CAF50",
-      icon: faUserPlus,
+      title: "New Users Registered Today",
+      value: todayUsersCount(),
+      badgeText: "Active Today",
+      badgeClass: "text-success bg-success-subtle",
+      icon: "person_add",
+      color: "#006947",
     },
     {
-      title: "Total Receptionists",
+      title: "Active Front Desk Staff",
       value: receptionist.length,
-      color: "#FD7E14",
-      icon: faUserNurse,
+      badgeText: "Clinical Front Desk",
+      badgeClass: "text-warning bg-warning-subtle",
+      icon: "support_agent",
+      color: "#92400e",
     },
     {
-      title: "Total Doctors",
+      title: "Verified Clinical MDs",
       value: doctor.length,
-      color: "#2196F3",
-      icon: faUserMd,
+      badgeText: "Board Certified",
+      badgeClass: "text-info bg-info-subtle",
+      icon: "stethoscope",
+      color: "#0284c7",
     },
   ];
 
   return (
     <div className="admin-dashboard-container">
-      {/* TOP GRID */}
+      {/* SECTION HEADER */}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
+        <div>
+          <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+            <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>admin_panel_settings</span>
+            AegisHealth Enterprise Administration
+          </div>
+          <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "24px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            Clinical User &amp; Access Governance
+          </h2>
+        </div>
+        <div className="d-flex align-items-center gap-2">
+          <button
+            type="button"
+            className="btn btn-sm btn-primary d-inline-flex align-items-center gap-1.5 fw-semibold px-3 py-2 rounded-3"
+            style={{ backgroundColor: "#006194", borderColor: "#006194" }}
+            onClick={() => setMenu("registerUsers")}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>person_add</span>
+            <span>Register New User</span>
+          </button>
+        </div>
+      </div>
+
+      {/* TOP BENTO STAT GRID */}
       <div className="admin-top-grid">
         {cards.map((card, index) => (
           <div key={index} className="flat-card">
-            <div className="flat-card-icon" style={{ background: card.color }}>
-              <FontAwesomeIcon icon={card.icon} size="lg" color="#fff" />
+            <div className="d-flex align-items-center justify-content-between w-100">
+              <div className="flat-card-icon" style={{ backgroundColor: `${card.color}15`, color: card.color }}>
+                <span className="material-symbols-outlined" style={{ fontSize: "28px" }}>{card.icon}</span>
+              </div>
+              <span className={`badge rounded-pill px-2.5 py-1 ${card.badgeClass}`} style={{ fontSize: "11px" }}>
+                {card.badgeText}
+              </span>
             </div>
             <div className="flat-card-info">
               <h2>{card.value}</h2>
@@ -110,40 +140,68 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      {/* MIDDLE GRID */}
+      {/* MIDDLE GRID: AUDIT TABLE */}
       <div className="admin-middle-grid">
         <div className="appointments-box">
           <div className="appointments-header">
-            <h3>Total Users List</h3>
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setMenu("usersList");
-              }}
+            <div className="d-flex align-items-center gap-2">
+              <span className="material-symbols-outlined text-primary" style={{ fontSize: "22px" }}>manage_accounts</span>
+              <h3 className="mb-0">Directory Audit &amp; System Accounts</h3>
+            </div>
+            <button
+              type="button"
+              className="btn btn-link p-0 text-decoration-none fw-semibold"
+              style={{ color: "#006194", fontSize: "13px" }}
+              onClick={() => setMenu("usersList")}
             >
-              Show all
-            </a>
+              View Full User Roster &rarr;
+            </button>
           </div>
 
-          {/* --- HTML TABLE (Standard Structure) --- */}
+          {/* TABLE CONTENT */}
           <div className="box-content">
             <div className="table-wrapper">
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>Role</th>
+                    <th>User ID</th>
+                    <th>Clinical Email / Identity</th>
+                    <th>System Scope / Role</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedData.length > 0 ? (
                     paginatedData.map((user) => (
                       <tr key={user.id}>
-                        <td>{user.id}</td>
-                        <td>{user.email || "-"}</td>
-                        <td>{user.role || "-"}</td>
+                        <td className="fw-semibold text-secondary">#{user.id}</td>
+                        <td className="fw-medium text-dark">{user.email || "-"}</td>
+                        <td>
+                          <span
+                            className="badge px-2.5 py-1 rounded-pill"
+                            style={{
+                              backgroundColor:
+                                user.role === "Doctor"
+                                  ? "#e0f2fe"
+                                  : user.role === "Receptionist"
+                                  ? "#fef3c7"
+                                  : user.role === "SuperAdmin"
+                                  ? "#fee2e2"
+                                  : "#f1f5f9",
+                              color:
+                                user.role === "Doctor"
+                                  ? "#0284c7"
+                                  : user.role === "Receptionist"
+                                  ? "#b45309"
+                                  : user.role === "SuperAdmin"
+                                  ? "#b91c1c"
+                                  : "#475569",
+                              fontSize: "12px",
+                              fontWeight: "600",
+                            }}
+                          >
+                            {user.role || "User"}
+                          </span>
+                        </td>
                       </tr>
                     ))
                   ) : (

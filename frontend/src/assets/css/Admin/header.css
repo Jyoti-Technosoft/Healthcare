@@ -1,8 +1,10 @@
-/* Existing Header Styles */
+/* Modern AegisHealth Clinical Header */
 .custom-header {
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  transition: 0.3s ease;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(191, 199, 210, 0.6);
+  box-shadow: 0 1px 3px rgba(11, 28, 48, 0.04);
+  transition: all 0.3s ease;
   z-index: 1050;
   display: flex;
   align-items: center;
@@ -15,42 +17,34 @@
   justify-content: space-between;
 }
 
-.header-logo {
-  width: 105px;
-  height: auto;
-  object-fit: contain;
-}
-
-.toggle-icon {
-  font-size: 28px;
-  color: #0150B5;
-}
-
-/* Desktop Right Section */
-.header-right-box {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  position: absolute;
-  right: 80px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
 .bell-btn {
   position: relative;
-  background: transparent;
-  border: none;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
-.bell-btn i { font-size: 21px; color: #6b7280; }
+
+.bell-btn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
 .bell-btn span {
   position: absolute;
-  top: 2px; right: -2px;
-  width: 8px; height: 8px;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
   background: #ef4444;
   border-radius: 50%;
-  border: 1px solid #fff;
+  border: 1.5px solid #fff;
 }
 
 .header-username {

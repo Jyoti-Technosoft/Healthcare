@@ -207,39 +207,83 @@ export default function ReceptionistDashboard() {
     page * rowsPerPage
   );
 
+  const cards = [
+    {
+      title: "Today's Appointments",
+      value: countTodaysAppointments(),
+      color: "#006194",
+      icon: "calendar_month",
+      badgeText: "Today's Intake",
+      badgeClass: "bg-primary-subtle text-primary border border-primary-subtle",
+    },
+    {
+      title: "Active Scheduled Operations",
+      value: 1,
+      color: "#16a34a",
+      icon: "emergency",
+      badgeText: "On Schedule",
+      badgeClass: "bg-success-subtle text-success border border-success-subtle",
+    },
+    {
+      title: "Attending Doctors",
+      value: doctors.length,
+      color: "#0284c7",
+      icon: "stethoscope",
+      badgeText: "Active Roster",
+      badgeClass: "bg-info-subtle text-info border border-info-subtle",
+    },
+    {
+      title: "Ward & Room Availability",
+      value: 4,
+      color: "#f59e0b",
+      icon: "meeting_room",
+      badgeText: "Beds Ready",
+      badgeClass: "bg-warning-subtle text-warning border border-warning-subtle",
+    },
+  ];
+
   return (
     <div className="dashboard-container">
+      {/* HEADER BANNER */}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
+        <div>
+          <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+            <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>desk</span>
+            AegisHealth Reception &amp; Admissions
+          </div>
+          <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "24px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            Patient Intake &amp; Appointment Dispatch Hub
+          </h2>
+        </div>
+        <div className="d-flex align-items-center gap-2">
+          <button
+            type="button"
+            className="btn btn-sm btn-primary d-inline-flex align-items-center gap-1.5 fw-semibold px-3 py-2 rounded-3"
+            style={{ backgroundColor: "#006194", borderColor: "#006194" }}
+            onClick={() => setMenu("bookAppointment")}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>add_circle</span>
+            <span>Book Patient Appointment</span>
+          </button>
+        </div>
+      </div>
+
       {/* ------------------------- Top Cards -------------------------- */}
       <div className="top-grid">
-        {[
-          {
-            title: "Today's Appointments",
-            value: countTodaysAppointments(),
-            color: "#6F42C1",
-            icon: "img/Person Calendar.png",
-          },
-          {
-            title: "Operations for Today",
-            value: 1,
-            color: "#4CAF50",
-            icon: "img/Clinic.png",
-          },
-          {
-            title: "Doctor Availability",
-            value: doctors.length,
-            color: "#2196F3",
-            icon: "img/Medical Doctor.png",
-          },
-          {
-            title: "Room Availability",
-            value: 4,
-            color: "#FD7E14",
-            icon: "img/Hospital Room.png",
-          },
-        ].map((card, i) => (
+        {cards.map((card, i) => (
           <div key={i} className="flat-card">
-            <div className="flat-card-icon" style={{ background: card.color }}>
-              <img src={card.icon} alt={card.title} />
+            <div className="d-flex align-items-center justify-content-between w-100">
+              <div
+                className="flat-card-icon"
+                style={{ backgroundColor: `${card.color}15`, color: card.color }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: "28px" }}>
+                  {card.icon}
+                </span>
+              </div>
+              <span className={`badge rounded-pill px-2.5 py-1 ${card.badgeClass}`} style={{ fontSize: "11px" }}>
+                {card.badgeText}
+              </span>
             </div>
             <div className="flat-card-info">
               <h2>{card.value}</h2>
