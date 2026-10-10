@@ -56,31 +56,43 @@ export default function DoctorLeaves() {
     <div className="background_part">
       <div className="register-card">
         {/* TOP HEADER: Total Count + Add Button */}
-        <div className="top-header">
-          <p className="total-count">
-            Total Leaves: <strong>{pastLeaves.length}</strong>
-          </p>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 pb-3 mb-4 border-bottom">
+          <div>
+            <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+              <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>event_busy</span>
+              Physician Scheduling &amp; Leaves
+            </div>
+            <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "22px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Leave History &amp; Time-Off Registry
+            </h2>
+            <p className="text-muted mb-0 mt-1" style={{ fontSize: "13px" }}>
+              Total Requests: <strong className="text-dark">{pastLeaves.length}</strong> recorded leaves
+            </p>
+          </div>
 
           <button
             type="button"
-            className="btn-add"
+            className="btn btn-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 rounded-3 fw-semibold shadow-sm"
+            style={{ backgroundColor: "#006194", borderColor: "#006194" }}
             onClick={() => setMenu("addDoctorLeaves")}
           >
-            <i className="bi bi-plus"></i> Apply Leave
+            <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>add_circle</span>
+            <span>Apply For Leave</span>
           </button>
         </div>
 
-        <hr className="divider-line" />
-
         {/* TITLE ROW */}
-        <div className="title-row">
-          <h3 className="register-title">Past Leaves</h3>
+        <div className="d-flex align-items-center justify-content-between mb-3">
+          <h4 className="fw-bold text-dark mb-0" style={{ fontSize: "18px" }}>Leave Schedule Logs</h4>
+          <span className="badge bg-light text-secondary border px-2.5 py-1.5">
+            Showing {paginatedData.length} entries
+          </span>
         </div>
 
         {/* --- STANDARD HTML TABLE --- */}
         <div className="table-responsive doctor-table-container mt-3">
           {loading ? (
-            <p className="text-center text-muted py-3">Loading...</p>
+            <p className="text-center text-muted py-4">Loading leave records...</p>
           ) : (
             <table className="doctor-table">
               <thead>

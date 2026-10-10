@@ -359,17 +359,34 @@ export default function RegisterUsers() {
   return (
     <div className="background_part">
       <div className="register-card">
-        {/* Back Button (Using same class as reference but with Icon) */}
-        <div className="register-back-btn" onClick={() => setMenu("usersList")}>
-          <i
-            className="bi bi-arrow-left"
-            style={{ fontSize: "20px", color: "#373737" }}
-          ></i>
+        {/* Top Header & Breadcrumb */}
+        <div className="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+          <div className="d-flex align-items-center gap-3">
+            <button
+              type="button"
+              className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1 rounded-circle p-2 shadow-sm"
+              style={{ width: "38px", height: "38px", justifyContent: "center" }}
+              onClick={() => setMenu("usersList")}
+              title="Return to User Directory"
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>arrow_back</span>
+            </button>
+            <div>
+              <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+                <span className="material-symbols-outlined" style={{ fontSize: "15px" }}>person_add</span>
+                Administration &bull; Staff Onboarding
+              </div>
+              <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "22px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                Register System Staff
+              </h2>
+            </div>
+          </div>
+          <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold" style={{ fontSize: "12px" }}>
+            AegisHealth Access Control
+          </span>
         </div>
 
-        <h3 className="register-title">REGISTER USERS</h3>
-
-        <div style={{ marginTop: "20px" }}>
+        <div>
           {/* Tabs */}
           {(role !== "Admin" || (role === "Admin" && step !== 3)) &&
             step > 1 && (

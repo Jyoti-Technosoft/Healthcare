@@ -26,18 +26,10 @@ export default function HealthCalculator() {
 
   return (
     <div className="hc-wrapper">
-      {/* DARK BACKDROP BEHIND PANEL */}
-      {showForm && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-3 z-40"
-          onClick={closeForm}
-        />
-      )}
-
       <SlidePanel
         showForm={showForm}
         toggleForm={toggleForm}
-        closeForm={closeForm} // <-- added
+        closeForm={closeForm}
         activePanel={activePanel}
       />
 

@@ -68,32 +68,34 @@ export default function Patients() {
         <div className="doctor-dashboard">
           <div className="doctor-list-card">
             {/* Top Header */}
-            <div className="top-header">
-              <p className="total-patient">
-                Total Patients: <strong>{filteredPatients.length}</strong>
-              </p>
-            </div>
-
-            <hr className="divider-line" />
-
-            {/* Title & Search */}
-            <div className="title-row">
-              <h3>Patients</h3>
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 pb-3 mb-4 border-bottom">
+              <div>
+                <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>groups</span>
+                  Clinical Patient Registry
+                </div>
+                <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "22px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  My Assigned Patients
+                </h2>
+                <p className="text-muted mb-0 mt-1" style={{ fontSize: "13px" }}>
+                  Active Records: <strong className="text-dark">{filteredPatients.length}</strong> patients under care
+                </p>
+              </div>
 
               <div className="search-box">
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Search patient by name, email, contact..."
                   onChange={handleSearch}
                 />
-                <i className="bi bi-search search-icon"></i>
+                <span className="material-symbols-outlined search-icon" style={{ fontSize: "18px" }}>search</span>
               </div>
             </div>
 
             {/* --- STANDARD HTML TABLE --- */}
             <div className="table-responsive doctor-table-container mt-3">
               {loading ? (
-                <p className="text-center text-muted py-3">Loading...</p>
+                <p className="text-center text-muted py-4">Loading patient records...</p>
               ) : (
                 <table className="doctor-table">
                   <thead>

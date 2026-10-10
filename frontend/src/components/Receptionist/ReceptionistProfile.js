@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { getReceptionistApi, updateReceptionistProfileApi } from "../Api";
 import { format } from "date-fns";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../../assets/css/Receptionist/receptionistProfile.css"; // ← NEW CSS FILE
 
 export default function ReceptionistProfile() {
@@ -70,9 +72,19 @@ export default function ReceptionistProfile() {
     if (!dateOfBirth) newErrors.dateOfBirth = "Required";
     if (!gender) newErrors.gender = "Required";
     if (!address) newErrors.address = "Required";
-    if (!password) newErrors.password = "Required";
-    if (password !== confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match";
+
+    // Optional password update
+    if (password || currentPassword || confirmPassword) {
+      if (!currentPassword) {
+        newErrors.currentPassword = "Required to change password";
+      }
+      if (!password) {
+        newErrors.password = "Required";
+      }
+      if (password !== confirmPassword) {
+        newErrors.confirmPassword = "Passwords do not match";
+      }
+    }
 
     setErrors(newErrors);
 
@@ -90,10 +102,17 @@ export default function ReceptionistProfile() {
           address,
           age
         );
+        toast.success("Profile updated successfully!");
         setEditMode(false);
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
       } catch {
+        toast.error("Failed to update profile. Please verify your current password.");
         setErrors({ currentPassword: "Invalid current password" });
       }
+    } else {
+      toast.warn("Please check the form for errors before saving.");
     }
   };
 
@@ -101,16 +120,41 @@ export default function ReceptionistProfile() {
     <div className="profile-dashboard">
       <div className="profile-card">
         {/* Header */}
-        <div className="profile-title-row">
-          <h3>Receptionist Profile</h3>
-        </div>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 pb-3 mb-4 border-bottom">
+          <div>
+            <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+              <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>badge</span>
+              Admissions &amp; Front Desk Registry
+            </div>
+            <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "22px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              {name || "Receptionist Profile"}
+            </h2>
+            <div className="d-flex align-items-center gap-2 mt-1">
+              <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 rounded-pill">
+                {role || "Receptionist"}
+              </span>
+              <span className="text-muted" style={{ fontSize: "13px" }}>
+                Joined on {joiningDate}
+              </span>
+            </div>
+          </div>
 
-        <hr className="divider-line" />
-
-        {/* Info Tag */}
-        <div className="role-info">
-          <span className="role-badge">{role}</span>
-          <span className="join-date">Joined on {joiningDate}</span>
+          <div>
+            {!editMode ? (
+              <button
+                type="button"
+                className="btn btn-outline-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 rounded-3 fw-semibold shadow-sm"
+                onClick={() => setEditMode(true)}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>edit</span>
+                <span>Edit Profile</span>
+              </button>
+            ) : (
+              <span className="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill fw-semibold">
+                Editing Mode Active
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Form */}
@@ -251,24 +295,43 @@ export default function ReceptionistProfile() {
           </div>
 
           {/* Buttons */}
-          <div className="form-footer">
-            {!editMode && (
+          <div className="form-footer d-flex align-items-center justify-content-end gap-2 mt-4 pt-3 border-top">
+            {!editMode ? (
               <button
                 type="button"
-                className="edit-btn"
+                className="btn btn-primary d-inline-flex align-items-center gap-1.5 px-4 py-2 rounded-3 fw-semibold shadow-sm"
+                style={{ backgroundColor: "#006194", borderColor: "#006194" }}
                 onClick={() => setEditMode(true)}
               >
-                Edit
+                <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>edit</span>
+                <span>Edit Profile</span>
               </button>
-            )}
-            {editMode && (
-              <button type="submit" className="update-btn">
-                Update
-              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary d-inline-flex align-items-center gap-1.5 px-3 py-2 rounded-3 fw-semibold"
+                  onClick={() => {
+                    setEditMode(false);
+                    setErrors({});
+                  }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>close</span>
+                  <span>Cancel</span>
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-success d-inline-flex align-items-center gap-1.5 px-4 py-2 rounded-3 fw-semibold shadow-sm"
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>save</span>
+                  <span>Save Changes</span>
+                </button>
+              </>
             )}
           </div>
         </form>
       </div>
+      <ToastContainer position="bottom-right" />
     </div>
   );
 }

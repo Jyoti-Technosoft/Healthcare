@@ -151,7 +151,10 @@ export async function updatePatientProfileApi(patientId, email, currentPassword,
     }
 }
 
-export async function updateDoctorProfileApi(userId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age, navigate) {
+export async function updateDoctorProfileApi(
+    userId, email, currentPassword, password, name, contact, gender, dateOfBirth, address, age,
+    qualification, designation, specialities, department, morningTiming, eveningTiming, visitingDays, navigate
+) {
     try {
         if (!token) {
             console.log('User not authenticated. Redirecting to login...');
@@ -168,6 +171,13 @@ export async function updateDoctorProfileApi(userId, email, currentPassword, pas
             dateOfBirth,
             address,
             age,
+            qualification,
+            designation,
+            specialities,
+            department,
+            morningTiming,
+            eveningTiming,
+            visitingDays
         }
 
         const response = await axios.put(`${API_BASE_URL}/doctor/auth/updateDoctorProfile/${userId}`,userData,{

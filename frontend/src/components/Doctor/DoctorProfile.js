@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { updateDoctorProfileApi, getDoctorsWithIdApi } from "../Api";
 import {
   validateRequireEmail,
@@ -100,27 +99,35 @@ export default function DoctorProfile() {
     async function fetchData() {
       try {
         const userData = await getDoctorsWithIdApi(userId, authToken);
-        setEmail(userData.user.email);
-        setDoctorId(userData.id);
-        setName(userData.name);
-        setRole(userData.user.role);
-        setContact(userData.contact);
-        const formattedJoiningDate = format(
-          new Date(userData.joiningDate),
-          "dd MMM yyyy"
-        );
-        setJoiningDate(formattedJoiningDate);
-        setDob(userData.dateOfBirth);
-        setAge(userData.age);
-        setGender(userData.gender);
-        setAddress(userData.address);
-        setQualification(userData.qualification);
-        setDesignation(userData.designation);
-        setSpecialities(userData.specialities);
-        setDepartment(userData.department);
-        setMorningTime(userData.morningTiming);
-        setEveningTiming(userData.eveningTiming);
-        setVisitingDays(userData.visitingDays);
+        if (userData) {
+          setEmail(userData.user?.email || "");
+          setDoctorId(userData.id || "");
+          setName(userData.name || "");
+          setRole(userData.user?.role || "");
+          setContact(userData.contact || "");
+          if (userData.joiningDate) {
+            try {
+              const formattedJoiningDate = format(
+                new Date(userData.joiningDate),
+                "dd MMM yyyy"
+              );
+              setJoiningDate(formattedJoiningDate);
+            } catch {
+              setJoiningDate(userData.joiningDate);
+            }
+          }
+          setDob(userData.dateOfBirth || "");
+          setAge(userData.age || "");
+          setGender(userData.gender || "");
+          setAddress(userData.address || "");
+          setQualification(userData.qualification || "");
+          setDesignation(userData.designation || "");
+          setSpecialities(userData.specialities || "");
+          setDepartment(userData.department || "");
+          setMorningTime(userData.morningTiming || "");
+          setEveningTiming(userData.eveningTiming || "");
+          setVisitingDays(userData.visitingDays || "");
+        }
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -143,49 +150,65 @@ export default function DoctorProfile() {
 
     const emailRequireValidation = validateRequireEmail(email);
     const emailPatternValidation = validatePatternEmail(email);
-    const passwordRequireValidation = validateRequirePassword(password);
-    const passwordPatternValidation = validatePatternPassword(password);
     const nameRequireValidation = validateRequireName(name);
     const contactRequireValidation = validateRequireContact(contact);
     const dobRequireValidation = validateRequireDob(dateOfBirth);
     const addressRequireValidation = validateRequireAddress(address);
 
+    let hasError = false;
+
     if (emailRequireValidation) {
       setEmailError(emailRequireValidation);
-      return;
+      hasError = true;
     } else if (emailPatternValidation) {
       setEmailError(emailPatternValidation);
-      return;
+      hasError = true;
     }
-    if (passwordRequireValidation) {
-      setPasswordError(passwordRequireValidation);
-      return;
-    } else if (passwordPatternValidation) {
-      setPasswordError(passwordPatternValidation);
-      return;
+
+    // Password validation - only if user enters new password or current password
+    if (password || currentPassword || confirmPassword) {
+      if (!currentPassword) {
+        setCurrentPasswordError("Current password is required to change password");
+        hasError = true;
+      }
+      const passwordRequireValidation = validateRequirePassword(password);
+      const passwordPatternValidation = validatePatternPassword(password);
+      if (passwordRequireValidation) {
+        setPasswordError(passwordRequireValidation);
+        hasError = true;
+      } else if (passwordPatternValidation) {
+        setPasswordError(passwordPatternValidation);
+        hasError = true;
+      }
+      if (password !== confirmPassword) {
+        setPasswordMatchError("Passwords do not match");
+        hasError = true;
+      }
     }
-    if (password !== confirmPassword) {
-      setPasswordMatchError("Passwords does not match");
-      return;
-    }
+
     if (nameRequireValidation) {
       setNameError(nameRequireValidation);
-      return;
+      hasError = true;
     }
     if (contactRequireValidation) {
       setContactError(contactRequireValidation);
-      return;
+      hasError = true;
     }
     if (dobRequireValidation) {
       setDobError(dobRequireValidation);
-      return;
+      hasError = true;
     }
     if (!gender) {
       setGenderError("Please select a gender");
-      return;
+      hasError = true;
     }
     if (addressRequireValidation) {
       setAddressError(addressRequireValidation);
+      hasError = true;
+    }
+
+    if (hasError) {
+      toast.warn("Please check the form for errors before saving.");
       return;
     }
 
@@ -200,14 +223,22 @@ export default function DoctorProfile() {
         gender,
         dateOfBirth,
         address,
-        age
+        age,
+        qualification,
+        designation,
+        specialities,
+        department,
+        morningTime,
+        eveningTiming,
+        visitingDays
       );
-      toast.success("Profile updated successfully");
-      setEditMode(false); // Exit edit mode on success
+      toast.success("Profile updated successfully!");
+      setEditMode(false);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
     } catch (error) {
-      toast.error("Failed to update profile");
-      // Assuming API error related to current password validation could be caught here
-      // setErrors({ currentPassword: "Invalid current password" }); // Adapted from receptionist logic
+      toast.error("Failed to update profile. Please verify your current password if changing it.");
     }
   };
 
@@ -215,16 +246,41 @@ export default function DoctorProfile() {
     <div className="profile-dashboard">
       <div className="profile-card">
         {/* Header */}
-        <div className="profile-title-row">
-          <h3>Doctor Profile</h3>
-        </div>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 pb-3 mb-4 border-bottom">
+          <div>
+            <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+              <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>person_outline</span>
+              Physician Credentials &amp; Registry
+            </div>
+            <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "22px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Dr. {name ? capitalizeName(name) : "Doctor Profile"}
+            </h2>
+            <div className="d-flex align-items-center gap-2 mt-1">
+              <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 rounded-pill">
+                {role || "Physician"}
+              </span>
+              <span className="text-muted" style={{ fontSize: "13px" }}>
+                Joined on {joiningDate}
+              </span>
+            </div>
+          </div>
 
-        <hr className="divider-line" />
-
-        {/* Info Tag */}
-        <div className="role-info">
-          <span className="role-badge">{role}</span>
-          <span className="join-date">Joined on {joiningDate}</span>
+          <div>
+            {!editMode ? (
+              <button
+                type="button"
+                className="btn btn-outline-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 rounded-3 fw-semibold shadow-sm"
+                onClick={() => setEditMode(true)}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>edit</span>
+                <span>Edit Profile</span>
+              </button>
+            ) : (
+              <span className="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill fw-semibold">
+                Editing Mode Active
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Form */}
@@ -350,8 +406,9 @@ export default function DoctorProfile() {
               <input
                 className="input"
                 value={qualification}
-                readOnly
-                placeholder="Qualification"
+                readOnly={!editMode}
+                onChange={(e) => setQualification(e.target.value)}
+                placeholder="Qualification (e.g. MBBS, MD)"
               />
             </div>
 
@@ -360,8 +417,9 @@ export default function DoctorProfile() {
               <input
                 className="input"
                 value={designation}
-                readOnly
-                placeholder="Designation"
+                readOnly={!editMode}
+                onChange={(e) => setDesignation(e.target.value)}
+                placeholder="Designation (e.g. Senior Consultant)"
               />
             </div>
 
@@ -370,8 +428,9 @@ export default function DoctorProfile() {
               <input
                 className="input"
                 value={specialities}
-                readOnly
-                placeholder="Specialities"
+                readOnly={!editMode}
+                onChange={(e) => setSpecialities(e.target.value)}
+                placeholder="Specialities (e.g. Cardiology)"
               />
             </div>
 
@@ -380,8 +439,9 @@ export default function DoctorProfile() {
               <input
                 className="input"
                 value={department}
-                readOnly
-                placeholder="Department"
+                readOnly={!editMode}
+                onChange={(e) => setDepartment(e.target.value)}
+                placeholder="Department (e.g. Cardiology)"
               />
             </div>
 
@@ -390,8 +450,9 @@ export default function DoctorProfile() {
               <input
                 className="input"
                 value={morningTime}
-                readOnly
-                placeholder="Morning time"
+                readOnly={!editMode}
+                onChange={(e) => setMorningTime(e.target.value)}
+                placeholder="Morning time (e.g. 09:00 - 13:00)"
               />
             </div>
 
@@ -400,8 +461,9 @@ export default function DoctorProfile() {
               <input
                 className="input"
                 value={eveningTiming}
-                readOnly
-                placeholder="Evening time"
+                readOnly={!editMode}
+                onChange={(e) => setEveningTiming(e.target.value)}
+                placeholder="Evening time (e.g. 17:00 - 21:00)"
               />
             </div>
 
@@ -410,8 +472,9 @@ export default function DoctorProfile() {
               <input
                 className="input"
                 value={visitingDays}
-                readOnly
-                placeholder="Visiting Days"
+                readOnly={!editMode}
+                onChange={(e) => setVisitingDays(e.target.value)}
+                placeholder="Visiting Days (e.g. Mon, Wed, Fri)"
               />
             </div>
 
@@ -552,20 +615,46 @@ export default function DoctorProfile() {
           </div>
 
           {/* Buttons */}
-          <div className="form-footer">
-            {!editMode && (
+          <div className="form-footer d-flex align-items-center justify-content-end gap-2 mt-4 pt-3 border-top">
+            {!editMode ? (
               <button
                 type="button"
-                className="edit-btn"
+                className="btn btn-primary d-inline-flex align-items-center gap-1.5 px-4 py-2 rounded-3 fw-semibold shadow-sm"
+                style={{ backgroundColor: "#006194", borderColor: "#006194" }}
                 onClick={() => setEditMode(true)}
               >
-                <FontAwesomeIcon icon={faPencilAlt} /> Edit
+                <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>edit</span>
+                <span>Edit Profile</span>
               </button>
-            )}
-            {editMode && (
-              <button type="submit" className="update-btn">
-                Update
-              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary d-inline-flex align-items-center gap-1.5 px-3 py-2 rounded-3 fw-semibold"
+                  onClick={() => {
+                    setEditMode(false);
+                    setEmailError("");
+                    setNameError("");
+                    setContactError("");
+                    setDobError("");
+                    setGenderError("");
+                    setAddressError("");
+                    setCurrentPasswordError("");
+                    setPasswordError("");
+                    setPasswordMatchError("");
+                  }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>close</span>
+                  <span>Cancel</span>
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-success d-inline-flex align-items-center gap-1.5 px-4 py-2 rounded-3 fw-semibold shadow-sm"
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>save</span>
+                  <span>Save Changes</span>
+                </button>
+              </>
             )}
           </div>
         </form>

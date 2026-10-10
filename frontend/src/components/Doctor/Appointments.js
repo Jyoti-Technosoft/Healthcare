@@ -95,32 +95,34 @@ export default function Appointments() {
     <div className="doctor-dashboard">
       <div className="doctor-list-card">
         {/* Top Header */}
-        <div className="top-header">
-          <p className="total-patient">
-            Total Appointments: <strong>{filteredAppointments.length}</strong>
-          </p>
-        </div>
-
-        <hr className="divider-line" />
-
-        {/* Title & Search */}
-        <div className="title-row">
-          <h3>Appointments</h3>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 pb-3 mb-4 border-bottom">
+          <div>
+            <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+              <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>clinical_notes</span>
+              Consultation Queue
+            </div>
+            <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "22px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Patient Appointments &amp; Consultations
+            </h2>
+            <p className="text-muted mb-0 mt-1" style={{ fontSize: "13px" }}>
+              Pending Encounters: <strong className="text-dark">{filteredAppointments.length}</strong> appointments awaiting report
+            </p>
+          </div>
 
           <div className="search-box">
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search by patient name, contact, date..."
               onChange={handleSearch}
             />
-            <i className="bi bi-search search-icon"></i>
+            <span className="material-symbols-outlined search-icon" style={{ fontSize: "18px" }}>search</span>
           </div>
         </div>
 
         {/* --- STANDARD HTML TABLE (REPLACES DATATABLE) --- */}
         <div className="table-responsive doctor-table-container mt-3">
           {loading ? (
-            <p className="text-center text-muted py-3">Loading...</p>
+            <p className="text-center text-muted py-4">Loading appointments...</p>
           ) : (
             <table className="doctor-table">
               <thead>

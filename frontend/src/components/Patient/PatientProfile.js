@@ -78,13 +78,26 @@ export default function PatientProfile() {
     if (!gender) validationErrors.gender = "Required";
     if (!address) validationErrors.address = "Required";
     if (!email) validationErrors.email = "Required";
-    if (!password) validationErrors.password = "Required";
-    if (password !== confirmPassword)
-      validationErrors.confirmPassword = "Passwords do not match";
+
+    // Optional password change
+    if (password || currentPassword || confirmPassword) {
+      if (!currentPassword) {
+        validationErrors.currentPassword = "Required to change password";
+      }
+      if (!password) {
+        validationErrors.password = "Required";
+      }
+      if (password !== confirmPassword) {
+        validationErrors.confirmPassword = "Passwords do not match";
+      }
+    }
 
     setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length !== 0) return;
+    if (Object.keys(validationErrors).length !== 0) {
+      toast.warn("Please check the form for errors before saving.");
+      return;
+    }
 
     try {
       await updatePatientProfileApi(
@@ -103,8 +116,11 @@ export default function PatientProfile() {
       );
       toast.success("Profile updated successfully!");
       setEditMode(false);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
     } catch (error) {
-      toast.error("Failed to update. Check credentials.");
+      toast.error("Failed to update profile. Please verify credentials if changing password.");
     }
   };
 
@@ -112,14 +128,41 @@ export default function PatientProfile() {
     <>
       <div className="patient-profile-dashboard">
         <div className="patient-profile-card">
-          <div className="profile-title-row">
-            <h3>Patient Profile</h3>
-          </div>
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 pb-3 mb-4 border-bottom">
+            <div>
+              <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+                <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>account_circle</span>
+                Patient Demographics &amp; Health Profile
+              </div>
+              <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "22px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                {name || "Patient Profile"}
+              </h2>
+              <div className="d-flex align-items-center gap-2 mt-1">
+                <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 rounded-pill">
+                  {role || "Patient"}
+                </span>
+                <span className="text-muted" style={{ fontSize: "13px" }}>
+                  Record ID: #{patientId}
+                </span>
+              </div>
+            </div>
 
-          <hr className="divider-line" />
-
-          <div className="role-info">
-            <span className="role-badge">{role}</span>
+            <div>
+              {!editMode ? (
+                <button
+                  type="button"
+                  className="btn btn-outline-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 rounded-3 fw-semibold shadow-sm"
+                  onClick={() => setEditMode(true)}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>edit</span>
+                  <span>Edit Profile</span>
+                </button>
+              ) : (
+                <span className="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill fw-semibold">
+                  Editing Mode Active
+                </span>
+              )}
+            </div>
           </div>
 
           <form className="profile-form" onSubmit={handleSubmit}>
@@ -272,15 +315,38 @@ export default function PatientProfile() {
               </div>
             </div>
 
-            <div className="form-footer">
+            <div className="form-footer d-flex align-items-center justify-content-end gap-2 mt-4 pt-3 border-top">
               {!editMode ? (
-                <button type="button" className="edit-btn" onClick={() => setEditMode(true)}>
-                  Edit
+                <button
+                  type="button"
+                  className="btn btn-primary d-inline-flex align-items-center gap-1.5 px-4 py-2 rounded-3 fw-semibold shadow-sm"
+                  style={{ backgroundColor: "#006194", borderColor: "#006194" }}
+                  onClick={() => setEditMode(true)}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>edit</span>
+                  <span>Edit Profile</span>
                 </button>
               ) : (
-                <button type="submit" className="update-btn">
-                  Update
-                </button>
+                <>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary d-inline-flex align-items-center gap-1.5 px-3 py-2 rounded-3 fw-semibold"
+                    onClick={() => {
+                      setEditMode(false);
+                      setErrors({});
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>close</span>
+                    <span>Cancel</span>
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-success d-inline-flex align-items-center gap-1.5 px-4 py-2 rounded-3 fw-semibold shadow-sm"
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>save</span>
+                    <span>Save Changes</span>
+                  </button>
+                </>
               )}
             </div>
           </form>

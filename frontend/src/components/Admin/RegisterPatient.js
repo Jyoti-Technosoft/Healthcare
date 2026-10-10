@@ -26,7 +26,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import "../../assets/css/Admin/RegisterPatient.css";
-import BackArrow from "../../assets/img/back-arrow.png";
 
 export default function RegisterPatient() {
   const [name, setName] = useState("");
@@ -160,14 +159,32 @@ useEffect(() => {
   return (
     <div className="background_part">
       <div className="register-card">
-        <img
-          src={BackArrow}
-          className="register-back-btn"
-          alt="back"
-          onClick={() => dispatch(setActiveTab("patientsList"))}
-        />
-
-        <h3 className="register-title">Register Patient</h3>
+        {/* Top Header & Breadcrumb */}
+        <div className="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+          <div className="d-flex align-items-center gap-3">
+            <button
+              type="button"
+              className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1 rounded-circle p-2 shadow-sm"
+              style={{ width: "38px", height: "38px", justifyContent: "center" }}
+              onClick={() => dispatch(setActiveTab("patientsList"))}
+              title="Return to Patient Directory"
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>arrow_back</span>
+            </button>
+            <div>
+              <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+                <span className="material-symbols-outlined" style={{ fontSize: "15px" }}>how_to_reg</span>
+                Patient Registration &bull; Clinical Intake
+              </div>
+              <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "22px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                Register New Patient
+              </h2>
+            </div>
+          </div>
+          <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold" style={{ fontSize: "12px" }}>
+            AegisHealth Care Intake
+          </span>
+        </div>
 
         <form onSubmit={handleSubmit} className="form-grid">
           {/* EMAIL */}

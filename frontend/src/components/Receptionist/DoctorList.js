@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "../../assets/css/Receptionist/doctor-dashboard.css";
-import listIcon from "../../assets/img/list-icon.png";
-import gridIcon from "../../assets/img/grid-icon.png";
-import searchIcon from "../../assets/img/search-icon.png";
 import defaultMale from "../../assets/img/maleRecep.png";
 import { getDoctorsApi } from "../Api";
 
@@ -96,42 +93,60 @@ export default function DoctorDashboard() {
       <div className="doctor-card-wrapper">
 
         {/* HEADER */}
-        <div className="doctor-header">
-          <p className="total-docs">
-            Total Doctor: <strong>{filtered.length}</strong>
-          </p>
+        <div className="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+          <div>
+            <div className="d-inline-flex align-items-center gap-1.5 text-primary fw-bold text-uppercase" style={{ fontSize: "11px", letterSpacing: "1px" }}>
+              <span className="material-symbols-outlined" style={{ fontSize: "15px" }}>clinical_notes</span>
+              Medical Roster &bull; Staff Directory
+            </div>
+            <h2 className="fw-bold text-dark mb-0" style={{ fontSize: "22px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              Attending Physicians Directory
+            </h2>
+            <p className="text-muted mb-0" style={{ fontSize: "13px" }}>
+              Total Records: <strong className="text-dark">{filtered.length}</strong> active medical specialists
+            </p>
+          </div>
 
-          <div className="view-buttons">
+          <div className="btn-group shadow-sm" role="group">
             <button
-              className={`toggle-btn ${!isGrid ? "active" : ""}`}
+              type="button"
+              className={`btn btn-sm d-inline-flex align-items-center gap-1 ${!isGrid ? "btn-primary" : "btn-outline-secondary"}`}
+              style={!isGrid ? { backgroundColor: "#006194", borderColor: "#006194" } : {}}
               onClick={() => setIsGrid(false)}
+              title="Table View"
             >
-              <img src={listIcon} alt="List" />
+              <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>table_rows</span>
+              <span>Table</span>
             </button>
-
             <button
-              className={`toggle-btn ${isGrid ? "active" : ""}`}
+              type="button"
+              className={`btn btn-sm d-inline-flex align-items-center gap-1 ${isGrid ? "btn-primary" : "btn-outline-secondary"}`}
+              style={isGrid ? { backgroundColor: "#006194", borderColor: "#006194" } : {}}
               onClick={() => setIsGrid(true)}
+              title="Roster Card View"
             >
-              <img src={gridIcon} alt="Grid" />
+              <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>grid_view</span>
+              <span>Grid</span>
             </button>
           </div>
         </div>
 
-        <hr className="divider" />
-
-        {/* TITLE + SEARCH */}
-        <div className="doctor-list-header">
-          <h3>Doctor List</h3>
+        {/* SEARCH ROW */}
+        <div className="d-flex align-items-center justify-content-between pb-3 border-bottom mb-3">
+          <div className="d-flex align-items-center gap-2">
+            <span className="badge rounded-pill bg-light text-secondary border px-2.5 py-1.5 fw-semibold" style={{ fontSize: "12px" }}>
+              Showing {filtered.length} matching physicians
+            </span>
+          </div>
 
           <div className="search-box">
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Search doctor, department, specialty..."
               value={search}
               onChange={handleSearch}
             />
-            <img src={searchIcon} alt="Search" />
+            <span className="material-symbols-outlined search-icon" style={{ fontSize: "18px" }}>search</span>
           </div>
         </div>
 
@@ -197,20 +212,33 @@ export default function DoctorDashboard() {
               </tbody>
             </table>
 
-            <div className="pagination-footer">
-              <label>Rows per page:</label>
-              <select>
-                <option>10</option>
-                <option>20</option>
-                <option>30</option>
-              </select>
+            <div className="pagination-footer d-flex align-items-center justify-content-between pt-3 mt-3 border-top">
+              <div className="d-flex align-items-center gap-2 text-muted" style={{ fontSize: "13px" }}>
+                <span>Rows per page:</span>
+                <select className="form-select form-select-sm" style={{ width: "70px", height: "32px" }}>
+                  <option>10</option>
+                  <option>20</option>
+                  <option>30</option>
+                </select>
+              </div>
 
-              <span>1–10 of 10</span>
-
-              <button>|&lt;</button>
-              <button>&lt;</button>
-              <button>&gt;</button>
-              <button>&gt;|</button>
+              <div className="d-flex align-items-center gap-2">
+                <span className="text-muted" style={{ fontSize: "13px" }}>1–{filtered.length} of {filtered.length}</span>
+                <div className="btn-group btn-group-sm">
+                  <button type="button" className="btn btn-outline-secondary" disabled>
+                    <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>first_page</span>
+                  </button>
+                  <button type="button" className="btn btn-outline-secondary" disabled>
+                    <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>chevron_left</span>
+                  </button>
+                  <button type="button" className="btn btn-outline-secondary" disabled>
+                    <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>chevron_right</span>
+                  </button>
+                  <button type="button" className="btn btn-outline-secondary" disabled>
+                    <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>last_page</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         ) : (

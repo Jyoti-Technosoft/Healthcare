@@ -75,7 +75,8 @@
   align-items: center;
 }
 
-.error-text {
+.page-not-found-container .error-text,
+.not-found-content .error-text {
   font-size: 3.5rem;
   font-weight: 900;
   color: #000;
@@ -159,7 +160,8 @@
   .art-composition {
     transform: scale(0.7);
   }
-  .error-text {
+  .page-not-found-container .error-text,
+  .not-found-content .error-text {
     flex-direction: column;
   }
   .starburst-btn {

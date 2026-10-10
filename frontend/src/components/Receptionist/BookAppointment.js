@@ -200,61 +200,77 @@ export default function BookAppointment() {
         <div className="appointment-content">
           {/* --- SEARCH PATIENT --- */}
           <div className="form-grid-full mb-4">
-            <label className="form-label fw-semibold text-dark d-flex align-items-center gap-1.5">
+            <label className="form-label fw-semibold text-dark d-flex align-items-center gap-1.5 mb-2">
               <span className="material-symbols-outlined text-primary" style={{ fontSize: "18px" }}>person_search</span>
               Patient Lookup
             </label>
-            <div className="position-relative">
-              <div className="input-group">
-                <span className="input-group-text bg-white border-end-0">
-                  <span className="material-symbols-outlined text-muted" style={{ fontSize: "18px" }}>search</span>
-                </span>
+            <div className="position-relative book-patient-search-wrapper">
+              <div className="book-patient-search-bar">
+                <span className="material-symbols-outlined book-patient-search-icon">search</span>
                 <input
                   type="text"
                   value={typeof searchQuery === 'string' ? searchQuery : (searchQuery?.name || '')}
-                  onChange={handleInputChange}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSearchQuery(val);
+                    handleInputChange(e);
+                  }}
                   onFocus={() => {
-                    if (searchQuery?.trim()) {
-                      handleInputChange({ target: { value: searchQuery } });
+                    const queryStr = typeof searchQuery === 'string' ? searchQuery : searchQuery?.name;
+                    if (queryStr && typeof queryStr === 'string' && queryStr.trim()) {
+                      handleInputChange({ target: { value: queryStr } });
                     }
                   }}
                   onBlur={() => {
-                    setTimeout(() => setSuggestions([]), 200);
+                    setTimeout(() => setSuggestions([]), 250);
                   }}
                   placeholder="Search registered patients by name or contact number..."
-                  className="form-control border-start-0 py-2"
-                  style={{ fontSize: "14px" }}
+                  className="book-patient-search-input"
                 />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    className="book-patient-search-clear"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSuggestions([]);
+                      setClickedPatient(null);
+                    }}
+                    title="Clear search"
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>close</span>
+                  </button>
+                )}
               </div>
+
               {suggestions.length > 0 && (
-                <div
-                  className="position-absolute w-100 mt-1 bg-white border rounded-3 shadow-lg"
-                  style={{ zIndex: 1050, maxHeight: "240px", overflowY: "auto" }}
-                >
+                <div className="book-patient-suggestions shadow-lg">
                   {suggestions.map((patient, index) => (
                     <div
                       key={patient.id || index}
-                      onClick={() => {
+                      onMouseDown={(e) => {
+                        // onMouseDown fires before onBlur
+                        e.preventDefault();
                         setSearchQuery(patient);
                         handleSuggestionClick(patient);
                         setSuggestions([]);
                       }}
-                      className="p-3 border-bottom d-flex align-items-center justify-content-between hover-bg-light cursor-pointer"
-                      style={{ cursor: "pointer" }}
+                      className="book-patient-suggestion-item"
                     >
-                      <div className="d-flex align-items-center gap-2">
-                        <div
-                          className="rounded-circle d-flex align-items-center justify-content-center bg-primary text-white fw-bold"
-                          style={{ width: "32px", height: "32px", fontSize: "12px" }}
-                        >
+                      <div className="d-flex align-items-center gap-2.5">
+                        <div className="book-patient-avatar">
                           {patient.name?.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <div className="fw-semibold text-dark">{patient.name}</div>
-                          <div className="text-muted" style={{ fontSize: "12px" }}>{patient.contact} &bull; {patient.gender || "Patient"}</div>
+                          <div className="fw-semibold text-dark" style={{ fontSize: "14px" }}>{patient.name}</div>
+                          <div className="text-muted" style={{ fontSize: "12px" }}>
+                            {patient.contact} &bull; {patient.gender || "Patient"} &bull; ID: #{patient.id}
+                          </div>
                         </div>
                       </div>
-                      <span className="badge bg-light text-secondary border">Select</span>
+                      <span className="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded-pill" style={{ fontSize: "11px" }}>
+                        Select
+                      </span>
                     </div>
                   ))}
                 </div>
