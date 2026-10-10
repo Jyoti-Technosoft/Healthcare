@@ -1,239 +1,178 @@
-/* Doctors.css */
+/* =========================================================
+   AEGISHEALTH SPECIALIST DIRECTORY STYLES (STITCH MATCH)
+   ========================================================= */
 
-/* --- Layout & Section --- */
-.doctors-section {
-  padding: 60px 0;
-  background-color: #f4f7f6; /* Light subtle background */
+.aegis-doctors-page {
+  background-color: #f8f9ff;
+  color: #0b1c30;
+  min-height: 100vh;
 }
 
-.section-header {
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.section-header h2 {
-  font-size: 36px;
-  font-weight: 700;
-  color: #2c4964;
+/* Hero Section */
+.aegis-directory-hero {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #bfc7d2;
+  padding: 3rem 0 2.5rem;
   position: relative;
-  padding-bottom: 15px;
-  margin-bottom: 20px;
 }
 
-.section-header h2::after {
-  content: '';
-  position: absolute;
-  display: block;
-  width: 60px;
-  height: 4px;
-  background: #1977cc;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 2px;
+/* Quick Search Omnibox */
+.aegis-search-omnibox {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid #bfc7d2;
+  box-shadow: 0 4px 20px -2px rgba(11, 28, 48, 0.08);
+  padding: 1.25rem;
+  margin-top: 1.5rem;
 }
 
-.section-header p {
-  color: #777;
-  font-size: 16px;
-  max-width: 600px;
-  margin: 0 auto;
+.aegis-omnibox-input {
+  border: 1px solid #bfc7d2;
+  border-radius: 0.5rem;
+  height: 44px;
+  font-size: 14px;
+  color: #0b1c30;
+  background-color: #ffffff;
+  transition: all 0.15s ease;
 }
 
-/* --- CARD DESIGN (Grid View) --- */
-.doctor-card {
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease-in-out;
-  overflow: hidden;
-  border: none; /* Removed border for cleaner look */
+.aegis-omnibox-input:focus {
+  border-color: #006194;
+  box-shadow: 0 0 0 3px rgba(0, 97, 148, 0.15);
+  outline: none;
+}
+
+/* Filter Tab Pills */
+.aegis-filter-bar {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(191, 199, 210, 0.7);
+  padding: 0.75rem 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(11, 28, 48, 0.04);
+}
+
+.aegis-pill-btn {
+  padding: 0.45rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  background-color: #eff4ff;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.aegis-pill-btn:hover {
+  background-color: #dce9ff;
+  color: #006194;
+}
+
+.aegis-pill-btn.active {
+  background-color: #006194;
+  color: #ffffff;
+  border-color: #006194;
+  box-shadow: 0 2px 4px rgba(0, 97, 148, 0.2);
+}
+
+.aegis-pill-btn .pill-count {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+/* Bento Specialist Cards */
+.aegis-doctor-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid rgba(191, 199, 210, 0.8);
+  box-shadow: 0 4px 12px rgba(11, 28, 48, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem;
   height: 100%;
   position: relative;
-  top: 0;
-  animation: fadeInUp 0.6s ease-out forwards;
-  opacity: 0;
 }
 
-.doctor-card:hover {
-  top: -10px;
-  box-shadow: 0 20px 40px rgba(25, 119, 204, 0.15);
+.aegis-doctor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px -4px rgba(0, 97, 148, 0.15);
+  border-color: #006194;
 }
 
-/* Image Area */
-.card-img-wrapper {
-  width: 100%;
-  height: 280px; /* Fixed height for uniformity */
-  overflow: hidden;
+/* Card Image & Badges */
+.aegis-card-img-wrap {
   position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background: #f1f5f9;
+  height: 220px;
 }
 
-.card-img-wrapper img {
+.aegis-card-img-wrap img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top center;
-  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.4s ease;
 }
 
-.doctor-card:hover .card-img-wrapper img {
-  transform: scale(1.1);
+.aegis-doctor-card:hover .aegis-card-img-wrap img {
+  transform: scale(1.04);
 }
 
-/* Content Area */
-.card-content {
-  padding: 25px;
-  text-align: center;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
+.aegis-verified-chip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
   align-items: center;
+  gap: 4px;
 }
 
-.doctor-name {
-  font-size: 22px;
-  font-weight: 800;
-  color: #2c4964;
-  margin-bottom: 8px;
-}
-
-.doctor-badge {
-  background-color: #e6f3ff;
-  color: #1977cc;
-  font-size: 12px;
+.aegis-specialty-chip {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  color: #006194;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 700;
-  text-transform: uppercase;
-  padding: 6px 14px;
-  border-radius: 20px;
-  margin-bottom: 15px;
-  letter-spacing: 0.5px;
-}
-
-.doctor-designation {
-  font-size: 15px;
-  color: #666;
-  margin-bottom: 20px;
-  font-style: italic;
-  line-height: 1.5;
-}
-
-/* Action Button */
-.btn-read-more {
-  background-color: #fff;
-  color: #1977cc;
-  border: 2px solid #1977cc;
-  padding: 8px 28px;
-  border-radius: 50px;
-  font-size: 14px;
-  font-weight: 700;
-  transition: all 0.3s ease;
-  margin-top: auto; /* Pushes button to bottom */
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.btn-read-more:hover {
-  background-color: #1977cc;
-  color: #fff;
-  box-shadow: 0 4px 15px rgba(25, 119, 204, 0.4);
-}
-
-/* --- MODAL STYLES --- */
-.doctor-modal-content {
-  border-radius: 12px;
-  border: none;
-  overflow: hidden;
-}
-
-.modal-header-custom {
-  background-color: #2c4964;
-  color: white;
-  border-bottom: none;
-  padding: 20px 30px;
-}
-
-.profile-sidebar {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
 }
 
-.modal-img {
-  width: 160px;
-  height: 160px;
-  object-fit: cover;
+/* Online Status Badge */
+.aegis-online-dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  border: 5px solid #fff;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  margin-bottom: 15px;
+  background-color: #10b981;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
 }
 
-.modal-doc-name {
-  font-weight: 700;
-  color: #2c4964;
-  margin-bottom: 5px;
-}
-
-.profile-details {
-  padding: 30px;
-}
-
-.detail-title {
-  font-weight: 700;
-  color: #1977cc;
-  text-transform: uppercase;
-  font-size: 12px;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-}
-
-.schedule-box {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 8px;
-  border-left: 4px solid #1977cc;
-}
-
-.time-block {
-  font-size: 14px;
-  color: #555;
-}
-
-.time-block .icon {
-  font-size: 18px;
-  margin-right: 5px;
-}
-
-.bio-text {
-  font-size: 15px;
-  color: #555;
-  line-height: 1.7;
-}
-
-/* --- Animations --- */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 40px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-/* --- Media Queries --- */
-@media (max-width: 768px) {
-  .doctor-card {
-    max-width: 400px;
-    margin: 0 auto; /* Center single cards on mobile */
-  }
-  .profile-sidebar {
-    border-right: none !important;
-    border-bottom: 1px solid #eee;
-  }
+/* Modal Styling */
+.aegis-doc-modal {
+  background-color: rgba(11, 28, 48, 0.6);
+  backdrop-filter: blur(4px);
 }
