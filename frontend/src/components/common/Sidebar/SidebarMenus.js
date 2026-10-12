@@ -73,6 +73,23 @@ const MENUS = {
 
   SuperAdmin: [
     {
+      tab: "doctorList",
+      label: "Doctor",
+      icon: doctorIcon,
+    },
+    {
+      tab: "patientsList",
+      label: "Patients",
+      icon: patientsIcon,
+      aliases: ["registerPatient", "patientProfile"],
+    },
+    {
+      tab: "showAppointments",
+      label: "Appointments",
+      icon: appointmentIcon,
+      aliases: ["bookAppointment"],
+    },
+    {
       tab: "usersList",
       label: "Users",
       icon: patientsIcon,

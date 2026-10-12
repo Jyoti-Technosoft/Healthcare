@@ -34,7 +34,7 @@ public class PatientController {
     PatientRepository patientRepository;
 
     @GetMapping("/auth/new/allAppointments/{patientId}")
-    @PreAuthorize("hasAnyAuthority('Patient','Doctor')")
+    @PreAuthorize("hasAnyAuthority('Patient','Doctor','Receptionist','Admin','SuperAdmin')")
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<List> getAllAppointments(@PathVariable Long patientId) {
         // Check if the doctor with the specified ID exists

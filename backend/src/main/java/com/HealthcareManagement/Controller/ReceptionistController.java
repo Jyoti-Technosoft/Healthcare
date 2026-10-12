@@ -43,7 +43,7 @@ public class ReceptionistController {
     }
 
     @GetMapping("/auth/searchPatient")
-    @PreAuthorize("hasAuthority('Receptionist')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','SuperAdmin')")
     public List<Map<String, Object>> searchPatients(@RequestParam String query) {
         List<Object[]> resultList = receptionistService.searchPatients(query);
         return convertResultListToMapList(resultList);
@@ -75,7 +75,7 @@ public class ReceptionistController {
     }
 
     @PostMapping("/auth/bookAppointment")
-    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','SuperAdmin')")
     public ResponseEntity<String> BookAppointment( @RequestBody UserDTO userDTO, @RequestHeader("Authorization") String authHeader){
         try{
             return receptionistService.bookAppointment(userDTO);
@@ -85,7 +85,7 @@ public class ReceptionistController {
         }
     }
     @GetMapping("/auth/availableSlots")
-    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','SuperAdmin')")
     public ResponseEntity<Map<String, Integer>> getAppointmentSlots(
             @RequestParam("doctorId") Long doctorId,
             @RequestParam("date") String date) {
@@ -124,7 +124,7 @@ public class ReceptionistController {
 
 
     @GetMapping("/auth/patientConsultationCharge")
-    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','SuperAdmin')")
     public ResponseEntity<String> getConsultationCharge(@RequestParam("patientId") Long patientId,@RequestParam("doctorId") Long doctorId, @RequestParam("date") String appointmentDate) {
         try{
             return receptionistService.calculateConsultationCharge(patientId,doctorId,appointmentDate);
@@ -135,7 +135,7 @@ public class ReceptionistController {
     }
 
     @GetMapping("/auth/getAppointments/{userId}")
-    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','SuperAdmin')")
     public List<Appointment> getAppointment(@PathVariable Long userId){
         try{
             return receptionistService.getAllAppointments(userId);
@@ -145,7 +145,7 @@ public class ReceptionistController {
         }
     }
     @GetMapping("/auth/getAppointments")
-    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','SuperAdmin')")
     public List<Appointment> getAllAppointments(){
         try{
             return receptionistService.getAllAppointments();
@@ -156,7 +156,7 @@ public class ReceptionistController {
     }
 
     @GetMapping("/auth/getDoctors")
-    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','Patient')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','SuperAdmin','Patient')")
     public List<Doctor> getAllDoctors(){
         try{
             return receptionistService.getAllDoctors();
@@ -168,14 +168,14 @@ public class ReceptionistController {
 
 
     @GetMapping("/auth/allPatientsList")
-    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','SuperAdmin')")
     public List<Patient> displayPatient() {
        return receptionistService.getAllPatients();
     }
 
 
     @PutMapping("/auth/todayAppointment")
-    @PreAuthorize("hasAuthority('Receptionist')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','SuperAdmin')")
     public ResponseEntity<String> updateArrivalStatus(@RequestParam("appointmentIds") List<Long> appointmentIds) {
         List<Appointment> appointments = appointmentRepository.findAllById(appointmentIds);
 
@@ -191,7 +191,7 @@ public class ReceptionistController {
     }
 
     @GetMapping("/auth/getAllDoctorsLeaveRequest")
-    @PreAuthorize("hasAnyAuthority('Receptionist','Admin')")
+    @PreAuthorize("hasAnyAuthority('Receptionist','Admin','SuperAdmin')")
     public List<DoctorLeave> getAllDoctorsLeaveRequest(){
         try{
             return doctorLeaveRepository.findAll();

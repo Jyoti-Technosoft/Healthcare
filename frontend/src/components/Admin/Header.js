@@ -321,19 +321,14 @@ export default function Header() {
                   label="Dashboard"
                 />
 
-                {userRole === "SuperAdmin" && (
-                  <MenuItem id="usersList" icon={patientsIcon} label="Users" />
-                )}
-
-                {/* --- RECEPTIONIST & ADMIN --- */}
-                {(userRole === "Receptionist" || userRole === "Admin") && (
+                {/* --- SUPERADMIN & ADMIN --- */}
+                {(userRole === "SuperAdmin" || userRole === "Admin") && (
                   <>
                     <MenuItem
                       id="doctorList"
                       icon={doctorIcon}
                       label="Doctor"
                     />
-                    {/* UPDATED: Matches Sidebar Logic for Patients */}
                     <MenuItem
                       id="patientsList"
                       icon={patientsIcon}
@@ -343,7 +338,44 @@ export default function Header() {
                         activeTab === "registerPatient"
                       }
                     />
-                    {/* UPDATED: Matches Sidebar Logic for Appointments */}
+                    <MenuItem
+                      id="showAppointments"
+                      icon={appointmentIcon}
+                      label="Appointments"
+                      isActive={
+                        activeTab === "showAppointments" ||
+                        activeTab === "bookAppointment"
+                      }
+                    />
+                    <MenuItem
+                      id="usersList"
+                      icon={patientsIcon}
+                      label="Users"
+                      isActive={
+                        activeTab === "usersList" ||
+                        activeTab === "registerUsers"
+                      }
+                    />
+                  </>
+                )}
+
+                {/* --- RECEPTIONIST --- */}
+                {userRole === "Receptionist" && (
+                  <>
+                    <MenuItem
+                      id="doctorList"
+                      icon={doctorIcon}
+                      label="Doctor"
+                    />
+                    <MenuItem
+                      id="patientsList"
+                      icon={patientsIcon}
+                      label="Patients"
+                      isActive={
+                        activeTab === "patientsList" ||
+                        activeTab === "registerPatient"
+                      }
+                    />
                     <MenuItem
                       id="showAppointments"
                       icon={appointmentIcon}

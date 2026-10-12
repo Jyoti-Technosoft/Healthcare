@@ -137,7 +137,7 @@ public class DoctorController {
     }
 
     @GetMapping("/auth/allHealthReport")
-    @PreAuthorize("hasAnyAuthority('Patient','Doctor')")
+    @PreAuthorize("hasAnyAuthority('Patient','Doctor','Receptionist','Admin','SuperAdmin')")
     public ResponseEntity<List<HealthReport>> fetchHealthReport(){
         try {
             List<HealthReport> healthReport = doctorService.getAllHealthreport();
@@ -155,7 +155,7 @@ public class DoctorController {
     }
 
     @GetMapping("/auth/healthReport/{appointmentId}")
-    @PreAuthorize("hasAnyAuthority('Patient','Doctor')")
+    @PreAuthorize("hasAnyAuthority('Patient','Doctor','Receptionist','Admin','SuperAdmin')")
     public ResponseEntity<List<HealthReport>> fetchHealthReport(@PathVariable Long appointmentId){
         try {
             List<HealthReport> healthReport = doctorService.getHealthreport(appointmentId);
@@ -184,7 +184,7 @@ public class DoctorController {
     }
 
     @GetMapping("/auth/getDoctorLeaveRequest/{doctorId}")
-    @PreAuthorize("hasAnyAuthority('Doctor','Receptionist')")
+    @PreAuthorize("hasAnyAuthority('Doctor','Receptionist','Admin','SuperAdmin')")
     public ResponseEntity<List<DoctorLeave>> getDoctorLeaveRequest(@PathVariable Long doctorId) {
         try {
             Optional<Doctor> existingDoctor = doctorRepository.findById(doctorId);

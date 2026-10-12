@@ -181,8 +181,35 @@ export default function Sidebar() {
                     </Link>
                   </li>
 
-                  {userRole === 'SuperAdmin' && (
+                  {(userRole === 'SuperAdmin' || userRole === 'Admin') && (
                     <>
+                      <li className="nav-item sidebarNavLinks">
+                        <Link
+                          className={`nav-link ${activeTab === 'doctorList' ? 'Active' : ''}`}
+                          onClick={() => setMenu('doctorList')}
+                        >
+                          <i className="fas fa-user-md sidebarIcon"></i>Doctor
+                        </Link>
+                      </li>
+
+                      <li className="nav-item sidebarNavLinks">
+                        <Link
+                          className={`dropdown-item ${activeTab === 'patientsList' ? 'Active' : ''}`}
+                          onClick={() => setMenu('patientsList')}
+                        >
+                          <i className="bi bi-person-plus sidebarIcon"></i>Patient
+                        </Link>
+                      </li>
+
+                      <li className="nav-item sidebarNavLinks">
+                        <Link
+                          className={`dropdown-item ${activeTab === 'showAppointments' ? 'Active' : ''}`}
+                          onClick={() => setMenu('showAppointments')}
+                        >
+                          <i className="bi bi-calendar-week sidebarIcon"></i>Appointments
+                        </Link>
+                      </li>
+
                       <li className="nav-item sidebarNavLinks">
                         <Link
                           className={`nav-link ${activeTab === 'usersList' ? 'Active' : ''}`}
@@ -193,11 +220,10 @@ export default function Sidebar() {
                       </li>
                     </>
                   )}
-                  {(userRole === 'Receptionist' || userRole === 'Admin') && (
+                  {userRole === 'Receptionist' && (
                     <>
                       <li className="nav-item sidebarNavLinks">
                         <Link
-
                           className={`nav-link ${activeTab === 'doctorList' ? 'Active' : ''}`}
                           onClick={() => setMenu('doctorList')}
                         >

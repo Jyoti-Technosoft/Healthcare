@@ -21,7 +21,6 @@ import {
   validateRequireDepartment,
   validateRequireMorningTime,
   validateRequireEveningTime,
-  validateRequireVisitingDays,
 } from "../Validations";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -70,13 +69,17 @@ export default function RegisterUsers() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState("");
+  const [roleError, setRoleError] = useState("");
   const [nameError, setNameError] = useState("");
   const [contactError, setContactError] = useState("");
   const [dobError, setDobError] = useState("");
   const [genderError, setGenderError] = useState("");
   const [addressError, setAddressError] = useState("");
+  const [imageError, setImageError] = useState("");
 
   const [joiningDateError, setJoiningDateError] = useState("");
+  const [dayOfWorkError, setDayOfWorkError] = useState("");
+  const [shiftTimeError, setShiftTimeError] = useState("");
   const [qualificationError, setQualificationError] = useState("");
   const [designationError, setDesignationError] = useState("");
   const [specialityError, setSpecialityError] = useState("");
@@ -105,72 +108,124 @@ export default function RegisterUsers() {
 
   const handleChange = (selectedOptions) => {
     setSelectedDays(selectedOptions);
+    if (selectedOptions && selectedOptions.length > 0) {
+      setVisitingDaysError("");
+    }
   };
 
-  const handleNext = (event) => {
-    if (step === 1) {
-      event.preventDefault();
-      setEmailError("");
-      setPasswordError("");
-      setPasswordMatchError("");
+  const validateStep1 = () => {
+    setEmailError("");
+    setPasswordError("");
+    setPasswordMatchError("");
+    setRoleError("");
 
-      const emailRequireValidation = validateRequireEmail(email);
-      const emailPatternValidation = validatePatternEmail(email);
-      const passwordRequireValidation = validateRequirePassword(password);
-      const passwordPatternValidation = validatePatternPassword(password);
-      if (emailRequireValidation) {
-        setEmailError(emailRequireValidation);
-        return;
-      } else if (emailPatternValidation) {
-        setEmailError(emailPatternValidation);
-        return;
-      }
+    let hasError = false;
+    const emailRequireValidation = validateRequireEmail(email);
+    const emailPatternValidation = validatePatternEmail(email);
+    const passwordRequireValidation = validateRequirePassword(password);
+    const passwordPatternValidation = validatePatternPassword(password);
 
-      if (passwordRequireValidation) {
-        setPasswordError(passwordRequireValidation);
-        return;
-      } else if (passwordPatternValidation) {
-        setPasswordError(passwordPatternValidation);
-        return;
-      }
+    if (emailRequireValidation) {
+      setEmailError(emailRequireValidation);
+      hasError = true;
+    } else if (emailPatternValidation) {
+      setEmailError(emailPatternValidation);
+      hasError = true;
+    }
 
-      if (password !== confirmPassword) {
-        setPasswordMatchError("Passwords does not match");
-        return;
-      }
-    } else if (step === 2 && (role === "Receptionist" || role === "Admin")) {
-      setNameError("");
-      setContactError("");
-      setDobError("");
-      setGenderError("");
-      setAddressError("");
-      event.preventDefault();
-      const nameRequireValidation = validateRequireName(name);
-      const contactRequireValidation = validateRequireContact(contact);
-      const dobRequireValidation = validateRequireDob(dateOfBirth);
-      const addressRequireValidation = validateRequireAddress(address);
+    if (passwordRequireValidation) {
+      setPasswordError(passwordRequireValidation);
+      hasError = true;
+    } else if (passwordPatternValidation) {
+      setPasswordError(passwordPatternValidation);
+      hasError = true;
+    }
 
-      if (nameRequireValidation) {
-        setNameError(nameRequireValidation);
-        return;
+    if (!confirmPassword) {
+      setPasswordMatchError("Please confirm password");
+      hasError = true;
+    } else if (password !== confirmPassword) {
+      setPasswordMatchError("Passwords does not match");
+      hasError = true;
+    }
+
+    if (!role) {
+      setRoleError("Please select a role");
+      hasError = true;
+    }
+
+    return !hasError;
+  };
+
+  const validateStep2 = () => {
+    setNameError("");
+    setContactError("");
+    setDobError("");
+    setGenderError("");
+    setAddressError("");
+    if (role === "Doctor") setImageError("");
+
+    let hasError = false;
+    const nameRequireValidation = validateRequireName(name);
+    const contactRequireValidation = validateRequireContact(contact);
+    const dobRequireValidation = validateRequireDob(dateOfBirth);
+    const addressRequireValidation = validateRequireAddress(address);
+
+    if (nameRequireValidation) {
+      setNameError(nameRequireValidation);
+      hasError = true;
+    }
+    if (contactRequireValidation) {
+      setContactError(contactRequireValidation);
+      hasError = true;
+    }
+    if (dobRequireValidation) {
+      setDobError(dobRequireValidation);
+      hasError = true;
+    }
+    if (!gender) {
+      setGenderError("Please select a gender");
+      hasError = true;
+    }
+    if (addressRequireValidation) {
+      setAddressError(addressRequireValidation);
+      hasError = true;
+    }
+    if (role === "Doctor" && !doctorImageData) {
+      setImageError("Please upload doctor image");
+      hasError = true;
+    }
+
+    return !hasError;
+  };
+
+  const validateStep3 = () => {
+    let hasError = false;
+
+    if (role === "Receptionist") {
+      setJoiningDateError("");
+      setDayOfWorkError("");
+      setShiftTimeError("");
+
+      const joiningDateRequireValidation =
+        validateRequireJoiningDate(joiningDate);
+      const daysOfWorkRequireValidation =
+        validateRequireWorkingDays(dayOfWorking);
+      const shiftTimingRequireValidation = validateRequireShiftTime(shiftTime);
+
+      if (joiningDateRequireValidation) {
+        setJoiningDateError(joiningDateRequireValidation);
+        hasError = true;
       }
-      if (contactRequireValidation) {
-        setContactError(contactRequireValidation);
-        return;
+      if (daysOfWorkRequireValidation) {
+        setDayOfWorkError(daysOfWorkRequireValidation);
+        hasError = true;
       }
-      if (dobRequireValidation) {
-        setDobError(dobRequireValidation);
-        return;
+      if (shiftTimingRequireValidation) {
+        setShiftTimeError(shiftTimingRequireValidation);
+        hasError = true;
       }
-      if (!gender) {
-        setGenderError("Please select a gender");
-        return;
-      }
-      if (addressRequireValidation) {
-        setAddressError(addressRequireValidation);
-        return;
-      }
-    } else if (step === 3 && (role === "Receptionist" || role === "Doctor")) {
+    } else if (role === "Doctor") {
       setJoiningDateError("");
       setQualificationError("");
       setDesignationError("");
@@ -180,11 +235,7 @@ export default function RegisterUsers() {
       setmorningTimeError("");
       setEveningTimeError("");
       setVisitingDaysError("");
-      event.preventDefault();
 
-      const daysOfWorkRequireValidation =
-        validateRequireWorkingDays(dayOfWorking);
-      const shiftTimingRequireValidation = validateRequireShiftTime(shiftTime);
       const joiningDateRequireValidation =
         validateRequireJoiningDate(joiningDate);
       const qualificationRequireValidation =
@@ -193,56 +244,68 @@ export default function RegisterUsers() {
         validateRequireDesignation(designation);
       const specialitiesRequireValidation =
         validateRequireSpeciality(specialities);
-      const departmentRequireValidation = validateRequireDepartment(department);
+      const departmentRequireValidation =
+        validateRequireDepartment(department);
       const consultancyRequireValidation =
         validateRequireConsultancyCharge(consultationCharge);
       const morningTimeRequireValidation =
         validateRequireMorningTime(morningTiming);
       const eveningTimeRequireValidation =
         validateRequireEveningTime(eveningTiming);
-      const selectedDaysRequireValidation =
-        validateRequireVisitingDays(selectedDays);
 
-      if (daysOfWorkRequireValidation) return;
-      if (shiftTimingRequireValidation) return;
       if (joiningDateRequireValidation) {
         setJoiningDateError(joiningDateRequireValidation);
-        return;
+        hasError = true;
       }
       if (qualificationRequireValidation) {
         setQualificationError(qualificationRequireValidation);
-        return;
+        hasError = true;
       }
       if (designationRequireValidation) {
         setDesignationError(designationRequireValidation);
-        return;
+        hasError = true;
       }
       if (specialitiesRequireValidation) {
         setSpecialityError(specialitiesRequireValidation);
-        return;
+        hasError = true;
       }
       if (departmentRequireValidation) {
         setDepartmentError(departmentRequireValidation);
-        return;
+        hasError = true;
       }
       if (consultancyRequireValidation) {
         setConsultancyError(consultancyRequireValidation);
-        return;
+        hasError = true;
       }
       if (morningTimeRequireValidation) {
         setmorningTimeError(morningTimeRequireValidation);
-        return;
+        hasError = true;
       }
       if (eveningTimeRequireValidation) {
         setEveningTimeError(eveningTimeRequireValidation);
-        return;
+        hasError = true;
       }
-      if (selectedDaysRequireValidation) {
-        setVisitingDaysError(selectedDaysRequireValidation);
-        return;
+      if (!selectedDays || selectedDays.length === 0) {
+        setVisitingDaysError("Visiting Days is required");
+        hasError = true;
       }
     }
-    setStep(step + 1);
+
+    return !hasError;
+  };
+
+  const handleNext = (event) => {
+    if (event) event.preventDefault();
+
+    if (step === 1) {
+      if (!validateStep1()) return;
+      setStep(2);
+    } else if (step === 2) {
+      if (!validateStep2()) return;
+      if (role !== "Admin") {
+        setStep(3);
+      }
+    }
   };
 
   const handlePrevious = () => {
@@ -251,11 +314,13 @@ export default function RegisterUsers() {
 
   const handleGenderChange = (event) => {
     setGender(event.target.value);
+    setGenderError("");
   };
 
   const handleDateOfBirthChange = (event) => {
     const dob = event.target.value;
     setDob(dob);
+    setDobError("");
     setAge(calculateAge(dob));
   };
 
@@ -275,10 +340,31 @@ export default function RegisterUsers() {
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     setDoctorImageData(file);
+    if (file) setImageError("");
   };
 
+  const isLastStep =
+    (role === "Admin" && step === 2) ||
+    (role !== "Admin" && step === totalSteps);
+
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    if (event) event.preventDefault();
+
+    const isCurrentLastStep =
+      (role === "Admin" && step === 2) ||
+      (role !== "Admin" && step === totalSteps);
+
+    if (!isCurrentLastStep) {
+      handleNext(event);
+      return;
+    }
+
+    if (role === "Admin") {
+      if (!validateStep2()) return;
+    } else {
+      if (!validateStep3()) return;
+    }
+
     try {
       if (role === "Doctor") {
         let formattedSelectedDays = selectedDays
@@ -354,6 +440,28 @@ export default function RegisterUsers() {
     setEveningTiming("");
     setDoctorImageData(null);
     setSelectedDays([]);
+
+    setEmailError("");
+    setPasswordError("");
+    setPasswordMatchError("");
+    setRoleError("");
+    setNameError("");
+    setContactError("");
+    setDobError("");
+    setGenderError("");
+    setAddressError("");
+    setImageError("");
+    setJoiningDateError("");
+    setDayOfWorkError("");
+    setShiftTimeError("");
+    setQualificationError("");
+    setDesignationError("");
+    setSpecialityError("");
+    setDepartmentError("");
+    setConsultancyError("");
+    setmorningTimeError("");
+    setEveningTimeError("");
+    setVisitingDaysError("");
   };
 
   return (
@@ -400,6 +508,7 @@ export default function RegisterUsers() {
                   index !== 2 ? (
                     <li className="nav-item" key={index + 1}>
                       <button
+                        type="button"
                         className={`nav-link ${
                           step === index + 1 ? "active" : ""
                         }`}
@@ -412,7 +521,13 @@ export default function RegisterUsers() {
                           background: "transparent",
                         }}
                         onClick={() => {
-                          setStep(index + 1);
+                          if (index + 1 < step) {
+                            setStep(index + 1);
+                          } else if (index + 1 === 2 && step === 1) {
+                            handleNext();
+                          } else if (index + 1 === 3 && step === 2) {
+                            handleNext();
+                          }
                         }}
                       >
                         {stepLabels[index]}
@@ -535,10 +650,15 @@ export default function RegisterUsers() {
                     Select Your Role <span style={{ color: "red" }}>*</span>
                   </label>
                   <select
-                    className="form-select input-field"
+                    className={`form-select input-field ${
+                      roleError && "is-invalid"
+                    }`}
                     id="role"
                     value={role}
-                    onChange={(e) => setRole(e.target.value)}
+                    onChange={(e) => {
+                      setRole(e.target.value);
+                      setRoleError("");
+                    }}
                   >
                     <option value="" disabled>
                       Select role
@@ -547,6 +667,9 @@ export default function RegisterUsers() {
                     <option value="Receptionist">Receptionist</option>
                     <option value="Admin">Admin</option>
                   </select>
+                  {roleError && (
+                    <div className="invalid-feedback">{roleError}</div>
+                  )}
                 </div>
               </>
             )}
@@ -748,12 +871,22 @@ export default function RegisterUsers() {
                       </label>
                       <input
                         type="file"
-                        className="form-control input-field"
+                        className={`form-control input-field ${
+                          imageError && "is-invalid"
+                        }`}
                         id="imageUpload"
                         accept="image/*"
                         onChange={handleImageChange}
                         style={{ paddingTop: "8px" }}
                       />
+                      {imageError && (
+                        <div
+                          className="text-danger mt-1"
+                          style={{ fontSize: "13px" }}
+                        >
+                          {imageError}
+                        </div>
+                      )}
                     </div>
                   )}
                 </>
@@ -791,9 +924,14 @@ export default function RegisterUsers() {
                   </label>
                   <select
                     id="dayOfWorking"
-                    className="form-select input-field"
+                    className={`form-select input-field ${
+                      dayOfWorkError && "is-invalid"
+                    }`}
                     value={dayOfWorking}
-                    onChange={(e) => setDayOfWorking(e.target.value)}
+                    onChange={(e) => {
+                      setDayOfWorking(e.target.value);
+                      setDayOfWorkError("");
+                    }}
                   >
                     <option value="" disabled>
                       Select days
@@ -801,6 +939,14 @@ export default function RegisterUsers() {
                     <option value="Monday - Sunday">Monday - Sunday</option>
                     <option value="Monday - Saturday">Monday - Saturday</option>
                   </select>
+                  {dayOfWorkError && (
+                    <div
+                      className="text-danger mt-1"
+                      style={{ fontSize: "13px" }}
+                    >
+                      {dayOfWorkError}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -809,9 +955,14 @@ export default function RegisterUsers() {
                   </label>
                   <select
                     id="shiftTiming"
-                    className="form-select input-field"
+                    className={`form-select input-field ${
+                      shiftTimeError && "is-invalid"
+                    }`}
                     value={shiftTime}
-                    onChange={(e) => setShiftTime(e.target.value)}
+                    onChange={(e) => {
+                      setShiftTime(e.target.value);
+                      setShiftTimeError("");
+                    }}
                   >
                     <option value="" disabled>
                       Select shift time
@@ -820,6 +971,14 @@ export default function RegisterUsers() {
                     <option value="9am-1pm">9:00 AM - 1:00 PM</option>
                     <option value="10am-3pm">10:00 AM - 3:00 PM</option>
                   </select>
+                  {shiftTimeError && (
+                    <div
+                      className="text-danger mt-1"
+                      style={{ fontSize: "13px" }}
+                    >
+                      {shiftTimeError}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -1107,39 +1266,24 @@ export default function RegisterUsers() {
                 )}
               </div>
               <div>
-                {step === 2 && role === "Admin" ? (
+                {isLastStep ? (
                   <button
+                    key="submit-btn"
                     type="submit"
                     className="register-btn"
                     style={{ margin: 0 }}
                   >
                     Register
-                  </button>
-                ) : step !== 2 && step !== totalSteps ? (
-                  <button
-                    type="button"
-                    className="register-btn"
-                    onClick={handleNext}
-                    style={{ margin: 0 }}
-                  >
-                    Next
-                  </button>
-                ) : step === 2 && role !== "Admin" ? (
-                  <button
-                    type="button"
-                    className="register-btn"
-                    onClick={handleNext}
-                    style={{ margin: 0 }}
-                  >
-                    Next
                   </button>
                 ) : (
                   <button
-                    type="submit"
+                    key="next-btn"
+                    type="button"
                     className="register-btn"
+                    onClick={handleNext}
                     style={{ margin: 0 }}
                   >
-                    Register
+                    Next
                   </button>
                 )}
               </div>

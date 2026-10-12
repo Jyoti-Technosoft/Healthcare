@@ -15,7 +15,7 @@ export default function MainDashboard() {
             {userRole === 'Doctor' && (
                 <DoctorDashboard/>
             )}
-            {userRole === 'SuperAdmin' && (
+            {(userRole === 'SuperAdmin' || userRole === 'Admin') && (
                 <AdminDashboard/>
             )}
             {userRole === 'Patient' && (

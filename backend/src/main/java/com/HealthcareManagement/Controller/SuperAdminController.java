@@ -63,7 +63,7 @@ public class SuperAdminController {
 
 
     @PostMapping(value="/auth/registerUsers")
-    @PreAuthorize("hasAnyAuthority('SuperAdmin', 'Receptionist')")
+    @PreAuthorize("hasAnyAuthority('SuperAdmin', 'Admin', 'Receptionist')")
     @ApiOperation(value = "Register a new user", notes = "Registers a new user with the provided details.")
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<String> register(@RequestBody UserDTO userDTO){
@@ -76,7 +76,7 @@ public class SuperAdminController {
     }
 
     @PostMapping(value="/auth/registerDoctors",consumes = "multipart/form-data")
-    @PreAuthorize("hasAnyAuthority('SuperAdmin', 'Receptionist')")
+    @PreAuthorize("hasAnyAuthority('SuperAdmin', 'Admin', 'Receptionist')")
     public ResponseEntity<?> registerDoctors(@RequestParam("userDTOString") String userDTOString, @RequestParam("image") MultipartFile file) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         UserDTO userDTO = objectMapper.readValue(userDTOString, UserDTO.class);
@@ -84,7 +84,7 @@ public class SuperAdminController {
     }
 
     @GetMapping("/auth/registerDoctors/{name}")
-    @PreAuthorize("hasAnyAuthority('SuperAdmin', 'Receptionist')")
+    @PreAuthorize("hasAnyAuthority('SuperAdmin', 'Admin', 'Receptionist')")
     public ResponseEntity<?>  getImageByName(@PathVariable("name") String name){
         byte[] image = superAdminService.getImage(name);
 
@@ -137,7 +137,7 @@ public class SuperAdminController {
         }
     }
     @GetMapping("/getPatient/{userId}")
-    @PreAuthorize("hasAnyAuthority('SuperAdmin','Patient','Receptionist','Doctor')")
+    @PreAuthorize("hasAnyAuthority('SuperAdmin','Admin','Patient','Receptionist','Doctor')")
     public ResponseEntity<?> getPatient(@PathVariable Long userId) {
         try {
             Patient patient = patientService.getPatientByUserId(userId);
@@ -152,7 +152,7 @@ public class SuperAdminController {
         }
     }
     @GetMapping("/auth/getUsers")
-    @PreAuthorize("hasAuthority('SuperAdmin')")
+    @PreAuthorize("hasAnyAuthority('SuperAdmin', 'Admin')")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return new ResponseEntity<>(users,HttpStatus.OK);
@@ -185,7 +185,7 @@ public class SuperAdminController {
     }
 
     @PostMapping("/auth/registerPatient")
-    @PreAuthorize("hasAuthority('Receptionist')")
+    @PreAuthorize("hasAnyAuthority('SuperAdmin', 'Admin', 'Receptionist')")
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<String> registerPatient(@RequestBody PatientDTO patientDTO){
         try{
